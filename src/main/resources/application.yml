@@ -15,28 +15,13 @@ spring:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-  type-aliases-package: com.opus.**
+  type-aliases-package: me.sisyphusj.**
   mapper-locations: classpath:mapper/*.xml
-
-logging:
-  level:
-    org.mybatis: DEBUG
-    me.sisyphusj.community.app: DEBUG
-    org.springframework.security: DEBUG
-
-#    mybatis.spring.SqlSessionFactoryBean: DEBUG
-#    mybatis.spring.SqlSessionTemplate: DEBUG
-#    org.mybatis.spring:mapper:
-#      ClassPathMapperScanner: DEBUG
-#      SqlSessionFactoryBean: DEBUG
-#      apache:
-#        ibatis:
-#          builder:
-#            xml:
-#              XMLMapperBuilder: DEBUG
 
 server:
   servlet:
     jsp:
       init-parameters:
         development=true: true
+    session:
+      timeout: 800
