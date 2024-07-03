@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.auth.domain.AuthVO;
@@ -21,6 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 	private final AuthMapper authMapper;
 
 	@Override
+	@Transactional(readOnly = true)
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
 		return authMapper.selectAuthByUsername(username)
