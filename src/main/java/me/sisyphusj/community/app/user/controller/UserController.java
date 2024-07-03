@@ -44,7 +44,7 @@ public class UserController {
 		HttpSession session = request.getSession();
 		model.addAttribute("user", session.getAttribute(SessionConst.LOGIN_USER));
 
-		return "mypage";
+		return "myPage";
 	}
 
 }
