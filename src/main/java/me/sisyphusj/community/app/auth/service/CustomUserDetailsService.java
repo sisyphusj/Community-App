@@ -33,7 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("USER");
 
 		return new User(
-			auth.getUsername(),
+			String.valueOf(auth.getUserId()),
 			auth.getPassword(),
 			Collections.singleton(grantedAuthority)
 		);
