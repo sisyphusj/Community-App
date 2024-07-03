@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybaits.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="me.sisyphusj.community.app.user.mapper.UserMapper">
+
+    <insert id="insertUser">
+        insert into user (username, password, name)
+        values (#{username}, #{password}, #{name})
+    </insert>
+
+    <select id="selectCountByUsername">
+        select count(*)
+        from user
+        where username = #{username}
+    </select>
+
+    <select id="selectCountByName">
+        select count(*)
+        from user
+        where username = #{name}
+    </select>
+</mapper>
