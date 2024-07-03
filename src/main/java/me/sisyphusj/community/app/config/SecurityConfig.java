@@ -16,7 +16,7 @@ import me.sisyphusj.community.app.utils.SessionUtil;
 @Configuration
 public class SecurityConfig {
 
-	private final String[] permittedUrls = {"/", "/user/signup", "/user/register", "/auth/login", "/auth/signin",
+	private final String[] permittedUrls = {"/", "/auth/signup", "/auth/register", "/auth/login", "/auth/signin",
 		"/WEB-INF/views/home.jsp", "/WEB-INF/views/signup.jsp", "/WEB-INF/views/login.jsp", "/error"};
 
 	@Bean
@@ -37,7 +37,7 @@ public class SecurityConfig {
 			.formLogin(
 				form -> form
 					.loginPage("/auth/login")
-					.loginProcessingUrl("/auth/sign-in")
+					.loginProcessingUrl("/auth/signin")
 					.successHandler(authenticationSuccessHandler())
 					.permitAll()
 			)
