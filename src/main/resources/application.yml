@@ -2,7 +2,41 @@ spring:
   application:
     name: community-app
   datasource:
-    url : jdbc:mysql://localhost:3306/community_db
+    url: jdbc:mysql://localhost:3306/community_db
     username: root
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  type-aliases-package: com.opus.**
+  mapper-locations: classpath:mapper/*.xml
+
+logging:
+  level:
+    org.mybatis: DEBUG
+    me.sisyphusj.community.app: DEBUG
+    org.springframework.security: DEBUG
+
+#    mybatis.spring.SqlSessionFactoryBean: DEBUG
+#    mybatis.spring.SqlSessionTemplate: DEBUG
+#    org.mybatis.spring:mapper:
+#      ClassPathMapperScanner: DEBUG
+#      SqlSessionFactoryBean: DEBUG
+#      apache:
+#        ibatis:
+#          builder:
+#            xml:
+#              XMLMapperBuilder: DEBUG
+
+server:
+  servlet:
+    jsp:
+      init-parameters:
+        development=true: true
