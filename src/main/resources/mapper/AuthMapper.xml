@@ -4,10 +4,27 @@
 
 <mapper namespace="me.sisyphusj.community.app.auth.mapper.AuthMapper">
 
+    <insert id="insertAuth">
+        insert into user (username, password, name)
+        values (#{username}, #{password}, #{name})
+    </insert>
+
     <select id="selectAuthByUsername">
-        select *
+        select user_id, password
         from user
         where username = #{username}
+    </select>
+
+    <select id="selectCountByUsername">
+        select count(*)
+        from user
+        where username = #{username}
+    </select>
+
+    <select id="selectCountByName">
+        select count(*)
+        from user
+        where name = #{name}
     </select>
 
 </mapper>
