@@ -10,11 +10,16 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
+import lombok.RequiredArgsConstructor;
+import me.sisyphusj.community.app.security.CustomAuthenticationEntryPoint;
 import me.sisyphusj.community.app.utils.SessionUtil;
 
 @EnableWebSecurity
+@RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
+
+	private final CustomAuthenticationEntryPoint authEntryPoint;
 
 	private final String[] permittedUrls = {"/", "/auth/signup", "/auth/register", "/auth/login", "/auth/signin",
 		"/WEB-INF/views/home.jsp", "/WEB-INF/views/signup.jsp", "/WEB-INF/views/login.jsp", "/error"};
@@ -47,6 +52,11 @@ public class SecurityConfig {
 					.logoutUrl("/auth/logout")
 					.logoutSuccessUrl("/")
 					.addLogoutHandler(logoutHandler())
+			)
+
+			.exceptionHandling(
+				exceptionHandling -> exceptionHandling
+					.authenticationEntryPoint(authEntryPoint)
 			);
 
 		return http.build();
