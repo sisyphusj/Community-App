@@ -26,11 +26,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
 		return authMapper.selectAuthByUsername(username)
-			.map(this::cerateUserDetails)
+			.map(this::createUserDetails)
 			.orElseThrow(() -> new UsernameNotFoundException(username + "을 찾을 수 없습니다."));
 	}
 
-	private UserDetails cerateUserDetails(AuthVO auth) {
+	private UserDetails createUserDetails(AuthVO auth) {
 
 		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("USER");
 
