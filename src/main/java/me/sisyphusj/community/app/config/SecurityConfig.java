@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import lombok.RequiredArgsConstructor;
+import me.sisyphusj.community.app.security.CustomAccessDeniedHandler;
 import me.sisyphusj.community.app.security.CustomAuthenticationEntryPoint;
 import me.sisyphusj.community.app.utils.SessionUtil;
 
@@ -19,10 +20,14 @@ import me.sisyphusj.community.app.utils.SessionUtil;
 @Configuration
 public class SecurityConfig {
 
+	private final String[] permittedUrls = {"/", "/auth/signup", "/auth/register", "/auth/login", "/auth/signin",
+		"/WEB-INF/views/home.jsp", "/WEB-INF/views/signup.jsp", "/WEB-INF/views/login.jsp",
+		"/WEB-INF/views/error/alert.jsp",
+		"/error"};
+
 	private final CustomAuthenticationEntryPoint authEntryPoint;
 
-	private final String[] permittedUrls = {"/", "/auth/signup", "/auth/register", "/auth/login", "/auth/signin",
-		"/WEB-INF/views/home.jsp", "/WEB-INF/views/signup.jsp", "/WEB-INF/views/login.jsp", "/error"};
+	private final CustomAccessDeniedHandler accessDeniedHandler;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -56,6 +61,7 @@ public class SecurityConfig {
 
 			.exceptionHandling(
 				exceptionHandling -> exceptionHandling
+					.accessDeniedHandler(accessDeniedHandler)
 					.authenticationEntryPoint(authEntryPoint)
 			);
 
