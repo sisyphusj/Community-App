@@ -7,13 +7,13 @@
     <title>My Page</title>
 
     <script type="text/javascript">
-        
-        function goToLogout() {
-            let form = document.createElement('form');
+
+        const goToLogout = () => {
+            const form = document.createElement('form');
             form.method = 'POST';
             form.action = '${pageContext.request.contextPath}/auth/logout';
 
-            let csrfInput = document.createElement('input');
+            const csrfInput = document.createElement('input');
             csrfInput.type = 'hidden';
             csrfInput.name = '_csrf';
             csrfInput.value = '${_csrf.token}';

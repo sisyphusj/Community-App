@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-    $(function () {
+    $(() => {
         const errorMessage = "${message}";
         const redirectUrl = "${redirectUrl}";
 
@@ -10,10 +10,6 @@
             alert(errorMessage);
         }
 
-        if (redirectUrl === "back") {
-            window.history.back();
-        } else {
-            location.href = "/";
-        }
+        redirectUrl === "back" ? window.history.back() : location.href = "/";
     });
 </script>

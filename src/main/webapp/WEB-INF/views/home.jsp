@@ -10,24 +10,24 @@
     <title>홈페이지</title>
 
     <script type="text/javascript">
-        function goToSignupPage() {
+        const goToSignupPage = () => {
             window.location.href = '/auth/signup';
         }
 
-        function goToLoginPage() {
+        const goToLoginPage = () => {
             window.location.href = '/auth/login'
         }
 
-        function goToMyPage() {
+        const goToMyPage = () => {
             window.location.href = '/auth/my-page'
         }
 
-        function goToLogout() {
-            let form = document.createElement('form');
+        const goToLogout = () => {
+            const form = document.createElement('form');
             form.method = 'POST';
             form.action = '${pageContext.request.contextPath}/auth/logout';
 
-            let csrfInput = document.createElement('input');
+            const csrfInput = document.createElement('input');
             csrfInput.type = 'hidden';
             csrfInput.name = '_csrf';
             csrfInput.value = '${_csrf.token}';

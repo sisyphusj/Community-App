@@ -11,7 +11,8 @@
     <title>회원가입 페이지</title>
 
     <script>
-        function validateForm() {
+        const validateForm = () => {
+
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
             const name = document.getElementById("name").value;

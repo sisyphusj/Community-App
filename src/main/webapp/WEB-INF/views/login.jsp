@@ -9,7 +9,7 @@
     <title>로그인</title>
 
     <script>
-        function validateForm() {
+        const validateForm = () => {
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
 
