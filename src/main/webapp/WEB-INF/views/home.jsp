@@ -11,7 +11,7 @@
 
     <script type="text/javascript">
         function goToSignupPage() {
-            window.location.href = '/user/signup';
+            window.location.href = '/auth/signup';
         }
 
         function goToLoginPage() {
@@ -19,7 +19,7 @@
         }
 
         function goToMyPage() {
-            window.location.href = '/user/mypage'
+            window.location.href = '/auth/my-page'
         }
 
         function goToLogout() {

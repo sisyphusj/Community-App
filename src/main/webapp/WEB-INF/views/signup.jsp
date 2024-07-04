@@ -13,7 +13,7 @@
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <body>
 <h1>회원가입</h1>
-<form action="${pageContext.request.contextPath}/user/register" method="post">
+<form action="${pageContext.request.contextPath}/auth/register" method="post">
     <sec:csrfInput/>
 
     <label for="username">아이디 : </label>
