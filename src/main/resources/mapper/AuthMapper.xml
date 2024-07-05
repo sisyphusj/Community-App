@@ -9,7 +9,7 @@
         values (#{username}, #{password}, #{name})
     </insert>
 
-    <select id="selectAuthByUsername">
+    <select id="selectAuthByUsername" resultType="me.sisyphusj.community.app.auth.domain.AuthVO">
         select user_id, password
         from user
         where username = #{username}
