@@ -7,14 +7,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.security.CustomAccessDeniedHandler;
 import me.sisyphusj.community.app.security.CustomAuthenticationEntryPoint;
 import me.sisyphusj.community.app.security.CustomAuthenticationFailureHandler;
-import me.sisyphusj.community.app.utils.SessionUtil;
+import me.sisyphusj.community.app.security.CustomAuthenticationSuccessHandler;
+import me.sisyphusj.community.app.security.CustomLogoutHandler;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -28,6 +27,10 @@ public class SecurityConfig {
 	private final CustomAccessDeniedHandler accessDeniedHandler;
 
 	private final CustomAuthenticationFailureHandler failureHandler;
+
+	private final CustomAuthenticationSuccessHandler successHandler;
+
+	private final CustomLogoutHandler customLogoutHandler;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -48,7 +51,7 @@ public class SecurityConfig {
 				form -> form
 					.loginPage("/auth/login")
 					.loginProcessingUrl("/auth/signin")
-					.successHandler(authenticationSuccessHandler())
+					.successHandler(successHandler)
 					.failureHandler(failureHandler)
 					.permitAll()
 			)
@@ -57,7 +60,7 @@ public class SecurityConfig {
 				logout -> logout
 					.logoutUrl("/auth/logout")
 					.logoutSuccessUrl("/")
-					.addLogoutHandler(logoutHandler())
+					.addLogoutHandler(customLogoutHandler)
 			)
 
 			.exceptionHandling(
@@ -67,19 +70,6 @@ public class SecurityConfig {
 			);
 
 		return http.build();
-	}
-
-	@Bean
-	public AuthenticationSuccessHandler authenticationSuccessHandler() {
-		return (request, response, authentication) -> {
-			SessionUtil.setLoginUserId(request.getSession(false), authentication.getName());
-			response.sendRedirect("/");
-		};
-	}
-
-	@Bean
-	public LogoutHandler logoutHandler() {
-		return (request, response, authentication) -> SessionUtil.sessionInvalidate(request.getSession(false));
 	}
 
 }
