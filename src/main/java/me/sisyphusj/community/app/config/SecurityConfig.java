@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.security.CustomAccessDeniedHandler;
 import me.sisyphusj.community.app.security.CustomAuthenticationEntryPoint;
+import me.sisyphusj.community.app.security.CustomAuthenticationFailureHandler;
 import me.sisyphusj.community.app.utils.SessionUtil;
 
 @EnableWebSecurity
@@ -20,12 +21,13 @@ import me.sisyphusj.community.app.utils.SessionUtil;
 @Configuration
 public class SecurityConfig {
 
-	private final String[] permittedUrls = {"/", "/auth/signup", "/auth/register", "/auth/login", "/auth/signin",
-		"/WEB-INF/views/**", "/error"};
+	private final String[] permittedUrls = {"/", "/auth/signup", "/auth/register", "/auth/login", "/auth/signin", "/WEB-INF/views/**", "/error"};
 
 	private final CustomAuthenticationEntryPoint authEntryPoint;
 
 	private final CustomAccessDeniedHandler accessDeniedHandler;
+
+	private final CustomAuthenticationFailureHandler failureHandler;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -47,6 +49,7 @@ public class SecurityConfig {
 					.loginPage("/auth/login")
 					.loginProcessingUrl("/auth/signin")
 					.successHandler(authenticationSuccessHandler())
+					.failureHandler(failureHandler)
 					.permitAll()
 			)
 
