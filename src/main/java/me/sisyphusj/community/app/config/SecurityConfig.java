@@ -21,8 +21,7 @@ import me.sisyphusj.community.app.utils.SessionUtil;
 public class SecurityConfig {
 
 	private final String[] permittedUrls = {"/", "/auth/signup", "/auth/register", "/auth/login", "/auth/signin",
-		"/WEB-INF/views/home.jsp", "/WEB-INF/views/signup.jsp", "/WEB-INF/views/login.jsp", "/WEB-INF/views/error/**",
-		"/error"};
+		"/WEB-INF/views/**", "/error"};
 
 	private final CustomAuthenticationEntryPoint authEntryPoint;
 
