@@ -21,9 +21,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws ServletException, IOException {
 		log.error("error : ", authException);
 
-		request.setAttribute("message", "세션이 만료되었습니다. 다시 로그인 해주세요.");
-		request.setAttribute("redirectUrl", RedirectType.BACK);
-		
+		request.setAttribute("message", "로그인이 필요합니다.");
+		request.setAttribute("redirectUrl", RedirectType.HOME);
+
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/error/alert.jsp");
 		dispatcher.forward(request, response);
 	}
