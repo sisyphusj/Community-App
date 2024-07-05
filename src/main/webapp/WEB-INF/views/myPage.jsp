@@ -9,21 +9,23 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script type="text/javascript">
-        $('#logoutBtn').click(function () {
-            const form = $('<form>', {
-                'method': 'POST',
-                'action': '${pageContext.request.contextPath}/auth/logout'
-            });
+        $(() => {
+            $('#logoutBtn').click(function () {
+                const form = $('<form>', {
+                    'method': 'POST',
+                    'action': '${pageContext.request.contextPath}/auth/logout'
+                });
 
-            const csrfInput = $('<input>', {
-                'type': 'hidden',
-                'name': '_csrf',
-                'value': '${_csrf.token}'
-            });
+                const csrfInput = $('<input>', {
+                    'type': 'hidden',
+                    'name': '_csrf',
+                    'value': '${_csrf.token}'
+                });
 
-            form.append(csrfInput);
-            $('body').append(form);
-            form.submit();
+                form.append(csrfInput);
+                $('body').append(form);
+                form.submit();
+            });
         });
     </script>
 </head>
