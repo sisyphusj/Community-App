@@ -18,6 +18,7 @@ public class GlobalExceptionAdvice {
 		log.error("error : {}", e.getReason());
 		ModelAndView mav = new ModelAndView("error/alert");
 		mav.addObject("message", e.getMessage());
+		mav.addObject("redirectUrl", e.getRedirectType());
 		return mav;
 	}
 

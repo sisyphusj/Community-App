@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.auth.domain.SignupReqDTO;
 import me.sisyphusj.community.app.auth.domain.SignupVO;
 import me.sisyphusj.community.app.auth.mapper.AuthMapper;
+import me.sisyphusj.community.app.commons.exception.AlertException;
+import me.sisyphusj.community.app.commons.exception.RedirectType;
 
 @Slf4j
 @Service
@@ -23,11 +25,11 @@ public class AuthService {
 	public void signup(SignupReqDTO signupReqDTO) {
 
 		if (authMapper.selectCountByUsername(signupReqDTO.getUsername()) > 0) {
-			throw new IllegalStateException("아이디 중복");
+			throw new AlertException("아이디 중복", RedirectType.BACK);
 		}
 
 		if (authMapper.selectCountByName(signupReqDTO.getName()) > 0) {
-			throw new IllegalStateException("사용자 이름 중복");
+			throw new AlertException("사용자 이름 중복", RedirectType.BACK);
 		}
 
 		String newPassword = passwordEncoder.encode(signupReqDTO.getPassword());

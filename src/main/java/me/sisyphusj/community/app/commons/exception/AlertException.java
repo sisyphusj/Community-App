@@ -1,5 +1,7 @@
 package me.sisyphusj.community.app.commons.exception;
 
+import org.springframework.http.HttpStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,9 +15,18 @@ public class AlertException extends RuntimeException {
 
 	private String reason;
 
-	public AlertException(int status, String message) {
-		this.status = status;
+	private RedirectType redirectType;
+
+	public AlertException(String message, HttpStatus status, RedirectType redirectType) {
+		this.status = status.value();
 		this.message = message;
+		this.redirectType = redirectType;
+	}
+
+	public AlertException(String message, RedirectType redirectType) {
+		this.status = 500;
+		this.message = message;
+		this.redirectType = redirectType;
 	}
 
 }
