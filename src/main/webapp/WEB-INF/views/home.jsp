@@ -6,51 +6,53 @@
     <meta name="viewport"
           content="width=device-width user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="icon" href="data:,">
 
     <title>홈페이지</title>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script type="text/javascript">
-        const goToSignupPage = () => {
-            window.location.href = '/auth/signup';
-        }
+        $(() => {
+            $('#signupBtn').click(function () {
+                window.location.href = '/auth/signup';
+            });
 
-        const goToLoginPage = () => {
-            window.location.href = '/auth/login'
-        }
+            $('#loginBtn').click(function () {
+                window.location.href = '/auth/login';
+            });
 
-        const goToMyPage = () => {
-            window.location.href = '/auth/my-page'
-        }
+            $('#myPageBtn').click(function () {
+                window.location.href = '/auth/my-page';
+            });
 
-        const goToLogout = () => {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '${pageContext.request.contextPath}/auth/logout';
+            $('#logoutBtn').click(function () {
+                const form = $('<form>', {
+                    'method': 'POST',
+                    'action': '${pageContext.request.contextPath}/auth/logout'
+                });
 
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_csrf';
-            csrfInput.value = '${_csrf.token}';
-            form.appendChild(csrfInput);
+                const csrfInput = $('<input>', {
+                    'type': 'hidden',
+                    'name': '_csrf',
+                    'value': '${_csrf.token}'
+                });
 
-            document.body.appendChild(form);
-            form.submit()
-        }
+                form.append(csrfInput);
+                $('body').append(form);
+                form.submit();
+            });
+        });
     </script>
 </head>
-<link rel="icon" href="data:;base64,iVBORw0KGgo=">
 
 <body>
 
 <h1>홈페이지</h1>
 
-<button onClick='goToSignupPage()'>회원가입</button>
-
-<button onClick='goToLoginPage()'>로그인</button>
-
-<button onClick='goToMyPage()'>마이페이지</button>
-
-<button onclick="goToLogout()">로그아웃</button>
+<button id="signupBtn">회원가입</button>
+<button id="loginBtn">로그인</button>
+<button id="myPageBtn">마이페이지</button>
+<button id="logoutBtn">로그아웃</button>
 
 </body>
 </html>

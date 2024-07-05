@@ -4,36 +4,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
     <title>My Page</title>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script type="text/javascript">
+        $('#logoutBtn').click(function () {
+            const form = $('<form>', {
+                'method': 'POST',
+                'action': '${pageContext.request.contextPath}/auth/logout'
+            });
 
-        const goToLogout = () => {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '${pageContext.request.contextPath}/auth/logout';
+            const csrfInput = $('<input>', {
+                'type': 'hidden',
+                'name': '_csrf',
+                'value': '${_csrf.token}'
+            });
 
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_csrf';
-            csrfInput.value = '${_csrf.token}';
-            form.appendChild(csrfInput);
-
-            document.body.appendChild(form);
-            form.submit()
-        }
-
+            form.append(csrfInput);
+            $('body').append(form);
+            form.submit();
+        });
     </script>
-
 </head>
-<link rel="icon" href="data:;base64,iVBORw0KGgo=">
-
 <body>
 
 <h1>My Page</h1>
 
 <h2>${user}</h2>
 
-<button onclick="goToLogout()">로그아웃</button>
+<button id="logoutBtn">로그아웃</button>
 </body>
 </html>

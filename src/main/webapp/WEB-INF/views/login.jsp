@@ -6,31 +6,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="icon" href="data:,">
     <title>로그인</title>
 
-    <script>
-        const validateForm = () => {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('form').on('submit', function () {
+                const username = $("#username").val();
+                const password = $("#password").val();
 
-            if (username === "") {
-                alert("아이디를 입력하세요.");
-                return false;
-            }
+                if (!username) {
+                    alert("아이디를 입력하세요.");
+                    return false;
+                }
 
-            if (password === "") {
-                alert("비밀번호를 입력하세요.");
-                return false;
-            }
+                if (!password) {
+                    alert("비밀번호를 입력하세요.");
+                    return false;
+                }
 
-            return true;
-        }
+                return true;
+            });
+        });
+
+
     </script>
 </head>
-<link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <body>
 <h1>로그인</h1>
-<form action="${pageContext.request.contextPath}/auth/signin" method="post" onsubmit="return validateForm()">
+<form action="${pageContext.request.contextPath}/auth/signin" method="post">
     <sec:csrfInput/>
 
     <label for="username">아이디 : </label>
