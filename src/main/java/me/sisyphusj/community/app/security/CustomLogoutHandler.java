@@ -13,6 +13,6 @@ public class CustomLogoutHandler implements LogoutHandler {
 
 	@Override
 	public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-		SessionUtil.sessionInvalidate(request.getSession(false));
+		SessionUtil.sessionInvalidate();
 	}
 }

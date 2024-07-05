@@ -53,7 +53,7 @@ public class AuthController {
 	 */
 	@GetMapping("/my-page")
 	public String showMyPage(Model model, HttpServletRequest request) {
-		model.addAttribute("user", SessionUtil.getLoginUserId(request.getSession(false)));
+		model.addAttribute("user", SessionUtil.getLoginUserId());
 		return "myPage";
 	}
 
