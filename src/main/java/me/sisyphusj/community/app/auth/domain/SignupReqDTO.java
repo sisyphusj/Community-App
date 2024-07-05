@@ -1,11 +1,11 @@
 package me.sisyphusj.community.app.auth.domain;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
+@Builder
 public class SignupReqDTO {
 
 	// 사용자 로그인 아이디
