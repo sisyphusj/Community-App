@@ -4,12 +4,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import me.sisyphusj.community.app.auth.domain.SignupReqDTO;
@@ -17,6 +17,7 @@ import me.sisyphusj.community.app.auth.domain.SignupVO;
 import me.sisyphusj.community.app.auth.mapper.AuthMapper;
 import me.sisyphusj.community.app.commons.exception.AlertException;
 
+@ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
 	@Mock
@@ -27,11 +28,6 @@ class AuthServiceTest {
 
 	@InjectMocks
 	private AuthService authService;
-
-	@BeforeEach
-	void setUp() {
-		MockitoAnnotations.openMocks(this);
-	}
 
 	@Test
 	@DisplayName("회원정보 저장 성공 - DTO 유효, 중복 없음")
