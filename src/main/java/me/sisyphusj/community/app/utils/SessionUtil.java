@@ -1,5 +1,8 @@
 package me.sisyphusj.community.app.utils;
 
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
 import jakarta.servlet.http.HttpSession;
 import me.sisyphusj.community.app.commons.exception.AlertException;
 import me.sisyphusj.community.app.commons.exception.RedirectType;
@@ -11,11 +14,15 @@ public class SessionUtil {
 	private SessionUtil() {
 	}
 
+	private static HttpSession getCurrentSession() {
+		return ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest().getSession(false);
+	}
+
 	/**
 	 * 세션 사용자 고유 ID 설정
 	 */
 	public static void setLoginUserId(String userId) {
-		HttpSession session = RequestUtils.getCurrReq().getSession(false);
+		HttpSession session = getCurrentSession();
 
 		if (session == null) {
 			throw new AlertException("세션이 만료되었습니다. 다시 로그인 해주십시오", RedirectType.HOME);
@@ -28,7 +35,7 @@ public class SessionUtil {
 	 * 세션 사용자 고유 ID 조회
 	 */
 	public static Integer getLoginUserId() {
-		HttpSession session = RequestUtils.getCurrReq().getSession(false);
+		HttpSession session = getCurrentSession();
 
 		if (session == null) {
 			throw new AlertException("세션이 만료되었습니다. 다시 로그인 해주십시오", RedirectType.HOME);
@@ -41,7 +48,7 @@ public class SessionUtil {
 	 * 세션 무효화
 	 */
 	public static void sessionInvalidate() {
-		HttpSession session = RequestUtils.getCurrReq().getSession(false);
+		HttpSession session = getCurrentSession();
 
 		if (session != null) {
 			session.invalidate();
