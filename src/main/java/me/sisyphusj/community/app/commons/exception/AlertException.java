@@ -2,11 +2,13 @@ package me.sisyphusj.community.app.commons.exception;
 
 import org.springframework.http.HttpStatus;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-@Getter
 @Builder
+@Getter
+@AllArgsConstructor
 public class AlertException extends RuntimeException {
 
 	private final int status;
@@ -23,7 +25,7 @@ public class AlertException extends RuntimeException {
 
 	public static AlertException of500(String message, RedirectType redirectType) {
 		return AlertException.builder()
-			.status(500)
+			.status(HttpStatus.INTERNAL_SERVER_ERROR.value())
 			.message(message)
 			.redirectType(redirectType)
 			.build();
@@ -31,7 +33,7 @@ public class AlertException extends RuntimeException {
 
 	public static AlertException of400(String message, RedirectType redirectType) {
 		return AlertException.builder()
-			.status(400)
+			.status(HttpStatus.BAD_REQUEST.value())
 			.message(message)
 			.redirectType(redirectType)
 			.build();
