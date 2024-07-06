@@ -15,7 +15,18 @@ public class GlobalExceptionAdvice {
 	 */
 	@ExceptionHandler(AlertException.class)
 	public ModelAndView handleAlertException(AlertException e) {
-		log.error("error : {}", e.getReason());
+		ModelAndView mav = new ModelAndView("error/alert");
+		mav.addObject("message", e.getMessage());
+		mav.addObject("redirectUrl", e.getRedirectType());
+		return mav;
+	}
+
+	/**
+	 * 인증 예외를 다루는 커스텀 핸들러
+	 */
+	@ExceptionHandler(AuthorizeException.class)
+	public ModelAndView handleAuthorizeException(AuthorizeException e) {
+		log.error("error : {}", e.getMessage());
 		ModelAndView mav = new ModelAndView("error/alert");
 		mav.addObject("message", e.getMessage());
 		mav.addObject("redirectUrl", e.getRedirectType());

@@ -4,8 +4,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import jakarta.servlet.http.HttpSession;
-import me.sisyphusj.community.app.commons.exception.AlertException;
-import me.sisyphusj.community.app.commons.exception.RedirectType;
+import me.sisyphusj.community.app.commons.exception.AuthorizeException;
 
 public class SessionUtil {
 
@@ -25,7 +24,7 @@ public class SessionUtil {
 		HttpSession session = getCurrentSession();
 
 		if (session == null) {
-			throw new AlertException("세션이 만료되었습니다. 다시 로그인 해주십시오", RedirectType.HOME);
+			throw AuthorizeException.sessionNotAvailable();
 		}
 
 		session.setAttribute(LOGIN_USER_ID, Integer.valueOf(userId));
@@ -37,8 +36,8 @@ public class SessionUtil {
 	public static Integer getLoginUserId() {
 		HttpSession session = getCurrentSession();
 
-		if (session == null) {
-			throw new AlertException("세션이 만료되었습니다. 다시 로그인 해주십시오", RedirectType.HOME);
+		if (session == null || session.getAttribute(LOGIN_USER_ID) == null) {
+			throw AuthorizeException.sessionNotAvailable();
 		}
 
 		return (Integer)session.getAttribute(LOGIN_USER_ID);
@@ -54,4 +53,5 @@ public class SessionUtil {
 			session.invalidate();
 		}
 	}
+
 }
