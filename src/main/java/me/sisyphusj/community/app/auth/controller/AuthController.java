@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +51,7 @@ public class AuthController {
 	 * 세션 인증이 작동하는지 확인하는 페이지
 	 */
 	@GetMapping("/my-page")
-	public String showMyPage(Model model, HttpServletRequest request) {
+	public String showMyPage(Model model) {
 		model.addAttribute("user", SessionUtil.getLoginUserId());
 		return "myPage";
 	}
