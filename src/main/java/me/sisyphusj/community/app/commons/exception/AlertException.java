@@ -2,20 +2,18 @@ package me.sisyphusj.community.app.commons.exception;
 
 import org.springframework.http.HttpStatus;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
+@Builder
 public class AlertException extends RuntimeException {
 
-	private int status;
+	private final int status;
 
-	private String message;
+	private final String message;
 
-	private String reason;
-
-	private RedirectType redirectType;
+	private final RedirectType redirectType;
 
 	public AlertException(String message, HttpStatus status, RedirectType redirectType) {
 		this.status = status.value();
@@ -23,10 +21,20 @@ public class AlertException extends RuntimeException {
 		this.redirectType = redirectType;
 	}
 
-	public AlertException(String message, RedirectType redirectType) {
-		this.status = 500;
-		this.message = message;
-		this.redirectType = redirectType;
+	public static AlertException of500(String message, RedirectType redirectType) {
+		return AlertException.builder()
+			.status(500)
+			.message(message)
+			.redirectType(redirectType)
+			.build();
+	}
+
+	public static AlertException of400(String message, RedirectType redirectType) {
+		return AlertException.builder()
+			.status(400)
+			.message(message)
+			.redirectType(redirectType)
+			.build();
 	}
 
 }
