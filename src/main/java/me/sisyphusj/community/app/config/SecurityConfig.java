@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import lombok.RequiredArgsConstructor;
+import me.sisyphusj.community.app.auth.service.CustomOAuth2UserService;
 import me.sisyphusj.community.app.security.CustomAccessDeniedHandler;
 import me.sisyphusj.community.app.security.CustomAuthenticationEntryPoint;
 import me.sisyphusj.community.app.security.CustomAuthenticationFailureHandler;
@@ -20,7 +21,7 @@ import me.sisyphusj.community.app.security.CustomLogoutHandler;
 @Configuration
 public class SecurityConfig {
 
-	private final String[] permittedUrls = {"/", "/auth/signup", "/auth/register", "/auth/login", "/auth/signin", "/WEB-INF/views/**", "/error"};
+	private final String[] permittedUrls = {"/", "/auth/signup", "/auth/register", "/auth/login", "/auth/signin", "/WEB-INF/views/**", "/auth/oauth2/code/**", "/error"};
 
 	private final CustomAuthenticationEntryPoint authEntryPoint;
 
@@ -31,6 +32,8 @@ public class SecurityConfig {
 	private final CustomAuthenticationSuccessHandler successHandler;
 
 	private final CustomLogoutHandler customLogoutHandler;
+
+	private final CustomOAuth2UserService customOAuth2UserService;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -43,8 +46,7 @@ public class SecurityConfig {
 			.authorizeHttpRequests(
 				authorize -> authorize
 					.requestMatchers(permittedUrls).permitAll()
-					.anyRequest()
-					.authenticated()
+					.anyRequest().authenticated()
 			)
 
 			.formLogin(
@@ -54,6 +56,19 @@ public class SecurityConfig {
 					.successHandler(successHandler)
 					.failureHandler(failureHandler)
 					.permitAll()
+			)
+
+			.oauth2Login(oauth2Login -> oauth2Login
+				.loginPage("/auth/login")
+				.redirectionEndpoint(
+					redirect -> redirect
+						.baseUri("/auth/oauth2/code/google")
+				)
+				.userInfoEndpoint(userInfo -> userInfo
+					.userService(customOAuth2UserService)
+				)
+				.successHandler(successHandler)
+				.failureHandler(failureHandler)
 			)
 
 			.logout(
