@@ -1,5 +1,7 @@
 package me.sisyphusj.community.app.domain.auth;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +21,11 @@ import org.springframework.web.servlet.view.JstlView;
 
 import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.auth.controller.AuthController;
+import me.sisyphusj.community.app.auth.domain.SignupReqDTO;
 import me.sisyphusj.community.app.auth.service.AuthService;
+import me.sisyphusj.community.app.commons.exception.AlertException;
+import me.sisyphusj.community.app.commons.exception.GlobalExceptionAdvice;
+import me.sisyphusj.community.app.commons.exception.RedirectType;
 
 @Slf4j
 @WebMvcTest(AuthController.class)
@@ -33,66 +39,90 @@ class AuthControllerTest {
 
 	@BeforeEach
 	public void setUp() {
-		this.mockMvc = MockMvcBuilders.standaloneSetup(
-				new AuthController(authService)
-			).setViewResolvers(viewResolver())
+		this.mockMvc = MockMvcBuilders.standaloneSetup(new AuthController(authService))
+			.setControllerAdvice(new GlobalExceptionAdvice())
+			.setViewResolvers(viewResolver())
 			.build();
 	}
 
 	@Test
-	@DisplayName("회원가입 성공 모든 필드가 있는 경우")
+	@DisplayName("회원가입 성공")
 	void 회원가입_성공() throws Exception {
+		// given
+		SignupReqDTO signupReqDTO = createSignupReqDTO();
+		willDoNothing().given(authService).signup(any(SignupReqDTO.class));
 
 		// when
-		ResultActions resultActions = mockMvc.perform(
+		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.post("/auth/register")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("username", "testUser")
-				.param("password", "testPass")
-				.param("name", "test")
+				.param("username", signupReqDTO.getUsername())
+				.param("password", signupReqDTO.getPassword())
+				.param("name", signupReqDTO.getName())
 		);
 
 		// then
-		resultActions.andExpect(redirectedUrl("/"));
+		actions.andExpect(redirectedUrl("/"));
+		then(authService).should().signup(any(SignupReqDTO.class));
+		assertThat(actions.andReturn().getResponse().getStatus()).isEqualTo(302);
 	}
 
 	@Test
-	@DisplayName("회원가입 실패 - 한개의 필드가 빠진 경우")
-	void 회원가입_실패_필드_1개_없음() throws Exception {
+	@DisplayName("회원가입 실패 - 아이디 중복 예외")
+	void 회원가입_실패_아이디_중복() throws Exception {
+		// given
+		SignupReqDTO signupReqDTO = createSignupReqDTO();
+		willThrow(AlertException.of400("아이디 중복", RedirectType.BACK)).given(authService).signup(any(SignupReqDTO.class));
 
 		// when
-		ResultActions resultActions = mockMvc.perform(
+		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.post("/auth/register")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("username", "")
-				.param("password", "testPass")
-				.param("name", "test")
+				.param("username", signupReqDTO.getUsername())
+				.param("password", signupReqDTO.getPassword())
+				.param("name", signupReqDTO.getName())
 		);
 
 		// then
-		resultActions.andExpect(status().isBadRequest());
+		actions.andExpect(view().name("error/alert"));
+		actions.andExpect(model().attributeExists("message"));
+		actions.andExpect(model().attribute("message", "아이디 중복"));
+		then(authService).should().signup(any(SignupReqDTO.class));
 	}
 
 	@Test
-	@DisplayName("회원가입 실패 - 모든 필드가 없는 경우")
-	void 회원가입_실패_모든_필드_없음() throws Exception {
+	@DisplayName("회원가입 실패 - 이름 중복 예외")
+	void 회원가입_실패_이름_중복() throws Exception {
+		// given
+		SignupReqDTO signupReqDTO = createSignupReqDTO();
+		willThrow(AlertException.of400("사용자 이름 중복", RedirectType.BACK)).given(authService).signup(any(SignupReqDTO.class));
 
 		// when
-		ResultActions resultActions = mockMvc.perform(
+		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.post("/auth/register")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("username", "")
-				.param("password", "")
-				.param("name", "")
+				.param("username", signupReqDTO.getUsername())
+				.param("password", signupReqDTO.getPassword())
+				.param("name", signupReqDTO.getName())
 		);
 
 		// then
-		resultActions.andExpect(status().isBadRequest());
+		actions.andExpect(view().name("error/alert"));
+		actions.andExpect(model().attributeExists("message"));
+		actions.andExpect(model().attribute("message", "사용자 이름 중복"));
+		then(authService).should().signup(any(SignupReqDTO.class));
+	}
+
+	private SignupReqDTO createSignupReqDTO() {
+		return SignupReqDTO.builder()
+			.username("test")
+			.password("test")
+			.name("test")
+			.build();
 	}
 
 	private ViewResolver viewResolver() {
-		InternalResourceViewResolver viewResolver =
-			new InternalResourceViewResolver();
+		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
 		viewResolver.setViewClass(JstlView.class);
 		viewResolver.setPrefix("/WEB-INF/views/");
 		viewResolver.setSuffix(".jsp");
