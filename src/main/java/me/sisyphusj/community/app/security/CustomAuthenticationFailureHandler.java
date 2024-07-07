@@ -19,8 +19,10 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+		log.error("[OAuth 로그인 중 에러] : ", exception);
+
 		request.setAttribute("message", "로그인에 실패했습니다. 다시 시도 해주세요.");
-		request.setAttribute("redirectUrl", RedirectType.BACK);
+		request.setAttribute("redirectUrl", RedirectType.HOME);
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/error/alert.jsp");
 		dispatcher.forward(request, response);
