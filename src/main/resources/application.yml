@@ -3,13 +3,22 @@ spring:
     name: community-app
   datasource:
     url: jdbc:mysql://localhost:3306/community_db
-    username: root
-    password: 1234
+    username: ENC(ZUy7P5OfC43x70qj1DllMg==)
+    password: ENC(db3q+EGZEB3Ifvgudxip9Q==)
     driver-class-name: com.mysql.cj.jdbc.Driver
   mvc:
     view:
       prefix: /WEB-INF/views/
       suffix: .jsp
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ENC(rZOAmCwiaQeiKi/CB/Au0+OgRDbuj3tPpGiAhhVn8YfFpu4EUpgw6QAxIMtpT8D5o9GVxSfhmVGGtsmz6d1TbKN5TEzYh/i3SLADIv8Yuzo=)
+            client-secret: ENC(evEQO1Yzscf5TeXdJuw/Pn7X0VSLjXbZEww+X8LdD2atJq6eS4IUG6Ljf1fsNtkc)
+            scope: profile
+
 
 
 mybatis:
@@ -22,6 +31,7 @@ server:
   servlet:
     jsp:
       init-parameters:
-        development=true: true
+        development: true
     session:
       timeout: 800
+  port: 80
