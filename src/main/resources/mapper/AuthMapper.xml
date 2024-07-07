@@ -4,13 +4,24 @@
 
 <mapper namespace="me.sisyphusj.community.app.auth.mapper.AuthMapper">
 
-    <insert id="insertAuth">
+    <insert id="insertAuth" parameterType="me.sisyphusj.community.app.auth.domain.SignupVO">
         insert into user (username, password, name)
         values (#{username}, #{password}, #{name})
     </insert>
 
+    <insert id="insertOAuth" parameterType="me.sisyphusj.community.app.auth.domain.OAuthVO">
+        insert into user (username, name, provider)
+        values (#{username}, #{name}, #{oAuthProvider, typeHandler=org.apache.ibatis.type.EnumTypeHandler})
+    </insert>
+
     <select id="selectAuthByUsername" resultType="me.sisyphusj.community.app.auth.domain.AuthVO">
         select user_id, password
+        from user
+        where username = #{username}
+    </select>
+
+    <select id="selectOAuthByUsername" resultType="me.sisyphusj.community.app.auth.domain.OAuthVO">
+        select user_id, username, name, provider
         from user
         where username = #{username}
     </select>
