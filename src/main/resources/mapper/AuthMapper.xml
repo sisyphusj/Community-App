@@ -9,7 +9,7 @@
         values (#{username}, #{password}, #{name})
     </insert>
 
-    <insert id="insertOAuth" parameterType="me.sisyphusj.community.app.auth.domain.OAuthVO">
+    <insert id="insertOAuth" parameterType="me.sisyphusj.community.app.auth.domain.OAuthVO" useGeneratedKeys="true" keyProperty="userId">
         insert into user (username, name, provider)
         values (#{username}, #{name}, #{oAuthProvider, typeHandler=org.apache.ibatis.type.EnumTypeHandler})
     </insert>

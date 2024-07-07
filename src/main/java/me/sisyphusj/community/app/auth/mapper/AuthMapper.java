@@ -13,7 +13,7 @@ public interface AuthMapper {
 
 	void insertAuth(SignupVO signupVO);
 
-	void insertOAuth(OAuthVO oAuthVO);
+	int insertOAuth(OAuthVO oAuthVO);
 
 	Optional<AuthVO> selectAuthByUsername(String username);
 
