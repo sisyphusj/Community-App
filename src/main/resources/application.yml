@@ -18,6 +18,7 @@ spring:
             client-id: ENC(rZOAmCwiaQeiKi/CB/Au0+OgRDbuj3tPpGiAhhVn8YfFpu4EUpgw6QAxIMtpT8D5o9GVxSfhmVGGtsmz6d1TbKN5TEzYh/i3SLADIv8Yuzo=)
             client-secret: ENC(evEQO1Yzscf5TeXdJuw/Pn7X0VSLjXbZEww+X8LdD2atJq6eS4IUG6Ljf1fsNtkc)
             scope: profile
+            redirect-uri: http://localhost/auth/oauth2/code/google
 
 
 
