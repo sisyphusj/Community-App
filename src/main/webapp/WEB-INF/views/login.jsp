@@ -9,6 +9,7 @@
     <link rel="icon" href="data:,">
     <title>로그인</title>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             $('form').on('submit', function () {
@@ -27,9 +28,12 @@
 
                 return true;
             });
+
+            $('#google-login-button').on('click', function (e) {
+                e.preventDefault();
+                window.location.href = "${pageContext.request.contextPath}/oauth2/authorization/google";
+            });
         });
-
-
     </script>
 </head>
 <body>
@@ -45,5 +49,7 @@
 
     <input type="submit" value="로그인">
 </form>
+
+<button id="google-login-button">구글 로그인</button>
 </body>
 </html>
