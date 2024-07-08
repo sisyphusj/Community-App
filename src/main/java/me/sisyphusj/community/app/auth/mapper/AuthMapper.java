@@ -20,6 +20,5 @@ public interface AuthMapper {
 	Optional<OAuthVO> selectOAuthByUsername(String username);
 
 	int selectCountByUsername(String username);
-
-	int selectCountByName(String name);
+	
 }

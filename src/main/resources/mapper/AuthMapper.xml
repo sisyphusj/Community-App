@@ -32,10 +32,4 @@
         where username = #{username}
     </select>
 
-    <select id="selectCountByName" resultType="int">
-        select count(*)
-        from user
-        where name = #{name}
-    </select>
-
 </mapper>
