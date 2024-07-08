@@ -23,8 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.auth.controller.AuthController;
 import me.sisyphusj.community.app.auth.domain.SignupReqDTO;
 import me.sisyphusj.community.app.auth.service.AuthService;
+import me.sisyphusj.community.app.commons.GlobalExceptionAdvice;
 import me.sisyphusj.community.app.commons.exception.AlertException;
-import me.sisyphusj.community.app.commons.exception.GlobalExceptionAdvice;
+import me.sisyphusj.community.app.commons.exception.BlankInputException;
 import me.sisyphusj.community.app.commons.exception.RedirectType;
 
 @Slf4j
@@ -111,6 +112,67 @@ class AuthControllerTest {
 		actions.andExpect(model().attributeExists("message"));
 		actions.andExpect(model().attribute("message", "사용자 이름 중복"));
 		then(authService).should().signup(any(SignupReqDTO.class));
+	}
+
+	@Test
+	@DisplayName("사용자 아이디 중복체크 성공 : 중복인 경우")
+	void 아이디_중복체크_성공_아이디_중복() throws Exception {
+		// given
+		String username = "test";
+		willReturn(true).given(authService).isUsernameDuplicated(username);
+
+		// when
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.get("/auth/check/username")
+				.contentType(MediaType.APPLICATION_JSON)
+				.param("username", username)
+		);
+
+		// then
+		actions.andExpect(status().isOk());
+		actions.andExpect(content().string("true"));
+		then(authService).should().isUsernameDuplicated(username);
+	}
+
+	@Test
+	@DisplayName("사용자 아이디 중복체크 성공 : 중복이 아닌 경우")
+	void 아이디_중복체크_성공_아이디_미중복() throws Exception {
+		// given
+		String username = "test";
+		willReturn(false).given(authService).isUsernameDuplicated(username);
+
+		// when
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.get("/auth/check/username")
+				.contentType(MediaType.APPLICATION_JSON)
+				.param("username", username)
+		);
+
+		// then
+		actions.andExpect(status().isOk());
+		actions.andExpect(content().string("false"));
+		then(authService).should().isUsernameDuplicated(username);
+	}
+
+	@Test
+	@DisplayName("사용자 아이디 중복체크 실패 : 빈 문자열")
+	void 아이디_중복체크_실패_빈_문자열() throws Exception {
+		// given
+		String username = " ";
+
+		// when
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.get("/auth/check/username")
+				.contentType(MediaType.APPLICATION_JSON)
+				.param("username", username)
+		);
+
+		// then
+		actions.andExpect(status().isBadRequest())
+			.andExpect(result -> {
+				assertThat(result.getResolvedException()).isInstanceOf(BlankInputException.class);
+			});
+		then(authService).should(never()).isUsernameDuplicated(username);
 	}
 
 	private SignupReqDTO createSignupReqDTO() {

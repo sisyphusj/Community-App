@@ -36,7 +36,6 @@ class AuthServiceTest {
 		SignupReqDTO signupReqDTO = signupDTO();
 
 		given(authMapper.selectCountByUsername(anyString())).willReturn(0);
-		given(authMapper.selectCountByName(anyString())).willReturn(0);
 		given(passwordEncoder.encode(anyString())).willReturn("password");
 
 		// when
@@ -64,21 +63,35 @@ class AuthServiceTest {
 	}
 
 	@Test
-	@DisplayName("회원가입 실패 - 이름 중복")
-	void 회원가입_실패_이름_중복() {
+	@DisplayName("아이디 중복 체크 성공 - 아이디 중복")
+	void 아이디_중복체크_성공_아이디_중복() {
 		// given
-		SignupReqDTO signupReqDTO = signupDTO();
+		String username = "test";
 
-		// name 중복 검사에서 중복 존재
-		given(authMapper.selectCountByUsername(anyString())).willReturn(0);
-		given(authMapper.selectCountByName(anyString())).willReturn(1);
+		// username 중복 검사에서 중복 존재
+		given(authMapper.selectCountByUsername(username)).willReturn(1);
 
-		// when, then
-		assertThatThrownBy(() -> authService.signup(signupReqDTO))
-			.isInstanceOf(AlertException.class)
-			.hasMessageContaining("사용자 이름 중복");
+		// when
+		boolean isDuplicated = authService.isUsernameDuplicated(username);
 
-		then(authMapper).should(never()).insertAuth(any(SignupVO.class));
+		assertThat(isDuplicated).isTrue();
+		then(authMapper).should().selectCountByUsername(username);
+	}
+
+	@Test
+	@DisplayName("아이디 중복 체크 성공 - 아이디 중복아님")
+	void 아이디_중복체크_성공_아이디_중복아님() {
+		// given
+		String username = "test";
+
+		// username 중복 검사에서 중복 존재
+		given(authMapper.selectCountByUsername(username)).willReturn(0);
+
+		// when
+		boolean isDuplicated = authService.isUsernameDuplicated(username);
+
+		assertThat(isDuplicated).isFalse();
+		then(authMapper).should().selectCountByUsername(username);
 	}
 
 	private SignupReqDTO signupDTO() {
