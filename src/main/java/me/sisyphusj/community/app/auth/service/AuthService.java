@@ -28,10 +28,6 @@ public class AuthService {
 			throw AlertException.of400("아이디 중복", RedirectType.BACK);
 		}
 
-		if (authMapper.selectCountByName(signupReqDTO.getName()) > 0) {
-			throw AlertException.of400("사용자 이름 중복", RedirectType.BACK);
-		}
-
 		String newPassword = passwordEncoder.encode(signupReqDTO.getPassword());
 
 		signupReqDTO.updatePassword(newPassword);
