@@ -5,5 +5,6 @@ package me.sisyphusj.community.app.commons.exception;
  */
 public enum RedirectType {
 	HOME,
-	BACK
+	BACK,
+	NONE
 }
