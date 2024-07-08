@@ -15,6 +15,7 @@ import me.sisyphusj.community.app.security.CustomAuthenticationEntryPoint;
 import me.sisyphusj.community.app.security.CustomAuthenticationFailureHandler;
 import me.sisyphusj.community.app.security.CustomAuthenticationSuccessHandler;
 import me.sisyphusj.community.app.security.CustomLogoutHandler;
+import me.sisyphusj.community.app.security.CustomOAuthAuthenticationFailureHandler;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -28,6 +29,8 @@ public class SecurityConfig {
 	private final CustomAccessDeniedHandler accessDeniedHandler;
 
 	private final CustomAuthenticationFailureHandler failureHandler;
+
+	private final CustomOAuthAuthenticationFailureHandler oAuthFailureHandler;
 
 	private final CustomAuthenticationSuccessHandler successHandler;
 
@@ -68,7 +71,7 @@ public class SecurityConfig {
 					.userService(customOAuth2UserService)
 				)
 				.successHandler(successHandler)
-				.failureHandler(failureHandler)
+				.failureHandler(oAuthFailureHandler)
 			)
 
 			.logout(
