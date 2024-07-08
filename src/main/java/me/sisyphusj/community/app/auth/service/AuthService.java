@@ -37,4 +37,7 @@ public class AuthService {
 		authMapper.insertAuth(signupVO);
 	}
 
+	public boolean isUsernameDuplicated(String username) {
+		return authMapper.selectCountByUsername(username) > 0;
+	}
 }

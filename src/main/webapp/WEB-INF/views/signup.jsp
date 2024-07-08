@@ -31,10 +31,30 @@
 
                 if (!name) {
                     alert("이름을 입력하세요");
-                    return false
+                    return false;
                 }
 
                 return true;
+            });
+
+            $('#isUsernameDuplicatedBtn').click(function (event) {
+                event.preventDefault();
+                const username = $("#username").val().trim();
+
+                if (!username) {
+                    alert("아이디를 입력해 주세요.");
+                    return;
+                }
+
+                $.get("/auth/check/username", {username: username}, function (data) {
+                    if (data) {
+                        alert("아이디가 중복입니다.");
+                    } else {
+                        alert("사용 가능한 아이디 입니다.");
+                    }
+                }).fail(function () {
+                    alert("서버 요청에 실패했습니다. 다시 시도해 주세요.");
+                });
             });
         });
     </script>
@@ -46,6 +66,8 @@
 
     <label for="username">아이디 : </label>
     <input type="text" id="username" name="username"> <br> <br>
+
+    <button id="isUsernameDuplicatedBtn">아이디 중복 체크</button>
 
     <label for="password">비밀번호 : </label>
     <input type="text" id="password" name="password"> <br> <br>
