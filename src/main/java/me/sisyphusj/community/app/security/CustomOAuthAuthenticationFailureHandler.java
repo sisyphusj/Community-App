@@ -15,11 +15,11 @@ import me.sisyphusj.community.app.commons.exception.RedirectType;
 
 @Slf4j
 @Component
-public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
+public class CustomOAuthAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-		log.error("[폼 로그인 중 에러] : ", exception);
+		log.error("[OAuth 로그인 중 에러] : ", exception);
 
 		request.setAttribute("message", "로그인에 실패했습니다. 다시 시도 해주세요.");
 		request.setAttribute("redirectUrl", RedirectType.HOME);
