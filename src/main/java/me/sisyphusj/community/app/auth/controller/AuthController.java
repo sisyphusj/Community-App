@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.auth.domain.SignupReqDTO;
 import me.sisyphusj.community.app.auth.service.AuthService;
+import me.sisyphusj.community.app.commons.exception.BlankInputException;
 import me.sisyphusj.community.app.utils.SessionUtil;
 
 @Slf4j
@@ -48,6 +49,10 @@ public class AuthController {
 	@GetMapping("/check/username")
 	@ResponseBody
 	public boolean isUsernameDuplicated(@RequestParam String username) {
+		if (username.trim().isEmpty()) {
+			throw new BlankInputException();
+		}
+
 		return authService.isUsernameDuplicated(username);
 	}
 
