@@ -33,6 +33,11 @@
                 e.preventDefault();
                 window.location.href = "${pageContext.request.contextPath}/oauth2/authorization/google";
             });
+
+            $('#naver-login-button').on('click', function (e) {
+                e.preventDefault();
+                window.location.href = "${pageContext.request.contextPath}/oauth2/authorization/naver";
+            });
         });
     </script>
 </head>
@@ -51,5 +56,6 @@
 </form>
 
 <button id="google-login-button">구글 로그인</button>
+<button id="naver-login-button">네이버 로그인</button>
 </body>
 </html>
