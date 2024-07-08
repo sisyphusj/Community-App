@@ -65,7 +65,7 @@ public class SecurityConfig {
 				.loginPage("/auth/login")
 				.redirectionEndpoint(
 					redirect -> redirect
-						.baseUri("/auth/oauth2/code/google")
+						.baseUri("/auth/oauth2/code/**")
 				)
 				.userInfoEndpoint(userInfo -> userInfo
 					.userService(customOAuth2UserService)
