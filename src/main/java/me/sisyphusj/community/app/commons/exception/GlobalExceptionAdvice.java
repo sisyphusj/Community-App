@@ -1,7 +1,9 @@
 package me.sisyphusj.community.app.commons.exception;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,7 @@ public class GlobalExceptionAdvice {
 	 * Alert 예외 핸들러
 	 */
 	@ExceptionHandler(AlertException.class)
+	@ResponseStatus(HttpStatus.OK)
 	public ModelAndView handleAlertException(AlertException e) {
 		ModelAndView mav = new ModelAndView("error/alert");
 		mav.addObject("message", e.getMessage());
@@ -26,10 +29,10 @@ public class GlobalExceptionAdvice {
 	 */
 	@ExceptionHandler(AuthorizeException.class)
 	public ModelAndView handleAuthorizeException(AuthorizeException e) {
-		log.error("error : {}", e.getMessage());
+		log.error("[AuthorizeException 발생] : {}", e.getMessage());
 		ModelAndView mav = new ModelAndView("error/alert");
-		mav.addObject("message", e.getMessage());
-		mav.addObject("redirectUrl", e.getRedirectType());
+		mav.addObject("message", "로그인 실패");
+		mav.addObject("redirectUrl", RedirectType.HOME);
 		return mav;
 	}
 
@@ -38,7 +41,7 @@ public class GlobalExceptionAdvice {
 	 */
 	@ExceptionHandler(Exception.class)
 	public String handleAllException(Exception e) {
-		log.error("error : ", e);
+		log.error("[Exception 발생] : ", e);
 		return "error/500code";
 	}
 
