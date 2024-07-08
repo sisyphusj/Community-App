@@ -41,6 +41,7 @@ public class GlobalExceptionAdvice {
 	}
 
 	@ExceptionHandler(BlankInputException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ModelAndView handleBlankInputException(BlankInputException e) {
 		log.error("[BlankInputException 발생]");
 		ModelAndView mav = new ModelAndView("error/alert");
