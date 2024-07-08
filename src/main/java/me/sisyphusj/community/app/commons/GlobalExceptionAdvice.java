@@ -1,4 +1,4 @@
-package me.sisyphusj.community.app.commons.exception;
+package me.sisyphusj.community.app.commons;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.extern.slf4j.Slf4j;
+import me.sisyphusj.community.app.commons.exception.AlertException;
+import me.sisyphusj.community.app.commons.exception.AuthorizeException;
+import me.sisyphusj.community.app.commons.exception.RedirectType;
 
 @Slf4j
 @ControllerAdvice
