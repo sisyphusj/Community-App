@@ -9,6 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.commons.exception.AlertException;
 import me.sisyphusj.community.app.commons.exception.AuthorizeException;
+import me.sisyphusj.community.app.commons.exception.BlankInputException;
 import me.sisyphusj.community.app.commons.exception.RedirectType;
 
 @Slf4j
@@ -36,6 +37,15 @@ public class GlobalExceptionAdvice {
 		ModelAndView mav = new ModelAndView("error/alert");
 		mav.addObject("message", "로그인 실패");
 		mav.addObject("redirectUrl", RedirectType.HOME);
+		return mav;
+	}
+
+	@ExceptionHandler(BlankInputException.class)
+	public ModelAndView handleBlankInputException(BlankInputException e) {
+		log.error("[BlankInputException 발생]");
+		ModelAndView mav = new ModelAndView("error/alert");
+		mav.addObject("message", "입력값이 존재하지 않습니다. 다시 입력해주십시오.");
+		mav.addObject("redirectUrl", RedirectType.NONE);
 		return mav;
 	}
 
