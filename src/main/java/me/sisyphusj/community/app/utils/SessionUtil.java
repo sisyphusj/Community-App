@@ -24,7 +24,7 @@ public class SessionUtil {
 		HttpSession session = getCurrentSession();
 
 		if (session == null) {
-			throw AuthorizeException.sessionNotAvailable();
+			throw new AuthorizeException();
 		}
 
 		session.setAttribute(LOGIN_USER_ID, Integer.valueOf(userId));
@@ -37,7 +37,7 @@ public class SessionUtil {
 		HttpSession session = getCurrentSession();
 
 		if (session == null || session.getAttribute(LOGIN_USER_ID) == null) {
-			throw AuthorizeException.sessionNotAvailable();
+			throw new AuthorizeException();
 		}
 
 		return (Integer)session.getAttribute(LOGIN_USER_ID);
