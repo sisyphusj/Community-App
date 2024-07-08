@@ -38,6 +38,11 @@
                 e.preventDefault();
                 window.location.href = "${pageContext.request.contextPath}/oauth2/authorization/naver";
             });
+
+            $('#kakao-login-button').on('click', function (e) {
+                e.preventDefault();
+                window.location.href = "${pageContext.request.contextPath}/oauth2/authorization/kakao";
+            });
         });
     </script>
 </head>
@@ -57,5 +62,6 @@
 
 <button id="google-login-button">구글 로그인</button>
 <button id="naver-login-button">네이버 로그인</button>
+<button id="kakao-login-button">카카오 로그인</button>
 </body>
 </html>
