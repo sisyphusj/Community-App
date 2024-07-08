@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,16 @@ public class AuthController {
 	}
 
 	/**
+	 * 사용자 아이디 중복 검사 <br> 중복이면 TRUE
+	 * java.lang.Boolean 처리를 위해 	@ResponseBody 추가
+	 */
+	@GetMapping("/check/username")
+	@ResponseBody
+	public boolean isUsernameDuplicated(@RequestParam String username) {
+		return authService.isUsernameDuplicated(username);
+	}
+
+	/**
 	 * 로그인 페이지 연결
 	 */
 	@GetMapping("/login")
@@ -55,5 +67,4 @@ public class AuthController {
 		model.addAttribute("user", SessionUtil.getLoginUserId());
 		return "myPage";
 	}
-
 }
