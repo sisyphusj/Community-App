@@ -1,10 +1,12 @@
 package me.sisyphusj.community.app.auth.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
+@AllArgsConstructor
 public class OAuthDTO {
 
 	// OAuth 제공자 ID
@@ -15,12 +17,5 @@ public class OAuthDTO {
 
 	// 제공자
 	private OAuthProvider oAuthProvider;
-
-	public static OAuthDTO of(String username, String name, OAuthProvider oAuthProvider) {
-		return OAuthDTO.builder()
-			.username(username)
-			.name(name)
-			.oAuthProvider(oAuthProvider)
-			.build();
-	}
+	
 }
