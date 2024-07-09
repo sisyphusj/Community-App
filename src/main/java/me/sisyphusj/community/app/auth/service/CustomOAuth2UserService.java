@@ -22,12 +22,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.auth.domain.OAuthDTO;
 import me.sisyphusj.community.app.auth.domain.OAuthVO;
-import me.sisyphusj.community.app.auth.domain.attributes.GoogleAttributes;
-import me.sisyphusj.community.app.auth.domain.attributes.KakaoAttributes;
-import me.sisyphusj.community.app.auth.domain.attributes.NaverAttributes;
 import me.sisyphusj.community.app.auth.domain.attributes.OAuthAttributes;
 import me.sisyphusj.community.app.auth.mapper.AuthMapper;
-import me.sisyphusj.community.app.commons.exception.CustomAuthenticationException;
+import me.sisyphusj.community.app.commons.OAuthAttributesFactory;
 
 @Slf4j
 @Service
@@ -50,7 +47,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 		Map<String, Object> attributes = new HashMap<>(oAuth2User.getAttributes());
 
 		// 모든 OAuth 제공자의 응답을 수용
-		OAuthAttributes oAuthAttributes = getAttributeByProvider(attributes, userNameAttributeName, registrationId);
+		OAuthAttributes oAuthAttributes = OAuthAttributesFactory.getAttributeByProvider(attributes, userNameAttributeName, registrationId);
 
 		// 제공자가 발급한 고유 식별자 => username
 		String userIdentify = oAuthAttributes.getUserIdentify();
@@ -93,17 +90,5 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 		OAuthVO oAuthVO = OAuthVO.of(oAuthDTO);
 		authMapper.insertOAuth(oAuthVO);
 		return oAuthVO.getUserId();
-	}
-
-	/**
-	 * 제공자에 따라 다르게 생성자 호출
-	 */
-	private OAuthAttributes getAttributeByProvider(Map<String, Object> attributes, String nameAttributeKey, String registrationId) {
-		return switch (registrationId.toLowerCase()) {
-			case "kakao" -> new KakaoAttributes(attributes, nameAttributeKey);
-			case "google" -> new GoogleAttributes(attributes, nameAttributeKey);
-			case "naver" -> new NaverAttributes((Map)attributes.get("response"), nameAttributeKey);
-			default -> throw new CustomAuthenticationException("알 수 없는 제공자입니다.: " + registrationId);
-		};
 	}
 }
