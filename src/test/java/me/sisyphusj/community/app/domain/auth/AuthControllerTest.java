@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -46,133 +47,143 @@ class AuthControllerTest {
 			.build();
 	}
 
-	@Test
-	@DisplayName("회원가입 성공")
-	void 회원가입_성공() throws Exception {
-		// given
-		SignupReqDTO signupReqDTO = createSignupReqDTO();
-		willDoNothing().given(authService).signup(any(SignupReqDTO.class));
+	@Nested
+	@DisplayName("회원가입")
+	class 회원가입 {
 
-		// when
-		ResultActions actions = mockMvc.perform(
-			MockMvcRequestBuilders.post("/auth/register")
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("username", signupReqDTO.getUsername())
-				.param("password", signupReqDTO.getPassword())
-				.param("name", signupReqDTO.getName())
-		);
+		@Test
+		@DisplayName("회원가입 성공")
+		void 회원가입_성공() throws Exception {
+			// given
+			SignupReqDTO signupReqDTO = createSignupReqDTO();
+			willDoNothing().given(authService).signup(any(SignupReqDTO.class));
 
-		// then
-		actions.andExpect(redirectedUrl("/"));
-		then(authService).should().signup(any(SignupReqDTO.class));
-		assertThat(actions.andReturn().getResponse().getStatus()).isEqualTo(302);
+			// when
+			ResultActions actions = mockMvc.perform(
+				MockMvcRequestBuilders.post("/auth/register")
+					.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+					.param("username", signupReqDTO.getUsername())
+					.param("password", signupReqDTO.getPassword())
+					.param("name", signupReqDTO.getName())
+			);
+
+			// then
+			actions.andExpect(redirectedUrl("/"));
+			then(authService).should().signup(any(SignupReqDTO.class));
+			assertThat(actions.andReturn().getResponse().getStatus()).isEqualTo(302);
+		}
+
+		@Test
+		@DisplayName("회원가입 실패 - 아이디 중복 예외")
+		void 회원가입_실패_아이디_중복() throws Exception {
+			// given
+			SignupReqDTO signupReqDTO = createSignupReqDTO();
+			willThrow(AlertException.of400("아이디 중복", RedirectType.BACK)).given(authService).signup(any(SignupReqDTO.class));
+
+			// when
+			ResultActions actions = mockMvc.perform(
+				MockMvcRequestBuilders.post("/auth/register")
+					.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+					.param("username", signupReqDTO.getUsername())
+					.param("password", signupReqDTO.getPassword())
+					.param("name", signupReqDTO.getName())
+			);
+
+			// then
+			actions.andExpect(view().name("error/alert"));
+			actions.andExpect(model().attributeExists("message"));
+			actions.andExpect(model().attribute("message", "아이디 중복"));
+			then(authService).should().signup(any(SignupReqDTO.class));
+		}
+
+		@Test
+		@DisplayName("회원가입 실패 - 이름 중복 예외")
+		void 회원가입_실패_이름_중복() throws Exception {
+			// given
+			SignupReqDTO signupReqDTO = createSignupReqDTO();
+			willThrow(AlertException.of400("사용자 이름 중복", RedirectType.BACK)).given(authService).signup(any(SignupReqDTO.class));
+
+			// when
+			ResultActions actions = mockMvc.perform(
+				MockMvcRequestBuilders.post("/auth/register")
+					.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+					.param("username", signupReqDTO.getUsername())
+					.param("password", signupReqDTO.getPassword())
+					.param("name", signupReqDTO.getName())
+			);
+
+			// then
+			actions.andExpect(view().name("error/alert"));
+			actions.andExpect(model().attributeExists("message"));
+			actions.andExpect(model().attribute("message", "사용자 이름 중복"));
+			then(authService).should().signup(any(SignupReqDTO.class));
+		}
 	}
 
-	@Test
-	@DisplayName("회원가입 실패 - 아이디 중복 예외")
-	void 회원가입_실패_아이디_중복() throws Exception {
-		// given
-		SignupReqDTO signupReqDTO = createSignupReqDTO();
-		willThrow(AlertException.of400("아이디 중복", RedirectType.BACK)).given(authService).signup(any(SignupReqDTO.class));
+	@Nested
+	@DisplayName("중복체크")
+	class 중복체크 {
 
-		// when
-		ResultActions actions = mockMvc.perform(
-			MockMvcRequestBuilders.post("/auth/register")
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("username", signupReqDTO.getUsername())
-				.param("password", signupReqDTO.getPassword())
-				.param("name", signupReqDTO.getName())
-		);
+		@Test
+		@DisplayName("사용자 아이디 중복체크 성공 - 중복인 경우")
+		void 아이디_중복체크_성공_아이디_중복() throws Exception {
+			// given
+			String username = "test";
+			willReturn(true).given(authService).isUsernameDuplicated(username);
 
-		// then
-		actions.andExpect(view().name("error/alert"));
-		actions.andExpect(model().attributeExists("message"));
-		actions.andExpect(model().attribute("message", "아이디 중복"));
-		then(authService).should().signup(any(SignupReqDTO.class));
-	}
+			// when
+			ResultActions actions = mockMvc.perform(
+				MockMvcRequestBuilders.get("/auth/check/username")
+					.contentType(MediaType.APPLICATION_JSON)
+					.param("username", username)
+			);
 
-	@Test
-	@DisplayName("회원가입 실패 - 이름 중복 예외")
-	void 회원가입_실패_이름_중복() throws Exception {
-		// given
-		SignupReqDTO signupReqDTO = createSignupReqDTO();
-		willThrow(AlertException.of400("사용자 이름 중복", RedirectType.BACK)).given(authService).signup(any(SignupReqDTO.class));
+			// then
+			actions.andExpect(status().isOk());
+			actions.andExpect(content().string("true"));
+			then(authService).should().isUsernameDuplicated(username);
+		}
 
-		// when
-		ResultActions actions = mockMvc.perform(
-			MockMvcRequestBuilders.post("/auth/register")
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("username", signupReqDTO.getUsername())
-				.param("password", signupReqDTO.getPassword())
-				.param("name", signupReqDTO.getName())
-		);
+		@Test
+		@DisplayName("사용자 아이디 중복체크 성공 - 중복이 아닌 경우")
+		void 아이디_중복체크_성공_아이디_미중복() throws Exception {
+			// given
+			String username = "test";
+			willReturn(false).given(authService).isUsernameDuplicated(username);
 
-		// then
-		actions.andExpect(view().name("error/alert"));
-		actions.andExpect(model().attributeExists("message"));
-		actions.andExpect(model().attribute("message", "사용자 이름 중복"));
-		then(authService).should().signup(any(SignupReqDTO.class));
-	}
+			// when
+			ResultActions actions = mockMvc.perform(
+				MockMvcRequestBuilders.get("/auth/check/username")
+					.contentType(MediaType.APPLICATION_JSON)
+					.param("username", username)
+			);
 
-	@Test
-	@DisplayName("사용자 아이디 중복체크 성공 : 중복인 경우")
-	void 아이디_중복체크_성공_아이디_중복() throws Exception {
-		// given
-		String username = "test";
-		willReturn(true).given(authService).isUsernameDuplicated(username);
+			// then
+			actions.andExpect(status().isOk());
+			actions.andExpect(content().string("false"));
+			then(authService).should().isUsernameDuplicated(username);
+		}
 
-		// when
-		ResultActions actions = mockMvc.perform(
-			MockMvcRequestBuilders.get("/auth/check/username")
-				.contentType(MediaType.APPLICATION_JSON)
-				.param("username", username)
-		);
+		@Test
+		@DisplayName("사용자 아이디 중복체크 실패 - 빈 문자열")
+		void 아이디_중복체크_실패_빈_문자열() throws Exception {
+			// given
+			String username = " ";
 
-		// then
-		actions.andExpect(status().isOk());
-		actions.andExpect(content().string("true"));
-		then(authService).should().isUsernameDuplicated(username);
-	}
+			// when
+			ResultActions actions = mockMvc.perform(
+				MockMvcRequestBuilders.get("/auth/check/username")
+					.contentType(MediaType.APPLICATION_JSON)
+					.param("username", username)
+			);
 
-	@Test
-	@DisplayName("사용자 아이디 중복체크 성공 : 중복이 아닌 경우")
-	void 아이디_중복체크_성공_아이디_미중복() throws Exception {
-		// given
-		String username = "test";
-		willReturn(false).given(authService).isUsernameDuplicated(username);
-
-		// when
-		ResultActions actions = mockMvc.perform(
-			MockMvcRequestBuilders.get("/auth/check/username")
-				.contentType(MediaType.APPLICATION_JSON)
-				.param("username", username)
-		);
-
-		// then
-		actions.andExpect(status().isOk());
-		actions.andExpect(content().string("false"));
-		then(authService).should().isUsernameDuplicated(username);
-	}
-
-	@Test
-	@DisplayName("사용자 아이디 중복체크 실패 : 빈 문자열")
-	void 아이디_중복체크_실패_빈_문자열() throws Exception {
-		// given
-		String username = " ";
-
-		// when
-		ResultActions actions = mockMvc.perform(
-			MockMvcRequestBuilders.get("/auth/check/username")
-				.contentType(MediaType.APPLICATION_JSON)
-				.param("username", username)
-		);
-
-		// then
-		actions.andExpect(status().isBadRequest())
-			.andExpect(result -> {
-				assertThat(result.getResolvedException()).isInstanceOf(BlankInputException.class);
-			});
-		then(authService).should(never()).isUsernameDuplicated(username);
+			// then
+			actions.andExpect(status().isBadRequest())
+				.andExpect(result -> {
+					assertThat(result.getResolvedException()).isInstanceOf(BlankInputException.class);
+				});
+			then(authService).should(never()).isUsernameDuplicated(username);
+		}
 	}
 
 	private SignupReqDTO createSignupReqDTO() {
