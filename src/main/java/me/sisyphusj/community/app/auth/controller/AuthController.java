@@ -1,5 +1,6 @@
 package me.sisyphusj.community.app.auth.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,7 +8,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,13 +47,12 @@ public class AuthController {
 	 * java.lang.Boolean 처리를 위해 	@ResponseBody 추가
 	 */
 	@GetMapping("/check/username")
-	@ResponseBody
-	public boolean isUsernameDuplicated(@RequestParam String username) {
+	public ResponseEntity<Boolean> isUsernameDuplicated(@RequestParam String username) {
 		if (username.trim().isEmpty()) {
 			throw new BlankInputException();
 		}
 
-		return authService.isUsernameDuplicated(username);
+		return ResponseEntity.ok(authService.isUsernameDuplicated(username));
 	}
 
 	/**
