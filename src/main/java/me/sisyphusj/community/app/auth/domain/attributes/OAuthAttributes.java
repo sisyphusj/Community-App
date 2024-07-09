@@ -20,4 +20,10 @@ public abstract class OAuthAttributes {
 
 	private String userIdentify;
 
+	public OAuthAttributes(Map<String, Object> attributes, String nameAttributeKey, OAuthProvider oAuthProvider) {
+		this.attributes = attributes;
+		this.nameAttributeKey = nameAttributeKey;
+		this.oAuthProvider = oAuthProvider;
+	}
+
 }

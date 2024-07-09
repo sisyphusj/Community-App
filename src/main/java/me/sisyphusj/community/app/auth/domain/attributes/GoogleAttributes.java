@@ -7,6 +7,16 @@ import me.sisyphusj.community.app.auth.domain.OAuthProvider;
 public class GoogleAttributes extends OAuthAttributes {
 
 	public GoogleAttributes(Map<String, Object> attributes, String nameAttributeKey) {
-		super(attributes, nameAttributeKey, OAuthProvider.GOOGLE, (String)attributes.get("name"), (String)attributes.get(nameAttributeKey));
+		super(attributes, nameAttributeKey, OAuthProvider.GOOGLE);
+	}
+
+	@Override
+	public String getName() {
+		return (String)super.getAttributes().get("name");
+	}
+
+	@Override
+	public String getUserIdentify() {
+		return (String)super.getAttributes().get(getNameAttributeKey());
 	}
 }
