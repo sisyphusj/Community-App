@@ -1,5 +1,7 @@
 package me.sisyphusj.community.app.auth.service;
 
+import static me.sisyphusj.community.app.commons.Constants.*;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,7 +68,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 		oAuthAttributes.getAttributes().put("userId", userId);
 
 		// 일반 사용자 권한 설정
-		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("USER");
+		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(USER);
 
 		// OAuth2User 객체 생성 및 반환
 		return new DefaultOAuth2User(

@@ -1,5 +1,7 @@
 package me.sisyphusj.community.app.auth.service;
 
+import static me.sisyphusj.community.app.commons.Constants.*;
+
 import java.util.Collections;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -32,13 +34,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	private UserDetails createUserDetails(AuthVO auth) {
 
-		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("USER");
+		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(USER);
 
 		return new User(
 			String.valueOf(auth.getUserId()),
 			auth.getPassword(),
 			Collections.singleton(grantedAuthority)
 		);
-
 	}
 }
