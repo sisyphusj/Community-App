@@ -9,10 +9,10 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script type="text/javascript">
         $(() => {
-            $.getJSON("board/posts", (data) => {
+            $.getJSON("community/posts", (data) => {
                 const postsHtml = data.map(post => {
                     return `
-                    <div class="post-thumbnail" id="post-${'${post.boardId}'}">
+                    <div class="post-thumbnail" id="post-${'${post.postId}'}">
                         <h3>${'${post.title}'}</h3>
                         <p>작성자: ${'${post.author}'}</p>
                         <p>작성일: ${'${post.createdDate}'}</p>
@@ -24,7 +24,7 @@
             })
 
             $('#createPostBtn').click(function () {
-                window.location.href = '/board/new';
+                window.location.href = '/community/new';
             });
         });
     </script>

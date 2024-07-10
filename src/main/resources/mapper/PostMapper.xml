@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybaits.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="me.sisyphusj.community.app.post.mapper.PostMapper">
+
+    <insert id="insertPost" parameterType="me.sisyphusj.community.app.post.domain.PostVO">
+        insert into posts (user_id, title, content)
+        values (#{userId}, #{title}, #{content})
+    </insert>
+
+    <select id="selectPostThumbnailList" resultMap="postThumbnailList">
+        select post_id, u.name, title, created_at
+        from posts p,
+             user u
+        where p.user_id = u.user_id
+        order by created_at desc
+        limit #{amount} offset #{offset}
+    </select>
+
+    <resultMap id="postThumbnailList" type="me.sisyphusj.community.app.post.domain.PostThumbnailVO">
+        <id property="postId" column="post.post_id"/>
+        <result property="author" column="user.name"/>
+        <result property="title" column="post.title"/>
+        <result property="createdDate" column="post.created_at"/>
+    </resultMap>
+
+</mapper>

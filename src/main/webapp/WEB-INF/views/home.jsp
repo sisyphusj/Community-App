@@ -43,8 +43,8 @@
             });
 
             $(() => {
-                $('#boardBtn').click(function () {
-                    window.location.href = '/board';
+                $('#communityBtn').click(function () {
+                    window.location.href = '/community';
                 });
             });
         });
@@ -59,6 +59,6 @@
 <button id="loginBtn">로그인</button>
 <button id="myPageBtn">마이페이지</button>
 <button id="logoutBtn">로그아웃</button>
-<button id="boardBtn">게시판</button>
+<button id="communityBtn">게시판</button>
 </body>
 </html>

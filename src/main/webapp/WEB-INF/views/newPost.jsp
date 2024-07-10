@@ -9,7 +9,7 @@
 </head>
 <body>
 <h1>게시판 작성</h1>
-<form action="/board/add" method="post">
+<form action="/community/add" method="post">
     <sec:csrfInput/>
     <label for="title">제목</label><br>
     <input type="text" id="title" name="title" required><br><br>

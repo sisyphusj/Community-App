@@ -1,4 +1,4 @@
-package me.sisyphusj.community.app.board.controller;
+package me.sisyphusj.community.app.post.controller;
 
 import static me.sisyphusj.community.app.commons.Constants.*;
 
@@ -15,32 +15,32 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import me.sisyphusj.community.app.board.domain.BoardThumbnailResDTO;
-import me.sisyphusj.community.app.board.domain.CreateBoardReqDTO;
-import me.sisyphusj.community.app.board.service.BoardService;
 import me.sisyphusj.community.app.commons.exception.RedirectType;
+import me.sisyphusj.community.app.post.domain.CreatePostReqDTO;
+import me.sisyphusj.community.app.post.domain.PostThumbnailResDTO;
+import me.sisyphusj.community.app.post.service.PostService;
 
 @Controller
-@RequestMapping("/board")
+@RequestMapping("/community")
 @RequiredArgsConstructor
-public class BoardController {
+public class PostController {
 
-	private final BoardService boardService;
+	private final PostService postService;
 
 	/**
 	 * 게시글 리스트 페이지
 	 */
 	@GetMapping
-	public String showBoardPage() {
-		return "board";
+	public String showCommunityPage() {
+		return "community";
 	}
 
 	/**
 	 * 게시글 섬네일 리스트 불러오기
 	 */
 	@GetMapping("/posts")
-	public ResponseEntity<List<BoardThumbnailResDTO>> getBoardThumbnailList(@RequestParam int amount, @RequestParam int offset) {
-		return ResponseEntity.ok(boardService.getBoardThumbnailList(amount, offset));
+	public ResponseEntity<List<PostThumbnailResDTO>> getPostThumbnailList(@RequestParam int amount, @RequestParam int offset) {
+		return ResponseEntity.ok(postService.getPostThumbnailList(amount, offset));
 	}
 
 	/**
@@ -55,8 +55,8 @@ public class BoardController {
 	 * 게시글 추가
 	 */
 	@PostMapping("/add")
-	public String createBoard(@Valid @ModelAttribute CreateBoardReqDTO createBoardReqDTO, Model model) {
-		boardService.createdBoard(createBoardReqDTO);
+	public String createPost(@Valid @ModelAttribute CreatePostReqDTO createPostReqDTO, Model model) {
+		postService.createdPost(createPostReqDTO);
 
 		model.addAttribute(MESSAGE, "저장되었습니다.");
 		model.addAttribute(REDIRECT_URL, RedirectType.HOME);

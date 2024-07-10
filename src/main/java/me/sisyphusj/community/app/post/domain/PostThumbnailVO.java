@@ -1,4 +1,4 @@
-package me.sisyphusj.community.app.board.domain;
+package me.sisyphusj.community.app.post.domain;
 
 import java.time.LocalDateTime;
 
@@ -7,10 +7,10 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class BoardThumbnailVO {
+public class PostThumbnailVO {
 
 	// 게시글 고유 ID
-	private String boardId;
+	private String postId;
 
 	// 작성자
 	private String author;

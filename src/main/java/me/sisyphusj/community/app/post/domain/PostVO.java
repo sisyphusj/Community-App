@@ -1,4 +1,4 @@
-package me.sisyphusj.community.app.board.domain;
+package me.sisyphusj.community.app.post.domain;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import me.sisyphusj.community.app.utils.SessionUtil;
 
 @Builder
 @Getter
-public class BoardVO {
+public class PostVO {
 
 	private int userId;
 
@@ -14,11 +14,11 @@ public class BoardVO {
 
 	private String content;
 
-	public static BoardVO of(CreateBoardReqDTO createBoardReqDTO) {
-		return BoardVO.builder()
+	public static PostVO of(CreatePostReqDTO createPostReqDTO) {
+		return PostVO.builder()
 			.userId(SessionUtil.getLoginUserId())
-			.title(createBoardReqDTO.getTitle())
-			.content(createBoardReqDTO.getContent())
+			.title(createPostReqDTO.getTitle())
+			.content(createPostReqDTO.getContent())
 			.build();
 	}
 }
