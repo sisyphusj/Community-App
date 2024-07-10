@@ -59,7 +59,7 @@ public class PostController {
 		postService.createdPost(createPostReqDTO);
 
 		model.addAttribute(MESSAGE, "저장되었습니다.");
-		model.addAttribute(REDIRECT_URL, RedirectType.HOME);
+		model.addAttribute(REDIRECT_URL, RedirectType.COMMUNITY);
 		return MAV_ALERT;
 	}
 }

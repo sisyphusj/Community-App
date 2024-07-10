@@ -14,6 +14,8 @@
             window.history.back();
         } else if (redirectUrl === "HOME") {
             location.href = "/";
+        } else if (redirectUrl === "COMMUNITY") {
+            location.href = "/community"
         }
 
     });

@@ -1,4 +1,4 @@
-package me.sisyphusj.community.app.commons.exception;
+package me.sisyphusj.community.app.commons;
 
 /**
  * alertException Redirect Type ENUM 클래스
@@ -6,5 +6,6 @@ package me.sisyphusj.community.app.commons.exception;
 public enum RedirectType {
 	HOME,
 	BACK,
-	NONE
+	NONE,
+	COMMUNITY,
 }
