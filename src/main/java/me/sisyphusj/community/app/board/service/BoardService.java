@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import me.sisyphusj.community.app.board.domain.BoardReqDTO;
-import me.sisyphusj.community.app.board.domain.BoardSummaryResDTO;
+import me.sisyphusj.community.app.board.domain.BoardThumbnailResDTO;
 import me.sisyphusj.community.app.board.domain.BoardVO;
+import me.sisyphusj.community.app.board.domain.CreateBoardReqDTO;
 import me.sisyphusj.community.app.board.mapper.BoardMapper;
 
 @Service
@@ -18,14 +18,14 @@ public class BoardService {
 	private final BoardMapper boardMapper;
 
 	@Transactional
-	public void createdBoard(BoardReqDTO boardReqDTO) {
-		boardMapper.insertBoard(BoardVO.of(boardReqDTO));
+	public void createdBoard(CreateBoardReqDTO createBoardReqDTO) {
+		boardMapper.insertBoard(BoardVO.of(createBoardReqDTO));
 	}
 
 	@Transactional(readOnly = true)
-	public List<BoardSummaryResDTO> getBoardList() {
-		return boardMapper.selectBoardSummaryList().stream()
-			.map(BoardSummaryResDTO::of)
+	public List<BoardThumbnailResDTO> getBoardThumbnailList(int amount, int offset) {
+		return boardMapper.selectBoardThumbnailList().stream()
+			.map(BoardThumbnailResDTO::of)
 			.toList();
 	}
 }

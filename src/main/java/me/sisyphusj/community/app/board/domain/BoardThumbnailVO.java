@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class BoardSummaryResDTO {
+public class BoardThumbnailVO {
 
 	// 게시글 고유 ID
 	private String boardId;
@@ -21,12 +21,4 @@ public class BoardSummaryResDTO {
 	// 생성 시간
 	private LocalDateTime createdDate;
 
-	public static BoardSummaryResDTO of(BoardSummaryVO boardVO) {
-		return BoardSummaryResDTO.builder()
-			.boardId(boardVO.getBoardId())
-			.author(boardVO.getAuthor())
-			.title(boardVO.getTitle())
-			.createdDate(boardVO.getCreatedDate())
-			.build();
-	}
 }

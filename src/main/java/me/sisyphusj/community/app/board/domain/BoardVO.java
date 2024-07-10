@@ -14,11 +14,11 @@ public class BoardVO {
 
 	private String content;
 
-	public static BoardVO of(BoardReqDTO boardReqDTO) {
+	public static BoardVO of(CreateBoardReqDTO createBoardReqDTO) {
 		return BoardVO.builder()
 			.userId(SessionUtil.getLoginUserId())
-			.title(boardReqDTO.getTitle())
-			.content(boardReqDTO.getContent())
+			.title(createBoardReqDTO.getTitle())
+			.content(createBoardReqDTO.getContent())
 			.build();
 	}
 }

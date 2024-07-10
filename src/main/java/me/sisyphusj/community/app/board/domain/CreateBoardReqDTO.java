@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class BoardReqDTO {
+public class CreateBoardReqDTO {
 
 	@NotBlank
 	private String title;

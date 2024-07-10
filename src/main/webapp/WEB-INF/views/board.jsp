@@ -12,7 +12,7 @@
             $.getJSON("board/posts", (data) => {
                 const postsHtml = data.map(post => {
                     return `
-                    <div class="post-summary" id="post-${'${post.boardId}'}">
+                    <div class="post-thumbnail" id="post-${'${post.boardId}'}">
                         <h3>${'${post.title}'}</h3>
                         <p>작성자: ${'${post.author}'}</p>
                         <p>작성일: ${'${post.createdDate}'}</p>
@@ -28,6 +28,12 @@
             });
         });
     </script>
+
+    <style>
+        .post-thumbnail {
+            display: flex;
+        }
+    </style>
 </head>
 <body>
 <h1>게시판</h1>

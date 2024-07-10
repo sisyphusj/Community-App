@@ -9,7 +9,7 @@
         values (#{userId}, #{title}, #{content})
     </insert>
 
-    <select id="selectBoardSummaryList" resultMap="boardSummaryList">
+    <select id="selectBoardThumbnailList" resultMap="boardThumbnailList">
         select board_id, u.name, title, created_at
         from board b,
              user u
@@ -17,7 +17,7 @@
         order by created_at desc
     </select>
 
-    <resultMap id="boardSummaryList" type="me.sisyphusj.community.app.board.domain.BoardSummaryVO">
+    <resultMap id="boardThumbnailList" type="me.sisyphusj.community.app.board.domain.BoardThumbnailVO">
         <id property="boardId" column="board.board_id"/>
         <result property="author" column="user.name"/>
         <result property="title" column="board.title"/>
