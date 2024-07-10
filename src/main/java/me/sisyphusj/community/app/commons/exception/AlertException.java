@@ -11,21 +11,15 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AlertException extends RuntimeException {
 
-	private final int status;
+	private final HttpStatus status;
 
 	private final String message;
 
 	private final RedirectType redirectType;
 
-	public AlertException(String message, HttpStatus status, RedirectType redirectType) {
-		this.status = status.value();
-		this.message = message;
-		this.redirectType = redirectType;
-	}
-
 	public static AlertException of500(String message, RedirectType redirectType) {
 		return AlertException.builder()
-			.status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+			.status(HttpStatus.INTERNAL_SERVER_ERROR)
 			.message(message)
 			.redirectType(redirectType)
 			.build();
@@ -33,7 +27,7 @@ public class AlertException extends RuntimeException {
 
 	public static AlertException of400(String message, RedirectType redirectType) {
 		return AlertException.builder()
-			.status(HttpStatus.BAD_REQUEST.value())
+			.status(HttpStatus.BAD_REQUEST)
 			.message(message)
 			.redirectType(redirectType)
 			.build();
