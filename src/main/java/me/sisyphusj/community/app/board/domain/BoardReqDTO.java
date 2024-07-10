@@ -1,5 +1,6 @@
 package me.sisyphusj.community.app.board.domain;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -7,8 +8,10 @@ import lombok.Getter;
 @Builder
 public class BoardReqDTO {
 
+	@NotBlank
 	private String title;
 
+	@NotBlank
 	private String content;
 
 }
