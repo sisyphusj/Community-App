@@ -13,19 +13,19 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script type="text/javascript">
         $(() => {
-            $('#signupBtn').click(function () {
+            $('#signupBtn').click(() => {
                 window.location.href = '/auth/signup';
             });
 
-            $('#loginBtn').click(function () {
+            $('#loginBtn').click(() => {
                 window.location.href = '/auth/login';
             });
 
-            $('#myPageBtn').click(function () {
+            $('#myPageBtn').click(() => {
                 window.location.href = '/auth/my-page';
             });
 
-            $('#logoutBtn').click(function () {
+            $('#logoutBtn').click(() => {
                 const form = $('<form>', {
                     'method': 'POST',
                     'action': '${pageContext.request.contextPath}/auth/logout'
@@ -41,6 +41,12 @@
                 $('body').append(form);
                 form.submit();
             });
+
+            $(() => {
+                $('#boardBtn').click(function () {
+                    window.location.href = '/board';
+                });
+            });
         });
     </script>
 </head>
@@ -53,6 +59,6 @@
 <button id="loginBtn">로그인</button>
 <button id="myPageBtn">마이페이지</button>
 <button id="logoutBtn">로그아웃</button>
-
+<button id="boardBtn">게시판</button>
 </body>
 </html>

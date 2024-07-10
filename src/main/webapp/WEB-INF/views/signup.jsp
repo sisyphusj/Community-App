@@ -13,8 +13,8 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('form').on('submit', function () {
+        $(() => {
+            $('form').on('submit', () => {
                 const username = $("#username").val();
                 const password = $("#password").val();
                 const name = $("#name").val();
@@ -37,7 +37,7 @@
                 return true;
             });
 
-            $('#isUsernameDuplicatedBtn').click(function (event) {
+            $('#isUsernameDuplicatedBtn').click((event) => {
                 event.preventDefault();
                 const username = $("#username").val().trim();
 
@@ -46,13 +46,13 @@
                     return;
                 }
 
-                $.get("/auth/check/username", {username: username}, function (data) {
+                $.get("/auth/check/username", {username: username}, (data) => {
                     if (data) {
                         alert("아이디가 중복입니다.");
                     } else {
                         alert("사용 가능한 아이디 입니다.");
                     }
-                }).fail(function () {
+                }).fail(() => {
                     alert("서버 요청에 실패했습니다. 다시 시도해 주세요.");
                 });
             });
@@ -61,7 +61,7 @@
 </head>
 <body>
 <h1>회원가입</h1>
-<form action="${pageContext.request.contextPath}/auth/register" method="post">
+<form action="/auth/register" method="post">
     <sec:csrfInput/>
 
     <label for="username">아이디 : </label>
