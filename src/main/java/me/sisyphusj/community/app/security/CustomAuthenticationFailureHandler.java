@@ -11,7 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import me.sisyphusj.community.app.commons.exception.RedirectType;
+import me.sisyphusj.community.app.commons.RedirectType;
 
 @Slf4j
 @Component

@@ -25,9 +25,9 @@ import me.sisyphusj.community.app.auth.controller.AuthController;
 import me.sisyphusj.community.app.auth.domain.SignupReqDTO;
 import me.sisyphusj.community.app.auth.service.AuthService;
 import me.sisyphusj.community.app.commons.GlobalExceptionAdvice;
+import me.sisyphusj.community.app.commons.RedirectType;
 import me.sisyphusj.community.app.commons.exception.AlertException;
 import me.sisyphusj.community.app.commons.exception.BlankInputException;
-import me.sisyphusj.community.app.commons.exception.RedirectType;
 
 @Slf4j
 @WebMvcTest(AuthController.class)

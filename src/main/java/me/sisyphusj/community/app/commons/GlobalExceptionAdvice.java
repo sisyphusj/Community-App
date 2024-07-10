@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.commons.exception.AlertException;
 import me.sisyphusj.community.app.commons.exception.AuthorizeException;
 import me.sisyphusj.community.app.commons.exception.BlankInputException;
-import me.sisyphusj.community.app.commons.exception.RedirectType;
 
 @Slf4j
 @ControllerAdvice

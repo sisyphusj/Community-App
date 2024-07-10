@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import me.sisyphusj.community.app.commons.RedirectType;
 
 @Builder
 @Getter

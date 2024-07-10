@@ -9,8 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.auth.domain.SignupReqDTO;
 import me.sisyphusj.community.app.auth.domain.SignupVO;
 import me.sisyphusj.community.app.auth.mapper.AuthMapper;
+import me.sisyphusj.community.app.commons.RedirectType;
 import me.sisyphusj.community.app.commons.exception.AlertException;
-import me.sisyphusj.community.app.commons.exception.RedirectType;
 
 @Slf4j
 @Service

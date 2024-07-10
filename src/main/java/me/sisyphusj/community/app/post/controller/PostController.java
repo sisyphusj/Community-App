@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import me.sisyphusj.community.app.commons.exception.RedirectType;
+import me.sisyphusj.community.app.commons.RedirectType;
 import me.sisyphusj.community.app.post.domain.CreatePostReqDTO;
 import me.sisyphusj.community.app.post.domain.PostThumbnailResDTO;
 import me.sisyphusj.community.app.post.service.PostService;
