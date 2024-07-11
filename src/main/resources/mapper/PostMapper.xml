@@ -11,9 +11,8 @@
 
     <select id="selectPostSummaryList" resultMap="postSummaryList">
         select post_id, u.name, title, created_at
-        from posts p,
-             user u
-        where p.user_id = u.user_id
+        from posts p
+                 inner join user u on p.user_id = u.user_id
         order by created_at desc
         limit #{amount} offset #{offset}
     </select>
@@ -23,11 +22,27 @@
         from posts
     </select>
 
+    <select id="selectPostDetails" resultMap="postDetails">
+        select post_id, u.name, title, content, created_at, updated_at
+        from posts p
+                 inner join user u on p.user_id = u.user_id
+        where p.post_id = #{postId}
+    </select>
+
     <resultMap id="postSummaryList" type="me.sisyphusj.community.app.post.domain.PostSummaryVO">
-        <id property="postId" column="post.post_id"/>
-        <result property="author" column="user.name"/>
-        <result property="title" column="post.title"/>
-        <result property="createdDate" column="post.created_at"/>
+        <id property="postId" column="post_id"/>
+        <result property="author" column="name"/>
+        <result property="title" column="title"/>
+        <result property="createdDate" column="created_at"/>
+    </resultMap>
+
+    <resultMap id="postDetails" type="me.sisyphusj.community.app.post.domain.PostDetailVO">
+        <id property="postId" column="post_id"/>
+        <result property="author" column="name"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="createdDate" column="created_at"/>
+        <result property="updatedDate" column="updated_at"/>
     </resultMap>
 
 </mapper>

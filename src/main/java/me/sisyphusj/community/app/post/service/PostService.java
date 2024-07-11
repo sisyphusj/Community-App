@@ -9,8 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 import me.sisyphusj.community.app.post.domain.CreatePostReqDTO;
 import me.sisyphusj.community.app.post.domain.PageResDTO;
+import me.sisyphusj.community.app.post.domain.PostDetailResDTO;
 import me.sisyphusj.community.app.post.domain.PostSummaryResDTO;
 import me.sisyphusj.community.app.post.domain.PostVO;
 import me.sisyphusj.community.app.post.mapper.PostMapper;
@@ -50,5 +52,15 @@ public class PostService {
 
 		// 현재 페이지 페이지네이션 메타데이터, 게시글 섬네일 리스트 반환
 		return new PageResDTO(currentPage, ROW_SIZE_PER_PAGE, totalRowCount, postListDTO);
+	}
+
+	/**
+	 * postId를 통한 게시글 조회
+	 */
+	@Transactional(readOnly = true)
+	public PostDetailResDTO getPostDetails(int postId) {
+		return postMapper.selectPostDetails(postId)
+			.map(PostDetailResDTO::of)
+			.orElseThrow(PostNotFoundException::new);
 	}
 }
