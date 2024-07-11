@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.commons.exception.AlertException;
 import me.sisyphusj.community.app.commons.exception.AuthorizeException;
 import me.sisyphusj.community.app.commons.exception.BlankInputException;
+import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 
 @Slf4j
 @ControllerAdvice
@@ -42,11 +43,14 @@ public class GlobalExceptionAdvice {
 	public ModelAndView handleAuthorizeException(AuthorizeException e) {
 		log.error("[AuthorizeException 발생] : {}", e.getMessage());
 		ModelAndView mav = new ModelAndView(MAV_ALERT);
-		mav.addObject(MESSAGE, "로그인 실패");
+		mav.addObject(MESSAGE, "로그인이 필요합니다.");
 		mav.addObject(REDIRECT_URL, RedirectType.HOME);
 		return mav;
 	}
 
+	/**
+	 * 파라미터에 값이 공백인 경우를 처리하는 핸들러
+	 */
 	@ExceptionHandler(BlankInputException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ModelAndView handleBlankInputException(BlankInputException e) {
@@ -54,6 +58,19 @@ public class GlobalExceptionAdvice {
 		ModelAndView mav = new ModelAndView(MAV_ALERT);
 		mav.addObject(MESSAGE, "입력값이 존재하지 않습니다. 다시 입력해주십시오.");
 		mav.addObject(REDIRECT_URL, RedirectType.NONE);
+		return mav;
+	}
+
+	/**
+	 * 게시글 조회에 실패한 경우를 처리하는 핸들러
+	 */
+	@ExceptionHandler(PostNotFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ModelAndView handelPostNotFoundException(PostNotFoundException e) {
+		log.error("[PostNotFoundException 발생]");
+		ModelAndView mav = new ModelAndView(MAV_ALERT);
+		mav.addObject(MESSAGE, "요청하신 게시글을 찾을 수 없습니다.");
+		mav.addObject(REDIRECT_URL, RedirectType.BACK);
 		return mav;
 	}
 
