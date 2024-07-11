@@ -19,10 +19,13 @@ public class PostDetailVO {
 	// 본문
 	private String content;
 
+	// 조회 수
+	private int views;
+
 	// 생성일
 	private Date createdDate;
 
 	// 최종 수정일
 	private Date updatedDate;
-	
+
 }

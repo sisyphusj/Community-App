@@ -21,6 +21,9 @@ public class PostDetailResDTO {
 	// 본문
 	private String content;
 
+	// 조회 수
+	private int views;
+
 	// 생성일
 	private Date createdDate;
 
@@ -33,6 +36,7 @@ public class PostDetailResDTO {
 			.author(postDetailVO.getAuthor())
 			.title(postDetailVO.getTitle())
 			.content(postDetailVO.getContent())
+			.views(postDetailVO.getViews())
 			.createdDate(postDetailVO.getCreatedDate())
 			.updatedDate(postDetailVO.getUpdatedDate())
 			.build();

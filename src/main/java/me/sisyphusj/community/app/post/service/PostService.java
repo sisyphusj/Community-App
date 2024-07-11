@@ -57,8 +57,12 @@ public class PostService {
 	/**
 	 * postId를 통한 게시글 조회
 	 */
-	@Transactional(readOnly = true)
+	@Transactional
 	public PostDetailResDTO getPostDetails(int postId) {
+		if (postMapper.updateViewsAndGet(postId) == 0) {
+			throw new PostNotFoundException();
+		}
+
 		return postMapper.selectPostDetails(postId)
 			.map(PostDetailResDTO::of)
 			.orElseThrow(PostNotFoundException::new);

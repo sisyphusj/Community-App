@@ -14,6 +14,7 @@
 <c:set var="post" value="${postDetailResDTO}"/>
 <h2>제목 : ${post.title}</h2>
 <h4>작성자 : ${post.author}</h4>
+<h4>조회수 : ${post.views}</h4>
 <h3>본문</h3>
 <p>
     ${post.content}

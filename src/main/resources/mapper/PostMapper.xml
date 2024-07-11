@@ -10,7 +10,7 @@
     </insert>
 
     <select id="selectPostSummaryList" resultMap="postSummaryList">
-        select post_id, u.name, title, created_at
+        select post_id, u.name, title, views, created_at
         from posts p
                  inner join user u on p.user_id = u.user_id
         order by created_at desc
@@ -23,16 +23,23 @@
     </select>
 
     <select id="selectPostDetails" resultMap="postDetails">
-        select post_id, u.name, title, content, created_at, updated_at
+        select post_id, u.name, title, content, views, created_at, updated_at
         from posts p
                  inner join user u on p.user_id = u.user_id
         where p.post_id = #{postId}
     </select>
 
+    <update id="updateViewsAndGet">
+        update posts
+        set views = views + 1
+        where post_id = #{postId}
+    </update>
+
     <resultMap id="postSummaryList" type="me.sisyphusj.community.app.post.domain.PostSummaryVO">
         <id property="postId" column="post_id"/>
         <result property="author" column="name"/>
         <result property="title" column="title"/>
+        <result property="views" column="views"/>
         <result property="createdDate" column="created_at"/>
     </resultMap>
 
@@ -41,6 +48,7 @@
         <result property="author" column="name"/>
         <result property="title" column="title"/>
         <result property="content" column="content"/>
+        <result property="views" column="views"/>
         <result property="createdDate" column="created_at"/>
         <result property="updatedDate" column="updated_at"/>
     </resultMap>

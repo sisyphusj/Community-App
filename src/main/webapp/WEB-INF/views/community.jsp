@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
@@ -51,6 +51,7 @@
             <th>번호</th>
             <th>제목</th>
             <th>작성자</th>
+            <th>조회수</th>
             <th>작성일</th>
         </tr>
         </thead>
@@ -60,6 +61,7 @@
                 <td>${post.postId}</td>
                 <td><a href="/community/posts/${post.postId}">${post.title}</a></td>
                 <td>${post.author}</td>
+                <td>${post.views}</td>
                 <td><fmt:formatDate value="${post.createdDate}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
             </tr>
         </c:forEach>

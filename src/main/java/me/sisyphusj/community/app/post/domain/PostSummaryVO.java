@@ -18,6 +18,9 @@ public class PostSummaryVO {
 	// 제목
 	private String title;
 
+	// 조회 수
+	private int views;
+
 	// 생성 시간
 	private Date createdDate;
 

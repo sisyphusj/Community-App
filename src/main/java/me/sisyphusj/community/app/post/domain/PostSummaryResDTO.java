@@ -18,6 +18,9 @@ public class PostSummaryResDTO {
 	// 제목
 	private String title;
 
+	// 조회 수
+	private int views;
+
 	// 생성 시간
 	private Date createdDate;
 
@@ -26,6 +29,7 @@ public class PostSummaryResDTO {
 			.postId(postVO.getPostId())
 			.author(postVO.getAuthor())
 			.title(postVO.getTitle())
+			.views(postVO.getViews())
 			.createdDate(postVO.getCreatedDate())
 			.build();
 	}
