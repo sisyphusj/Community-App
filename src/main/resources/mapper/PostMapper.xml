@@ -9,7 +9,7 @@
         values (#{userId}, #{title}, #{content})
     </insert>
 
-    <select id="selectPostThumbnailList" resultMap="postThumbnailList">
+    <select id="selectPostSummaryList" resultMap="postSummaryList">
         select post_id, u.name, title, created_at
         from posts p,
              user u
@@ -18,7 +18,12 @@
         limit #{amount} offset #{offset}
     </select>
 
-    <resultMap id="postThumbnailList" type="me.sisyphusj.community.app.post.domain.PostThumbnailVO">
+    <select id="selectTotalCount" resultType="int">
+        select count(*)
+        from posts
+    </select>
+
+    <resultMap id="postSummaryList" type="me.sisyphusj.community.app.post.domain.PostSummaryVO">
         <id property="postId" column="post.post_id"/>
         <result property="author" column="user.name"/>
         <result property="title" column="post.title"/>
