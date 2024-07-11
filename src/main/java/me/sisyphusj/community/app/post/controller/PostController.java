@@ -2,9 +2,6 @@ package me.sisyphusj.community.app.post.controller;
 
 import static me.sisyphusj.community.app.commons.Constants.*;
 
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.commons.RedirectType;
 import me.sisyphusj.community.app.post.domain.CreatePostReqDTO;
-import me.sisyphusj.community.app.post.domain.PostThumbnailResDTO;
+import me.sisyphusj.community.app.post.domain.PageResDTO;
 import me.sisyphusj.community.app.post.service.PostService;
 
 @Controller
@@ -28,23 +25,17 @@ public class PostController {
 	private final PostService postService;
 
 	/**
-	 * 게시글 리스트 페이지
+	 * 게시판 페이지, 현재 페이지에 맞는 게시글 리스트 반환
 	 */
-	@GetMapping
-	public String showCommunityPage() {
+	@GetMapping()
+	public String showCommunityPage(@RequestParam(defaultValue = "1") int page, Model model) {
+		PageResDTO pageResDTO = postService.getPostPage(page);
+		model.addAttribute("pageResDTO", pageResDTO);
 		return "community";
 	}
 
 	/**
-	 * 게시글 섬네일 리스트 불러오기
-	 */
-	@GetMapping("/posts")
-	public ResponseEntity<List<PostThumbnailResDTO>> getPostThumbnailList(@RequestParam int amount, @RequestParam int offset) {
-		return ResponseEntity.ok(postService.getPostThumbnailList(amount, offset));
-	}
-
-	/**
-	 * 게시글 페이지
+	 * 새로운 게시글 작성 폼 페이지
 	 */
 	@GetMapping("/new")
 	public String showPostPage() {
