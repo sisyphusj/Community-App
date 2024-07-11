@@ -61,9 +61,9 @@ public class GlobalExceptionAdvice {
 	 * 지정한 예외를 제외한 나머지 예외를 처리하는 핸들러
 	 */
 	@ExceptionHandler(Exception.class)
-	public String handleAllException(Exception e) {
+	public ModelAndView handleAllException(Exception e) {
 		log.error("[Exception 발생] : ", e);
-		return "error/500code";
+		return new ModelAndView(MAV_500);
 	}
 
 }
