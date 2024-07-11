@@ -1,13 +1,13 @@
 package me.sisyphusj.community.app.post.domain;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
-public class PostThumbnailResDTO {
+public class PostSummaryResDTO {
 
 	// 게시글 고유 ID
 	private String postId;
@@ -19,10 +19,10 @@ public class PostThumbnailResDTO {
 	private String title;
 
 	// 생성 시간
-	private LocalDateTime createdDate;
+	private Date createdDate;
 
-	public static PostThumbnailResDTO of(PostThumbnailVO postVO) {
-		return PostThumbnailResDTO.builder()
+	public static PostSummaryResDTO of(PostSummaryVO postVO) {
+		return PostSummaryResDTO.builder()
 			.postId(postVO.getPostId())
 			.author(postVO.getAuthor())
 			.title(postVO.getTitle())

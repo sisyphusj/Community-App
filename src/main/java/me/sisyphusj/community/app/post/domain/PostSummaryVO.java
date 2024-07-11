@@ -1,13 +1,13 @@
 package me.sisyphusj.community.app.post.domain;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
-public class PostThumbnailVO {
+public class PostSummaryVO {
 
 	// 게시글 고유 ID
 	private String postId;
@@ -19,6 +19,6 @@ public class PostThumbnailVO {
 	private String title;
 
 	// 생성 시간
-	private LocalDateTime createdDate;
+	private Date createdDate;
 
 }
