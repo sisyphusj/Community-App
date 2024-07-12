@@ -37,11 +37,30 @@
             color: #333;
         }
     </style>
+    <script>
+        function updateSort(event) {
+            event.preventDefault();
+            const sortValue = document.forms["textsearch"]["sort"].value;
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('sort', sortValue);
+            urlParams.set('page', 1);
+            window.location.search = urlParams.toString();
+        }
+    </script>
 </head>
 <body>
-
 <div>
     <button onclick="location.href='/community/new'">게시글 쓰기</button>
+
+    <form name="textsearch" onsubmit="updateSort(event);">
+        <label>
+            <select name="sort">
+                <option value="date" <c:if test="${param.sort == 'date'}">selected</c:if>>최신순</option>
+                <option value="views" <c:if test="${param.sort == 'views'}">selected</c:if>>조회순</option>
+            </select>
+        </label>
+        <input type="submit" value="검색">
+    </form>
 
     <h1>게시판</h1>
 
@@ -75,33 +94,33 @@
         <ul class="pagination">
             <%-- 첫 페이지 링크 --%>
             <li>
-                <a href="/community?page=1">&laquo;</a>
+                <a href="/community?page=1&sort=${param.sort}">&laquo;</a>
             </li>
 
             <%-- 이전 페이지 링크 : 현재 페이지가 2페이지 이상일 때 --%>
             <c:if test="${page > 1}">
                 <li>
-                    <a href="/community?page=${page - 1}">&lt;</a>
+                    <a href="/community?page=${page - 1}&sort=${param.sort}">&lt;</a>
                 </li>
             </c:if>
 
             <%-- 페이지 번호 링크 : 현재 페이지 기준 렌더링되는 첫 페이지 번호, 마지막 페이지 번호 --%>
             <c:forEach begin="${pageResDTO.firstPage}" end="${pageResDTO.lastPage}" var="i">
                 <li>
-                    <a href="/community?page=${i}">${i}</a>
+                    <a href="/community?page=${i}&sort=${param.sort}">${i}</a>
                 </li>
             </c:forEach>
 
             <%-- 다음 페이지 링크 : 현재 페이지가 끝 페이지가 아닐 때 --%>
             <c:if test="${page < pageResDTO.totalPageCount}">
                 <li>
-                    <a href="/community?page=${page + 1}">&gt;</a>
+                    <a href="/community?page=${page + 1}&sort=${param.sort}">&gt;</a>
                 </li>
             </c:if>
 
             <%-- 끝 페이지 링크 --%>
             <li>
-                <a href="/community?page=${pageResDTO.totalPageCount}">&raquo;</a>
+                <a href="/community?page=${pageResDTO.totalPageCount}&sort=${param.sort}">&raquo;</a>
             </li>
         </ul>
     </nav>

@@ -9,9 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.sisyphusj.community.app.commons.PageSortTypeProvider;
 import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 import me.sisyphusj.community.app.post.domain.CreatePostReqDTO;
 import me.sisyphusj.community.app.post.domain.PageResDTO;
+import me.sisyphusj.community.app.post.domain.PageSortType;
 import me.sisyphusj.community.app.post.domain.PostDetailResDTO;
 import me.sisyphusj.community.app.post.domain.PostSummaryResDTO;
 import me.sisyphusj.community.app.post.domain.PostVO;
@@ -36,8 +38,10 @@ public class PostService {
 	 * 한 페이지 당 조회될 게시글 리스트 및 페이지 정보 반환
 	 */
 	@Transactional(readOnly = true)
-	public PageResDTO getPostPage(int currentPage) {
+	public PageResDTO getPostPage(int currentPage, String sort) {
 		//TODO 페이지당 게시글 수 변경 기능 추가
+
+		PageSortType pageSortType = PageSortTypeProvider.getPageSortType(sort);
 
 		// 전체 게시글 개수
 		int totalRowCount = postMapper.selectTotalCount();
@@ -46,7 +50,7 @@ public class PostService {
 		int offset = (currentPage - 1) * ROW_SIZE_PER_PAGE;
 
 		// amount 만큼 게시글 리스트 조회
-		List<PostSummaryResDTO> postListDTO = postMapper.selectPostSummaryList(ROW_SIZE_PER_PAGE, offset).stream()
+		List<PostSummaryResDTO> postListDTO = postMapper.selectPostSummaryList(ROW_SIZE_PER_PAGE, offset, pageSortType).stream()
 			.map(PostSummaryResDTO::of)
 			.toList();
 

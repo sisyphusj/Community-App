@@ -32,8 +32,8 @@ public class PostController {
 	 * 게시판 페이지, 현재 페이지에 맞는 게시글 리스트 반환
 	 */
 	@GetMapping()
-	public String showCommunityPage(@RequestParam(defaultValue = "1") int page, Model model) {
-		PageResDTO pageResDTO = postService.getPostPage(page);
+	public String showCommunityPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "date") String sort, Model model) {
+		PageResDTO pageResDTO = postService.getPostPage(page, sort);
 		model.addAttribute("pageResDTO", pageResDTO);
 		return "community";
 	}

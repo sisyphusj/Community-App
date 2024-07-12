@@ -12,8 +12,18 @@
     <select id="selectPostSummaryList" resultMap="postSummaryList">
         select post_id, u.name, title, views, created_at
         from posts p
-                 inner join user u on p.user_id = u.user_id
-        order by created_at desc
+        inner join user u on p.user_id = u.user_id
+        <choose>
+            <when test="sortType.toString() == 'DATE'">
+                ORDER BY created_at DESC
+            </when>
+            <when test="sortType.toString() == 'VIEWS'">
+                ORDER BY views DESC
+            </when>
+            <otherwise>
+                ORDER BY created_at DESC
+            </otherwise>
+        </choose>
         limit #{amount} offset #{offset}
     </select>
 
