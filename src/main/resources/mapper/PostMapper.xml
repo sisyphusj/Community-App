@@ -18,7 +18,7 @@
                 ORDER BY created_at DESC
             </when>
             <when test="sortType.toString() == 'VIEWS'">
-                ORDER BY views DESC
+                ORDER BY views DESC, created_at DESC
             </when>
             <otherwise>
                 ORDER BY created_at DESC
