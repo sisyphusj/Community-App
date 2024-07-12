@@ -75,6 +75,15 @@ public class GlobalExceptionAdvice {
 	}
 
 	/**
+	 * 메소드의 잘못된 인수로 인한 예외를 처리하는 핸들러
+	 */
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ModelAndView handleIllegalArgumentException(IllegalArgumentException e) {
+		log.error("[IllegalArgumentException 발생] : {}", e.getMessage(), e);
+		return new ModelAndView(MAV_400);
+	}
+
+	/**
 	 * 지정한 예외를 제외한 나머지 예외를 처리하는 핸들러
 	 */
 	@ExceptionHandler(Exception.class)
