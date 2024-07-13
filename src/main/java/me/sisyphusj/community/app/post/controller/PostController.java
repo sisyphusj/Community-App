@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.commons.RedirectType;
 import me.sisyphusj.community.app.post.domain.CreatePostReqDTO;
 import me.sisyphusj.community.app.post.domain.PageResDTO;
+import me.sisyphusj.community.app.post.domain.PageSortType;
 import me.sisyphusj.community.app.post.domain.PostDetailResDTO;
 import me.sisyphusj.community.app.post.service.PostService;
 
@@ -32,7 +33,7 @@ public class PostController {
 	 * 게시판 페이지, 현재 페이지에 맞는 게시글 리스트 반환
 	 */
 	@GetMapping()
-	public String showCommunityPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "date") String sort, Model model) {
+	public String showCommunityPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "DATE") PageSortType sort, Model model) {
 		PageResDTO pageResDTO = postService.getPostPage(page, sort);
 		model.addAttribute("pageResDTO", pageResDTO);
 		return "community";

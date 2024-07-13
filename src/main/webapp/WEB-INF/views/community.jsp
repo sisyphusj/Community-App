@@ -55,8 +55,8 @@
     <form name="textsearch" onsubmit="updateSort(event);">
         <label>
             <select name="sort">
-                <option value="date" <c:if test="${param.sort == 'date'}">selected</c:if>>최신순</option>
-                <option value="views" <c:if test="${param.sort == 'views'}">selected</c:if>>조회순</option>
+                <option value="DATE" <c:if test="${param.sort == 'DATE'}">selected</c:if>>최신순</option>
+                <option value="VIEWS" <c:if test="${param.sort == 'VIEWS'}">selected</c:if>>조회순</option>
             </select>
         </label>
         <input type="submit" value="검색">

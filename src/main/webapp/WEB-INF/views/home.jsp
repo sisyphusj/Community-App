@@ -44,7 +44,7 @@
 
             $(() => {
                 $('#communityBtn').click(function () {
-                    window.location.href = '/community?page=1&sort=date';
+                    window.location.href = '/community?page=1&sort=DATE';
                 });
             });
         });

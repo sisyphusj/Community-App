@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.sisyphusj.community.app.commons.PageSortTypeProvider;
 import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 import me.sisyphusj.community.app.post.domain.CreatePostReqDTO;
 import me.sisyphusj.community.app.post.domain.PageResDTO;
@@ -38,10 +37,8 @@ public class PostService {
 	 * 한 페이지 당 조회될 게시글 리스트 및 페이지 정보 반환
 	 */
 	@Transactional(readOnly = true)
-	public PageResDTO getPostPage(int currentPage, String sort) {
+	public PageResDTO getPostPage(int currentPage, PageSortType pageSortType) {
 		//TODO 페이지당 게시글 수 변경 기능 추가
-
-		PageSortType pageSortType = PageSortTypeProvider.getPageSortType(sort);
 
 		// 전체 게시글 개수
 		int totalRowCount = postMapper.selectTotalCount();
