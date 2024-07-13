@@ -1,5 +1,7 @@
 package me.sisyphusj.community.app.commons;
 
+import java.util.List;
+
 public class Constants {
 
 	private Constants() {
@@ -24,5 +26,8 @@ public class Constants {
 	public static final int PAGE_SIZE = 5;
 
 	public static final int ROW_SIZE_PER_PAGE = 10;
+
+	// 허용된 이미지 파일 확장자
+	public static final List<String> ALLOWED_EXTENSIONS = List.of("jpg", "jpeg", "png");
 
 }

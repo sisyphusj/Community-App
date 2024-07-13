@@ -2,6 +2,7 @@ package me.sisyphusj.community.app.commons;
 
 import static me.sisyphusj.community.app.commons.Constants.*;
 
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -71,6 +72,19 @@ public class GlobalExceptionAdvice {
 		ModelAndView mav = new ModelAndView(MAV_ALERT);
 		mav.addObject(MESSAGE, "요청하신 게시글을 찾을 수 없습니다.");
 		mav.addObject(REDIRECT_URL, RedirectType.BACK);
+		return mav;
+	}
+
+	/**
+	 * 파일 업로드 실패한 경우를 처리하는 핸들러
+	 */
+	@ExceptionHandler(FileUploadException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public ModelAndView handleFileUploadException(FileUploadException e) {
+		log.error("[FileUploadException 발생]");
+		ModelAndView mav = new ModelAndView(MAV_ALERT);
+		mav.addObject(MESSAGE, "이미지 업로드에 실패하였습니다.");
+		mav.addObject(REDIRECT_URL, RedirectType.NONE);
 		return mav;
 	}
 
