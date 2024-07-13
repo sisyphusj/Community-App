@@ -24,7 +24,7 @@ $(() => {
         const postData = {
             title: title,
             content: content,
-            hasImage: window.uploadedImages ? "Y" : "N",
+            hasImage: (window.uploadedImages && window.uploadedImages.length > 0) ? "Y" : "N",
             imageDetailReqDTOList: window.uploadedImages
         };
 
@@ -41,7 +41,7 @@ $(() => {
             beforeSend: (xhr) => {
                 xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
             },
-            success: () => {
+            success: (response) => {
                 alert('게시글이 등록되었습니다.');
                 window.location.href = '/community';
             },
