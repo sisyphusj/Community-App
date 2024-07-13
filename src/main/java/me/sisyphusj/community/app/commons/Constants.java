@@ -15,9 +15,9 @@ public class Constants {
 
 	public static final String MAV_ALERT = "error/alert";
 
-	public static final String MAV_500 = "error/500code";
+	public static final String MAV_500 = "error/500code.jsp";
 
-	public static final String MAV_400 = "error/400code";
+	public static final String MAV_400 = "error/400code.jsp";
 
 	// Authorization default roll
 	public static final String USER = "USER";
