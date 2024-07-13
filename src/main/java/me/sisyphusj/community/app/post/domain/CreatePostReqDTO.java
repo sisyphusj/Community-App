@@ -1,20 +1,27 @@
 package me.sisyphusj.community.app.post.domain;
 
-import jakarta.validation.constraints.Max;
+import java.util.List;
+
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
+import me.sisyphusj.community.app.image.domain.ImageDetailReqDTO;
 
 @Getter
 @Builder
 public class CreatePostReqDTO {
 
 	@NotBlank
-	@Max(value = 60, message = "제목은 최대 60자까지 쓸 수 있습니다.")
+	@Size(max = 50, message = "제목은 최대 50자까지 쓸 수 있습니다.")
 	private String title;
 
 	@NotBlank
-	@Max(value = 500, message = "본문은 최대 500자까지 쓸 수 있습니다.")
+	@Size(max = 500, message = "본문은 최대 500자까지 쓸 수 있습니다.")
 	private String content;
+
+	private HasImage hasImage;
+
+	private List<ImageDetailReqDTO> imageDetailReqDTOList;
 
 }

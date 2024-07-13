@@ -1,20 +1,19 @@
 package me.sisyphusj.community.app.post.controller;
 
-import static me.sisyphusj.community.app.commons.Constants.*;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.sisyphusj.community.app.commons.RedirectType;
 import me.sisyphusj.community.app.post.domain.CreatePostReqDTO;
 import me.sisyphusj.community.app.post.domain.PageResDTO;
 import me.sisyphusj.community.app.post.domain.PageSortType;
@@ -51,11 +50,9 @@ public class PostController {
 	 * 게시글 추가
 	 */
 	@PostMapping("/add")
-	public String createPost(@Valid @ModelAttribute CreatePostReqDTO createPostReqDTO, Model model) {
-		postService.createdPost(createPostReqDTO);
-		model.addAttribute(MESSAGE, "저장되었습니다.");
-		model.addAttribute(REDIRECT_URL, RedirectType.COMMUNITY);
-		return MAV_ALERT;
+	public ResponseEntity<HttpStatus> createPost(@Valid @RequestBody CreatePostReqDTO createPostReqDTO) {
+		postService.createPost(createPostReqDTO);
+		return ResponseEntity.ok(HttpStatus.OK);
 	}
 
 	/**

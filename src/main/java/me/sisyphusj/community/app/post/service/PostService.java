@@ -10,7 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
+import me.sisyphusj.community.app.image.service.ImageService;
 import me.sisyphusj.community.app.post.domain.CreatePostReqDTO;
+import me.sisyphusj.community.app.post.domain.HasImage;
 import me.sisyphusj.community.app.post.domain.PageResDTO;
 import me.sisyphusj.community.app.post.domain.PageSortType;
 import me.sisyphusj.community.app.post.domain.PostDetailResDTO;
@@ -25,12 +27,19 @@ public class PostService {
 
 	private final PostMapper postMapper;
 
+	private final ImageService imageService;
+
 	/**
 	 * 게시글 생성
 	 */
 	@Transactional
-	public void createdPost(CreatePostReqDTO createPostReqDTO) {
-		postMapper.insertPost(PostVO.of(createPostReqDTO));
+	public void createPost(CreatePostReqDTO createPostReqDTO) {
+		PostVO postVO = PostVO.of(createPostReqDTO);
+		postMapper.insertPost(postVO);
+
+		if (postVO.getHasImage() == HasImage.Y) {
+			imageService.saveImageDetails(postVO.getPostId(), createPostReqDTO.getImageDetailReqDTOList());
+		}
 	}
 
 	/**

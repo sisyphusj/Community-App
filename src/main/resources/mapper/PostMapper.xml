@@ -4,9 +4,9 @@
 
 <mapper namespace="me.sisyphusj.community.app.post.mapper.PostMapper">
 
-    <insert id="insertPost" parameterType="me.sisyphusj.community.app.post.domain.PostVO">
-        insert into posts (user_id, title, content)
-        values (#{userId}, #{title}, #{content})
+    <insert id="insertPost" parameterType="me.sisyphusj.community.app.post.domain.PostVO" useGeneratedKeys="true" keyProperty="postId">
+        insert into posts (user_id, title, content, has_image)
+        values (#{userId}, #{title}, #{content}, #{hasImage, typeHandler=org.apache.ibatis.type.EnumTypeHandler})
     </insert>
 
     <select id="selectPostSummaryList" resultMap="postSummaryList">
