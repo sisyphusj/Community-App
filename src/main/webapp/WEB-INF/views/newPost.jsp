@@ -27,7 +27,6 @@
     <sec:csrfInput/>
     <label for="imageFiles">이미지 첨부파일</label><br>
     <input type="file" id="imageFiles" name="uploadFiles" multiple>
-    <button type="button" id="uploadBtn">Upload</button>
 </form>
 <h2>업로드</h2>
 <ul id="imageList"></ul>

@@ -1,7 +1,7 @@
 window.uploadedImages = [];
 
 $(() => {
-    $('#uploadBtn').on("click", () => {
+    $('#imageFiles').on("change", () => {
         const formData = new FormData(); // 폼 데이터
         const imageFiles = $('#imageFiles')[0].files; // 이미지 첨부파일 배열
         const allowedExtensions = ['jpg', 'jpeg', 'png'];
@@ -54,7 +54,7 @@ $(() => {
 
                 // UI에 등록한 이미지가 식별될 수 있도록 설정
                 $.each(data, (index, image) => {
-                    const item = $('<li></li>').text(`${image.originalName} {  ${image.size} bytes ) / ${image.imagePath}`);
+                    const item = $('<li></li>').text(`${image.originalName} (${image.size} bytes) / ${image.imagePath}`);
                     imageList.append(item);
                 });
             },
