@@ -42,7 +42,7 @@ $(() => {
         formData.append('_csrf', csrfToken);
 
         $.ajax({
-            url: "/image/upload",
+            url: "/images/upload",
             type: "POST",
             data: formData,
             processData: false, // FormData 객체 그대로 전송
