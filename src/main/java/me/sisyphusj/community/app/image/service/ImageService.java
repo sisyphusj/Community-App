@@ -10,9 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.commons.component.ImageUploadProvider;
 import me.sisyphusj.community.app.image.domain.ImageDetailReqDTO;
+import me.sisyphusj.community.app.image.domain.ImageDetailResDTO;
+import me.sisyphusj.community.app.image.domain.ImageInsertVO;
 import me.sisyphusj.community.app.image.domain.ImageUploadReqDTO;
 import me.sisyphusj.community.app.image.domain.ImageUploadResDTO;
-import me.sisyphusj.community.app.image.domain.ImageVO;
 import me.sisyphusj.community.app.image.mapper.ImageMapper;
 
 @Slf4j
@@ -31,11 +32,15 @@ public class ImageService {
 
 	@Transactional
 	public void saveImageDetails(int postId, List<ImageDetailReqDTO> imageDetails) {
-		List<ImageVO> imageVOList = imageDetails.stream()
-			.map(ImageVO::of)
-			.map(imageVO -> imageVO.updatePostId(postId))
+		List<ImageInsertVO> imageInsertVOList = imageDetails.stream()
+			.map(ImageInsertVO::of)
+			.map(imageInsertVO -> imageInsertVO.updatePostId(postId))
 			.toList();
 
-		imageMapper.insertImages(imageVOList);
+		imageMapper.insertImages(imageInsertVOList);
+	}
+
+	public List<ImageDetailResDTO> getImages(int postId) {
+
 	}
 }

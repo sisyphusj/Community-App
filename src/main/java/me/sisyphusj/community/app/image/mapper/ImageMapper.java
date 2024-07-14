@@ -4,10 +4,11 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import me.sisyphusj.community.app.image.domain.ImageVO;
+import me.sisyphusj.community.app.image.domain.ImageInsertVO;
 
 @Mapper
 public interface ImageMapper {
 
-	void insertImages(List<ImageVO> images);
+	void insertImages(List<ImageInsertVO> images);
+
 }

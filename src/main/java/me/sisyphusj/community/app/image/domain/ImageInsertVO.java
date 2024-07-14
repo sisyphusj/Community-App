@@ -6,7 +6,7 @@ import me.sisyphusj.community.app.utils.SecurityUtil;
 
 @Builder
 @Getter
-public class ImageVO {
+public class ImageInsertVO {
 
 	private int userId; // 작성자 고유 ID
 
@@ -20,13 +20,13 @@ public class ImageVO {
 
 	private String imagePath; // 저장소의 Image 주소
 
-	public ImageVO updatePostId(int postId) {
+	public ImageInsertVO updatePostId(int postId) {
 		this.postId = postId;
 		return this;
 	}
 
-	public static ImageVO of(ImageDetailReqDTO imageDetailReqDTO) {
-		return ImageVO.builder()
+	public static ImageInsertVO of(ImageDetailReqDTO imageDetailReqDTO) {
+		return ImageInsertVO.builder()
 			.userId(Integer.parseInt(SecurityUtil.getLoginUserId()))
 			.originalName(imageDetailReqDTO.getOriginalName())
 			.storedName(imageDetailReqDTO.getStoredName())
