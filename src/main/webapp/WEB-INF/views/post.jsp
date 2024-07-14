@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="icon" href="data:,">
+    <script src="<c:url value='https://code.jquery.com/jquery-3.7.1.min.js'/>"></script>
     <title>게시글</title>
 </head>
 <body>
@@ -23,5 +24,14 @@
 최종 수정일 : <fmt:formatDate value="${post.updatedDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
 <button onclick=window.location.href="/community">게시판으로 돌아가기</button>
 <button onclick=window.location.href="/">홈으로 돌아가기</button>
+
+<c:if test="${post.hasImage eq 'Y' }">
+    <div id="postImages"></div>
+    <script type="text/javascript">
+        const postId = "${post.postId}";
+    </script>
+    <script src="<c:url value='../../resource/js/getImages.js'/>"></script>
+</c:if>
+
 </body>
 </html>
