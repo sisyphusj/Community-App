@@ -47,14 +47,14 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
-
-
-
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
   type-aliases-package: me.sisyphusj.**
   mapper-locations: classpath:mapper/*.xml
+
+file:
+  upload-path: C:/communityImages
 
 server:
   servlet:
