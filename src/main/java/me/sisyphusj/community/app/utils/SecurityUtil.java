@@ -1,5 +1,7 @@
 package me.sisyphusj.community.app.utils;
 
+import java.util.Objects;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -47,5 +49,13 @@ public class SecurityUtil {
 			throw new AuthorizeException("인증정보가 존재하지 않습니다.");
 		}
 		return authentication;
+	}
+
+	/**
+	 * 현재 사용자가 로그인된 사용자인지 확인
+	 */
+	public static boolean isLoginUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return !Objects.equals(authentication.getName(), "anonymousUser");
 	}
 }
