@@ -19,6 +19,9 @@ public class PostDetailVO {
 	// 본문
 	private String content;
 
+	// 이미지 첨부 여부
+	private HasImage hasImage;
+
 	// 조회 수
 	private int views;
 

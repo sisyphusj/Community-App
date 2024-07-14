@@ -33,7 +33,14 @@
     </select>
 
     <select id="selectPostDetails" resultMap="postDetails">
-        select post_id, u.name, title, content, views, created_at, updated_at
+        select post_id,
+               u.name,
+               title,
+               content,
+               views,
+               has_image,
+               created_at,
+               updated_at
         from posts p
                  inner join user u on p.user_id = u.user_id
         where p.post_id = #{postId}
@@ -58,6 +65,7 @@
         <result property="author" column="name"/>
         <result property="title" column="title"/>
         <result property="content" column="content"/>
+        <result property="hasImage" column="has_image" typeHandler="org.apache.ibatis.type.EnumTypeHandler" javaType="me.sisyphusj.community.app.post.domain.HasImage"/>
         <result property="views" column="views"/>
         <result property="createdDate" column="created_at"/>
         <result property="updatedDate" column="updated_at"/>
