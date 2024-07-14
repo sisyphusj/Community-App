@@ -17,14 +17,14 @@ public class SecurityUtil {
 	/**
 	 * Authentication 에서 사용자 정보 추출
 	 */
-	public static String getLoginUserId() {
+	public static int getLoginUserId() {
 		Authentication authentication = getCurrentAuthentication();
 		Object principal = authentication.getPrincipal();
 
 		if (principal instanceof UserDetails userDetails) {
-			return userDetails.getUsername();
+			return Integer.parseInt(userDetails.getUsername());
 		} else if (principal instanceof DefaultOAuth2User user) {
-			return user.getName();
+			return Integer.parseInt(user.getName());
 		} else {
 			throw new AuthorizeException("인증된 사용자 정보를 찾을 수 없습니다.");
 		}

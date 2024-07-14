@@ -27,7 +27,7 @@ public class ImageInsertVO {
 
 	public static ImageInsertVO of(ImageDetailReqDTO imageDetailReqDTO) {
 		return ImageInsertVO.builder()
-			.userId(Integer.parseInt(SecurityUtil.getLoginUserId()))
+			.userId(SecurityUtil.getLoginUserId())
 			.originalName(imageDetailReqDTO.getOriginalName())
 			.storedName(imageDetailReqDTO.getStoredName())
 			.size(imageDetailReqDTO.getSize())

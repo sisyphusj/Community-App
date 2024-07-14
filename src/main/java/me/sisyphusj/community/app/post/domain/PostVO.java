@@ -20,7 +20,7 @@ public class PostVO {
 
 	public static PostVO of(CreatePostReqDTO createPostReqDTO) {
 		return PostVO.builder()
-			.userId(Integer.parseInt(SecurityUtil.getLoginUserId()))
+			.userId(SecurityUtil.getLoginUserId())
 			.title(createPostReqDTO.getTitle())
 			.content(createPostReqDTO.getContent())
 			.hasImage(createPostReqDTO.getHasImage())
