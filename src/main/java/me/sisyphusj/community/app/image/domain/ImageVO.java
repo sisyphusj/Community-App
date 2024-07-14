@@ -2,7 +2,7 @@ package me.sisyphusj.community.app.image.domain;
 
 import lombok.Builder;
 import lombok.Getter;
-import me.sisyphusj.community.app.utils.SessionUtil;
+import me.sisyphusj.community.app.utils.SecurityUtil;
 
 @Builder
 @Getter
@@ -27,7 +27,7 @@ public class ImageVO {
 
 	public static ImageVO of(ImageDetailReqDTO imageDetailReqDTO) {
 		return ImageVO.builder()
-			.userId(SessionUtil.getLoginUserId())
+			.userId(Integer.parseInt(SecurityUtil.getLoginUserId()))
 			.originalName(imageDetailReqDTO.getOriginalName())
 			.storedName(imageDetailReqDTO.getStoredName())
 			.size(imageDetailReqDTO.getSize())

@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import me.sisyphusj.community.app.utils.SessionUtil;
+import me.sisyphusj.community.app.utils.SecurityUtil;
 
 @Component
 public class CustomLogoutHandler implements LogoutHandler {
 
 	@Override
 	public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-		SessionUtil.sessionInvalidate();
+		SecurityUtil.clearSecurityContext();
 	}
 }

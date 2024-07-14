@@ -2,7 +2,7 @@ package me.sisyphusj.community.app.post.domain;
 
 import lombok.Builder;
 import lombok.Getter;
-import me.sisyphusj.community.app.utils.SessionUtil;
+import me.sisyphusj.community.app.utils.SecurityUtil;
 
 @Builder
 @Getter
@@ -20,7 +20,7 @@ public class PostVO {
 
 	public static PostVO of(CreatePostReqDTO createPostReqDTO) {
 		return PostVO.builder()
-			.userId(SessionUtil.getLoginUserId())
+			.userId(Integer.parseInt(SecurityUtil.getLoginUserId()))
 			.title(createPostReqDTO.getTitle())
 			.content(createPostReqDTO.getContent())
 			.hasImage(createPostReqDTO.getHasImage())

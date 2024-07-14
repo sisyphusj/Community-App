@@ -8,14 +8,12 @@ import org.springframework.stereotype.Component;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import me.sisyphusj.community.app.utils.SessionUtil;
 
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-		SessionUtil.setLoginUserId(authentication.getName());
 		response.sendRedirect("/");
 	}
 }
