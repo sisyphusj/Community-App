@@ -66,7 +66,7 @@ public class ImageUploadProvider {
 		return ImageUploadResDTO.builder()
 			.originalName(multipartFile.getOriginalFilename())
 			.storedName(storedName)
-			.imagePath(newUploadPath)
+			.imagePath(String.format("/uploads/%s/%s", today, storedName))
 			.size(multipartFile.getSize())
 			.build();
 	}

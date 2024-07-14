@@ -55,6 +55,7 @@ mybatis:
 
 file:
   upload-path: C:/communityImages
+  stored-upload-path: file:///C:/communityImages/
 
 server:
   servlet:
