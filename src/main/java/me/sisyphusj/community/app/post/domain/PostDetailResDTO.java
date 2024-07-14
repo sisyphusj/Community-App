@@ -9,6 +9,8 @@ import lombok.Getter;
 @Builder
 public class PostDetailResDTO {
 
+	private int userId;
+
 	// 게시글 고유 ID
 	private int postId;
 
@@ -35,6 +37,7 @@ public class PostDetailResDTO {
 
 	public static PostDetailResDTO of(PostDetailVO postDetailVO) {
 		return PostDetailResDTO.builder()
+			.userId(postDetailVO.getUserId())
 			.postId(postDetailVO.getPostId())
 			.author(postDetailVO.getAuthor())
 			.title(postDetailVO.getTitle())

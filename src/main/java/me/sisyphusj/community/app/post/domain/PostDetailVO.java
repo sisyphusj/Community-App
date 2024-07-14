@@ -7,6 +7,9 @@ import lombok.Getter;
 @Getter
 public class PostDetailVO {
 
+	// 작성자 ID
+	private int userId;
+
 	// 게시글 고유 ID
 	private int postId;
 
