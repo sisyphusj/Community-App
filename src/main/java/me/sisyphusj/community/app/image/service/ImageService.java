@@ -25,11 +25,17 @@ public class ImageService {
 
 	private final ImageUploadProvider imageUploadProvider;
 
+	/**
+	 * 이미지를 지정 디렉토리에 업로드
+	 */
 	public List<ImageUploadResDTO> uploadImages(ImageUploadReqDTO imageUploadReqDTO) {
 		List<MultipartFile> uploadFiles = imageUploadReqDTO.getUploadFiles();
 		return imageUploadProvider.uploadFiles(uploadFiles);
 	}
 
+	/**
+	 * 이미지 메타 데이터 DB 저장
+	 */
 	@Transactional
 	public void saveImageDetails(int postId, List<ImageDetailReqDTO> imageDetails) {
 		List<ImageInsertVO> imageInsertVOList = imageDetails.stream()
@@ -40,7 +46,13 @@ public class ImageService {
 		imageMapper.insertImages(imageInsertVOList);
 	}
 
+	/**
+	 * 이미지 메타 데이터 리스트 조회
+	 */
+	@Transactional(readOnly = true)
 	public List<ImageDetailResDTO> getImages(int postId) {
-
+		return imageMapper.selectImageList(postId).stream()
+			.map(ImageDetailResDTO::of)
+			.toList();
 	}
 }
