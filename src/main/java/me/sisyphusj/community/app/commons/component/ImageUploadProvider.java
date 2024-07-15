@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.commons.exception.FileUploadException;
-import me.sisyphusj.community.app.image.domain.ImageUploadResDTO;
+import me.sisyphusj.community.app.image.domain.ImageMetadata;
 
 @Slf4j
 @Component
@@ -30,8 +30,8 @@ public class ImageUploadProvider {
 	/**
 	 * 이미지 리스트를 반복을 통해 로컬 디렉토리에 업로드 <br> 이미지 메타데이터 리스트 반환
 	 */
-	public List<ImageUploadResDTO> uploadFiles(List<MultipartFile> multipartFiles) {
-		List<ImageUploadResDTO> files = new ArrayList<>(); // 이미지 메타데이터 응답 리스트
+	public List<ImageMetadata> uploadFiles(List<MultipartFile> multipartFiles) {
+		List<ImageMetadata> files = new ArrayList<>(); // 이미지 메타데이터 응답 리스트
 
 		for (MultipartFile multipartFile : multipartFiles) {
 			if (multipartFile.isEmpty()) {
@@ -45,7 +45,7 @@ public class ImageUploadProvider {
 	/**
 	 * 이미지 파일 업로드
 	 */
-	public ImageUploadResDTO uploadFile(MultipartFile multipartFile) {
+	private ImageMetadata uploadFile(MultipartFile multipartFile) {
 		if (multipartFile.isEmpty()) {
 			throw new IllegalArgumentException("파일이 비어있습니다.");
 		}
@@ -63,7 +63,7 @@ public class ImageUploadProvider {
 		}
 
 		// 메타데이터 반환
-		return ImageUploadResDTO.builder()
+		return ImageMetadata.builder()
 			.originalName(multipartFile.getOriginalFilename())
 			.storedName(storedName)
 			.imagePath(String.format("/uploads/%s/%s", today, storedName))
