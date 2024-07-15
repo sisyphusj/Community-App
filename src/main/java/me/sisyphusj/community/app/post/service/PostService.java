@@ -37,8 +37,8 @@ public class PostService {
 		PostVO postVO = PostVO.of(createPostReqDTO);
 		postMapper.insertPost(postVO);
 
-		if (postVO.getHasImage() == HasImage.Y) {
-			imageService.saveImageDetails(postVO.getPostId(), createPostReqDTO.getImageDetailReqDTOList());
+		if (postVO.getHasImage() == HasImage.Y && !(createPostReqDTO.getImages().isEmpty())) {
+			imageService.saveImage(postVO.getPostId(), createPostReqDTO.getImages());
 		}
 	}
 

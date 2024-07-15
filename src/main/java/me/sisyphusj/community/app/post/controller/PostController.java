@@ -5,9 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -19,6 +19,7 @@ import me.sisyphusj.community.app.post.domain.PageResDTO;
 import me.sisyphusj.community.app.post.domain.PageSortType;
 import me.sisyphusj.community.app.post.domain.PostDetailResDTO;
 import me.sisyphusj.community.app.post.service.PostService;
+import me.sisyphusj.community.app.utils.SecurityUtil;
 
 @Slf4j
 @Controller
@@ -49,8 +50,8 @@ public class PostController {
 	/**
 	 * 게시글 추가
 	 */
-	@PostMapping("/add")
-	public ResponseEntity<HttpStatus> createPost(@Valid @RequestBody CreatePostReqDTO createPostReqDTO) {
+	@PostMapping("/posts")
+	public ResponseEntity<HttpStatus> createPost(@Valid @ModelAttribute CreatePostReqDTO createPostReqDTO) {
 		postService.createPost(createPostReqDTO);
 		return ResponseEntity.ok(HttpStatus.OK);
 	}
@@ -62,6 +63,11 @@ public class PostController {
 	public String showPostPage(@PathVariable int postId, Model model) {
 		PostDetailResDTO postDetailResDTO = postService.getPostDetails(postId);
 		model.addAttribute("postDetailResDTO", postDetailResDTO);
+
+		if (SecurityUtil.isLoginUser()) {
+			model.addAttribute("currentUserId", SecurityUtil.getLoginUserId());
+		}
+
 		return "post";
 	}
 }

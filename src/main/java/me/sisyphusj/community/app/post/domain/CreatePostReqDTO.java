@@ -2,13 +2,17 @@ package me.sisyphusj.community.app.post.domain;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
-import me.sisyphusj.community.app.image.domain.ImageDetailReqDTO;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Builder
 public class CreatePostReqDTO {
 
@@ -20,8 +24,9 @@ public class CreatePostReqDTO {
 	@Size(max = 500, message = "본문은 최대 500자까지 쓸 수 있습니다.")
 	private String content;
 
+	@NotNull
 	private HasImage hasImage;
 
-	private List<ImageDetailReqDTO> imageDetailReqDTOList;
+	private List<MultipartFile> images;
 
 }

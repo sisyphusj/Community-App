@@ -9,11 +9,9 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.commons.component.ImageUploadProvider;
-import me.sisyphusj.community.app.image.domain.ImageDetailReqDTO;
-import me.sisyphusj.community.app.image.domain.ImageDetailResDTO;
-import me.sisyphusj.community.app.image.domain.ImageInsertVO;
-import me.sisyphusj.community.app.image.domain.ImageUploadReqDTO;
-import me.sisyphusj.community.app.image.domain.ImageUploadResDTO;
+import me.sisyphusj.community.app.image.domain.ImageDetailsInsertVO;
+import me.sisyphusj.community.app.image.domain.ImageDetailsResDTO;
+import me.sisyphusj.community.app.image.domain.ImageMetadata;
 import me.sisyphusj.community.app.image.mapper.ImageMapper;
 
 @Slf4j
@@ -26,33 +24,27 @@ public class ImageService {
 	private final ImageUploadProvider imageUploadProvider;
 
 	/**
-	 * 이미지를 지정 디렉토리에 업로드
-	 */
-	public List<ImageUploadResDTO> uploadImages(ImageUploadReqDTO imageUploadReqDTO) {
-		List<MultipartFile> uploadFiles = imageUploadReqDTO.getUploadFiles();
-		return imageUploadProvider.uploadFiles(uploadFiles);
-	}
-
-	/**
-	 * 이미지 메타 데이터 DB 저장
+	 * 디렉토리에 이미지 저장 및 이미지 메타 데이터 DB 저장
 	 */
 	@Transactional
-	public void saveImageDetails(int postId, List<ImageDetailReqDTO> imageDetails) {
-		List<ImageInsertVO> imageInsertVOList = imageDetails.stream()
-			.map(ImageInsertVO::of)
-			.map(imageInsertVO -> imageInsertVO.updatePostId(postId))
+	public void saveImage(int postId, List<MultipartFile> images) {
+		List<ImageMetadata> metaDataList = imageUploadProvider.uploadFiles(images);
+
+		List<ImageDetailsInsertVO> imageDetailsInsertVOList = metaDataList.stream()
+			.map(ImageDetailsInsertVO::of)
+			.map(imageDetailsInsertVO -> imageDetailsInsertVO.updatePostId(postId))
 			.toList();
 
-		imageMapper.insertImages(imageInsertVOList);
+		imageMapper.insertImages(imageDetailsInsertVOList);
 	}
 
 	/**
 	 * 이미지 메타 데이터 리스트 조회
 	 */
 	@Transactional(readOnly = true)
-	public List<ImageDetailResDTO> getImages(int postId) {
+	public List<ImageDetailsResDTO> getImages(int postId) {
 		return imageMapper.selectImageList(postId).stream()
-			.map(ImageDetailResDTO::of)
+			.map(ImageDetailsResDTO::of)
 			.toList();
 	}
 }
