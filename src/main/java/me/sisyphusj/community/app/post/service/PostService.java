@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 import me.sisyphusj.community.app.image.service.ImageService;
 import me.sisyphusj.community.app.post.domain.CreatePostReqDTO;
@@ -20,7 +19,6 @@ import me.sisyphusj.community.app.post.domain.PostSummaryResDTO;
 import me.sisyphusj.community.app.post.domain.PostVO;
 import me.sisyphusj.community.app.post.mapper.PostMapper;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {

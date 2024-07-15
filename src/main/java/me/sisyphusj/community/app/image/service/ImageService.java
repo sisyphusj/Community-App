@@ -7,14 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.commons.component.ImageUploadProvider;
 import me.sisyphusj.community.app.image.domain.ImageDetailsInsertVO;
 import me.sisyphusj.community.app.image.domain.ImageDetailsResDTO;
-import me.sisyphusj.community.app.image.domain.ImageMetadata;
 import me.sisyphusj.community.app.image.mapper.ImageMapper;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ImageService {
@@ -28,9 +25,7 @@ public class ImageService {
 	 */
 	@Transactional
 	public void saveImage(int postId, List<MultipartFile> images) {
-		List<ImageMetadata> metaDataList = imageUploadProvider.uploadFiles(images);
-
-		List<ImageDetailsInsertVO> imageDetailsInsertVOList = metaDataList.stream()
+		List<ImageDetailsInsertVO> imageDetailsInsertVOList = imageUploadProvider.uploadFiles(images).stream()
 			.map(ImageDetailsInsertVO::of)
 			.map(imageDetailsInsertVO -> imageDetailsInsertVO.updatePostId(postId))
 			.toList();

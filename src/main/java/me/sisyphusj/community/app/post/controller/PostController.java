@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.post.domain.CreatePostReqDTO;
 import me.sisyphusj.community.app.post.domain.PageResDTO;
 import me.sisyphusj.community.app.post.domain.PageSortType;
@@ -21,7 +20,6 @@ import me.sisyphusj.community.app.post.domain.PostDetailResDTO;
 import me.sisyphusj.community.app.post.service.PostService;
 import me.sisyphusj.community.app.utils.SecurityUtil;
 
-@Slf4j
 @Controller
 @RequestMapping("/community")
 @RequiredArgsConstructor

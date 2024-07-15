@@ -9,11 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.image.domain.ImageDetailsResDTO;
 import me.sisyphusj.community.app.image.service.ImageService;
 
-@Slf4j
 @Controller
 @RequestMapping("/images")
 @RequiredArgsConstructor
