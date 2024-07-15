@@ -18,7 +18,6 @@ import me.sisyphusj.community.app.post.domain.PageResDTO;
 import me.sisyphusj.community.app.post.domain.PageSortType;
 import me.sisyphusj.community.app.post.domain.PostDetailResDTO;
 import me.sisyphusj.community.app.post.service.PostService;
-import me.sisyphusj.community.app.utils.SecurityUtil;
 
 @Controller
 @RequestMapping("/community")
@@ -61,11 +60,6 @@ public class PostController {
 	public String showPostPage(@PathVariable int postId, Model model) {
 		PostDetailResDTO postDetailResDTO = postService.getPostDetails(postId);
 		model.addAttribute("postDetailResDTO", postDetailResDTO);
-
-		if (SecurityUtil.isLoginUser()) {
-			model.addAttribute("currentUserId", SecurityUtil.getLoginUserId());
-		}
-
 		return "post";
 	}
 }

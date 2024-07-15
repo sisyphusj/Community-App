@@ -1,3 +1,4 @@
+<%@ page import="me.sisyphusj.community.app.utils.SecurityUtil" %>
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
@@ -22,7 +23,7 @@
 </p>
 생성일 : <fmt:formatDate value="${post.createdDate}" pattern="yyyy-MM-dd HH:mm:ss"/> <br>
 최종 수정일 : <fmt:formatDate value="${post.updatedDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
-<button onclick=window.location.href="/community">게시판으로 돌아가기</button>
+<button onclick=window.location.href="/community">목록으로 돌아가기</button>
 <button onclick=window.location.href="/">홈으로 돌아가기</button>
 
 <c:if test="${post.hasImage eq 'Y' }">
@@ -31,6 +32,22 @@
         const postId = "${post.postId}";
     </script>
     <script src="<c:url value='../../resource/js/getImages.js'/>"></script>
+</c:if>
+
+<%
+    Integer currentUserId = null;
+    if (SecurityUtil.isLoginUser()) {
+        currentUserId = SecurityUtil.getLoginUserId();
+    }
+    pageContext.setAttribute("currentUserId", currentUserId);
+%>
+
+<c:if test="${post.userId eq currentUserId}">
+    <form action="./editPost.jsp">
+        <input type="hidden" name="data" value="${post}">
+        <button type="submit">수정</button>
+    </form>
+    <button>삭제</button>
 </c:if>
 
 </body>
