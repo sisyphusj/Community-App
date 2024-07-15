@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ImageUploadResDTO {
+public class ImageMetadata {
 
 	// 파일 원본 이름
 	private String originalName;

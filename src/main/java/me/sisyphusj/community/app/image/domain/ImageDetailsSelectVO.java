@@ -5,7 +5,7 @@ import java.util.Date;
 import lombok.Getter;
 
 @Getter
-public class ImageSelectVO {
+public class ImageDetailsSelectVO {
 
 	private int imageId; // 이미지 고유 ID
 

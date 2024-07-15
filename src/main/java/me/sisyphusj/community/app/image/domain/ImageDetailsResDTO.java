@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ImageDetailResDTO {
+public class ImageDetailsResDTO {
 
 	private int imageId; // 이미지 고유 ID
 
@@ -23,14 +23,14 @@ public class ImageDetailResDTO {
 
 	private Date createdDate; // 이미지 업로드 날짜
 
-	public static ImageDetailResDTO of(ImageSelectVO imageSelectVO) {
-		return ImageDetailResDTO.builder()
-			.imageId(imageSelectVO.getImageId())
-			.postId(imageSelectVO.getPostId())
-			.originalName(imageSelectVO.getOriginalName())
-			.storedName(imageSelectVO.getStoredName())
-			.imagePath(imageSelectVO.getImagePath())
-			.createdDate(imageSelectVO.getCreatedDate())
+	public static ImageDetailsResDTO of(ImageDetailsSelectVO imageDetailsSelectVO) {
+		return ImageDetailsResDTO.builder()
+			.imageId(imageDetailsSelectVO.getImageId())
+			.postId(imageDetailsSelectVO.getPostId())
+			.originalName(imageDetailsSelectVO.getOriginalName())
+			.storedName(imageDetailsSelectVO.getStoredName())
+			.imagePath(imageDetailsSelectVO.getImagePath())
+			.createdDate(imageDetailsSelectVO.getCreatedDate())
 			.build();
 	}
 }
