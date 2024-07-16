@@ -9,9 +9,9 @@ import lombok.Getter;
 @Builder
 public class ImageDetailsResDTO {
 
-	private int imageId; // 이미지 고유 ID
+	private long imageId; // 이미지 고유 ID
 
-	private int postId; // 게시글 고유 ID
+	private long postId; // 게시글 고유 ID
 
 	private String originalName; // 파일 원본 이름
 

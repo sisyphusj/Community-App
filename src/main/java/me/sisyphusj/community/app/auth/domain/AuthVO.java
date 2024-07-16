@@ -6,7 +6,7 @@ import lombok.Getter;
 public class AuthVO {
 
 	// 사용자 고유 ID
-	private int userId;
+	private long userId;
 
 	// 비밀번호
 	private String password;

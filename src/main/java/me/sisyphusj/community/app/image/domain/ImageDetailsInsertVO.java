@@ -8,9 +8,9 @@ import me.sisyphusj.community.app.utils.SecurityUtil;
 @Getter
 public class ImageDetailsInsertVO {
 
-	private int userId; // 작성자 고유 ID
+	private long userId; // 작성자 고유 ID
 
-	private int postId; // 게시글 고유 ID
+	private long postId; // 게시글 고유 ID
 
 	private String originalName; // 파일 원본 이름
 
@@ -20,7 +20,7 @@ public class ImageDetailsInsertVO {
 
 	private String imagePath; // 저장소의 Image 주소
 
-	public ImageDetailsInsertVO updatePostId(int postId) {
+	public ImageDetailsInsertVO updatePostId(long postId) {
 		this.postId = postId;
 		return this;
 	}

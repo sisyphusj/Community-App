@@ -8,9 +8,9 @@ import me.sisyphusj.community.app.utils.SecurityUtil;
 @Getter
 public class PostVO {
 
-	private int postId;
+	private long postId;
 
-	private int userId;
+	private long userId;
 
 	private String title;
 

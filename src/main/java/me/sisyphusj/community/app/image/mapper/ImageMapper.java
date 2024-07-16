@@ -12,6 +12,6 @@ public interface ImageMapper {
 
 	void insertImages(List<ImageDetailsInsertVO> images);
 
-	List<ImageDetailsSelectVO> selectImageList(int postId);
+	List<ImageDetailsSelectVO> selectImageList(long postId);
 
 }

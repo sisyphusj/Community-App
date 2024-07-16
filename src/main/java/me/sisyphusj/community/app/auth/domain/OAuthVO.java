@@ -8,7 +8,7 @@ import lombok.Getter;
 public class OAuthVO {
 
 	// user Id
-	private int userId;
+	private long userId;
 
 	// OAuth 제공자 ID
 	private String username;

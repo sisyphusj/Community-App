@@ -24,7 +24,7 @@ public class ImageService {
 	 * 디렉토리에 이미지 저장 및 이미지 메타 데이터 DB 저장
 	 */
 	@Transactional
-	public void saveImage(int postId, List<MultipartFile> images) {
+	public void saveImage(long postId, List<MultipartFile> images) {
 		List<ImageDetailsInsertVO> imageDetailsInsertVOList = imageUploadProvider.uploadFiles(images).stream()
 			.map(ImageDetailsInsertVO::of)
 			.map(imageDetailsInsertVO -> imageDetailsInsertVO.updatePostId(postId))
@@ -37,7 +37,7 @@ public class ImageService {
 	 * 이미지 메타 데이터 리스트 조회
 	 */
 	@Transactional(readOnly = true)
-	public List<ImageDetailsResDTO> getImages(int postId) {
+	public List<ImageDetailsResDTO> getImages(long postId) {
 		return imageMapper.selectImageList(postId).stream()
 			.map(ImageDetailsResDTO::of)
 			.toList();
