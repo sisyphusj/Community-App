@@ -1,3 +1,6 @@
+<%@ page import="org.springframework.security.core.Authentication" %>
+<%@ page import="org.springframework.security.core.context.SecurityContextHolder" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="ko">
@@ -53,10 +56,18 @@
 
 <body>
 
+<%
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    boolean isLoginUser = (authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser"));
+    pageContext.setAttribute("isLoginUser", isLoginUser);
+%>
+
 <h1>홈페이지</h1>
 
 <button id="signupBtn">회원가입</button>
-<button id="loginBtn">로그인</button>
+<c:if test="${!isLoginUser}">
+    <button id="loginBtn">로그인</button>
+</c:if>
 <button id="myPageBtn">마이페이지</button>
 <button id="logoutBtn">로그아웃</button>
 <button id="communityBtn">게시판</button>
