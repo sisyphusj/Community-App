@@ -12,10 +12,25 @@
         </foreach>
     </insert>
 
-    <select id="selectImageList" resultType="me.sisyphusj.community.app.image.domain.ImageDetailsSelectVO">
+    <select id="selectImageList" resultMap="imageList">
         select image_id, post_id, origin_name, stored_name, size, image_path, created_at
         from image
         where post_id = #{postId}
     </select>
 
+    <update id="updateImage">
+        update image
+        set is_deleted = 'Y'
+        where image_id = #{imageId}
+    </update>
+
+    <resultMap id="imageList" type="me.sisyphusj.community.app.image.domain.ImageDetailsSelectVO">
+        <id property="imageId" column="image_id"/>
+        <result property="postId" column="post_id"/>
+        <result property="originalName" column="origin_name"/>
+        <result property="storedName" column="stored_name"/>
+        <result property="size" column="size"/>
+        <result property="imagePath" column="image_path"/>
+        <result property="createdDate" column="created_at"/>
+    </resultMap>
 </mapper>
