@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.commons.exception.AlertException;
 import me.sisyphusj.community.app.commons.exception.AuthorizeException;
 import me.sisyphusj.community.app.commons.exception.BlankInputException;
+import me.sisyphusj.community.app.commons.exception.ImageNotFoundException;
 import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 
 @Slf4j
@@ -61,6 +62,16 @@ public class GlobalExceptionAdvice {
 	public ModelAndView handelPostNotFoundException(PostNotFoundException e) {
 		log.error("[PostNotFoundException 발생]");
 		return getModelAndView("요청하신 게시글을 찾을 수 없습니다.", RedirectType.BACK);
+	}
+
+	/**
+	 * 이미지 제거 작업을 실패한 경우
+	 */
+	@ExceptionHandler(ImageNotFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ModelAndView handleImageNotFoundException(ImageNotFoundException e) {
+		log.error("[ImageNotFoundException 발생]");
+		return getModelAndView("요청하신 이미지를 찾을 수 없습니다.", RedirectType.BACK);
 	}
 
 	/**
