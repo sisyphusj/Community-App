@@ -8,9 +8,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.commons.component.ImageUploadProvider;
+import me.sisyphusj.community.app.commons.exception.ImageNotFoundException;
 import me.sisyphusj.community.app.image.domain.ImageDetailsInsertVO;
 import me.sisyphusj.community.app.image.domain.ImageDetailsResDTO;
 import me.sisyphusj.community.app.image.mapper.ImageMapper;
+import me.sisyphusj.community.app.utils.SecurityUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -41,5 +43,20 @@ public class ImageService {
 		return imageMapper.selectImageList(postId).stream()
 			.map(ImageDetailsResDTO::of)
 			.toList();
+	}
+
+	/**
+	 * 이미지 제거
+	 */
+	@Transactional
+	public void removeImage(long imageId) {
+		String imagePath = imageMapper.selectImagePath(imageId)
+			.orElseThrow(ImageNotFoundException::new);
+
+		if (imageMapper.updateImage(SecurityUtil.getLoginUserId(), imageId) != 1) {
+			throw new ImageNotFoundException();
+		}
+
+		imageUploadProvider.deleteFile(imagePath);
 	}
 }

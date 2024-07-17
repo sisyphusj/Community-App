@@ -42,6 +42,15 @@ public class ImageUploadProvider {
 		return files;
 	}
 
+	public void deleteFile(String imagePath) {
+		String path = Paths.get("C:/communityImages", imagePath.replace("/uploads", "")).toString();
+		File file = new File(path);
+		if (!file.exists()) {
+			throw new IllegalArgumentException("파일이 존재하지 않습니다.");
+		}
+		file.delete();
+	}
+
 	/**
 	 * 이미지 파일 업로드
 	 */

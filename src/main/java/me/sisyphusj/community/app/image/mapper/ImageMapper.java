@@ -1,6 +1,7 @@
 package me.sisyphusj.community.app.image.mapper;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -13,5 +14,9 @@ public interface ImageMapper {
 	void insertImages(List<ImageDetailsInsertVO> images);
 
 	List<ImageDetailsSelectVO> selectImageList(long postId);
+
+	Optional<String> selectImagePath(long imageId);
+
+	int updateImage(long userId, long imageId);
 
 }

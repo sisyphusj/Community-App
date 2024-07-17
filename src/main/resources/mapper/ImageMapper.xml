@@ -5,10 +5,10 @@
 <mapper namespace="me.sisyphusj.community.app.image.mapper.ImageMapper">
 
     <insert id="insertImages" parameterType="java.util.List">
-        insert into image (post_id, origin_name, stored_name, size, image_path)
+        insert into image (user_id, post_id, origin_name, stored_name, size, image_path)
         values
         <foreach collection="list" item="image" separator=",">
-            (#{image.postId}, #{image.originalName}, #{image.storedName}, #{image.size}, #{image.imagePath})
+            (#{image.userId}, #{image.postId}, #{image.originalName}, #{image.storedName}, #{image.size}, #{image.imagePath})
         </foreach>
     </insert>
 
@@ -16,12 +16,21 @@
         select image_id, post_id, origin_name, stored_name, size, image_path, created_at
         from image
         where post_id = #{postId}
+          and is_deleted = 'N'
+    </select>
+
+    <select id="selectImagePath">
+        select image_path
+        from image
+        where image_id = #{imageId}
+          and is_deleted = 'N'
     </select>
 
     <update id="updateImage">
         update image
         set is_deleted = 'Y'
         where image_id = #{imageId}
+          and user_id = #{userId}
     </update>
 
     <resultMap id="imageList" type="me.sisyphusj.community.app.image.domain.ImageDetailsSelectVO">
