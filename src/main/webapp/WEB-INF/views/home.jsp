@@ -16,18 +16,6 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script type="text/javascript">
         $(() => {
-            $('#signupBtn').click(() => {
-                window.location.href = '/auth/signup';
-            });
-
-            $('#loginBtn').click(() => {
-                window.location.href = '/auth/login';
-            });
-
-            $('#myPageBtn').click(() => {
-                window.location.href = '/auth/my-page';
-            });
-
             $('#logoutBtn').click(() => {
                 const form = $('<form>', {
                     'method': 'POST',
@@ -44,16 +32,9 @@
                 $('body').append(form);
                 form.submit();
             });
-
-            $(() => {
-                $('#communityBtn').click(function () {
-                    window.location.href = '/community?page=1&sort=DATE';
-                });
-            });
         });
     </script>
 </head>
-
 <body>
 
 <%
@@ -64,12 +45,12 @@
 
 <h1>홈페이지</h1>
 
-<button id="signupBtn">회원가입</button>
+<button onclick="location.href='<c:url value='/auth/signup'/>'">회원가입</button>
 <c:if test="${!isLoginUser}">
-    <button id="loginBtn">로그인</button>
+    <button onclick="location.href='<c:url value='/auth/login'/>'">로그인</button>
 </c:if>
-<button id="myPageBtn">마이페이지</button>
+<button onclick="location.href='<c:url value='/auth/my-page'/>'">마이 페이지</button>
 <button id="logoutBtn">로그아웃</button>
-<button id="communityBtn">게시판</button>
+<button onclick="location.href='<c:url value='/community?page=1&sort=DATE'/>'">게시판</button>
 </body>
 </html>
