@@ -59,14 +59,14 @@ public class PostService {
 			.toList();
 
 		// 현재 페이지 페이지네이션 메타데이터, 게시글 섬네일 리스트 반환
-		return new PageResDTO(currentPage, ROW_SIZE_PER_PAGE, totalRowCount, postListDTO);
+		return new PageResDTO(currentPage, totalRowCount, postListDTO);
 	}
 
 	/**
 	 * postId를 통한 게시글 조회
 	 */
 	@Transactional
-	public PostDetailResDTO getPostDetails(int postId) {
+	public PostDetailResDTO getPostDetails(long postId) {
 		if (postMapper.updateViewsAndGet(postId) == 0) {
 			throw new PostNotFoundException();
 		}

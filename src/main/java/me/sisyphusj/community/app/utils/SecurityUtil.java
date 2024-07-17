@@ -19,7 +19,7 @@ public class SecurityUtil {
 	/**
 	 * Authentication 에서 사용자 정보 추출
 	 */
-	public static int getLoginUserId() {
+	public static long getLoginUserId() {
 		Authentication authentication = getCurrentAuthentication();
 		Object principal = authentication.getPrincipal();
 

@@ -19,7 +19,7 @@ public interface PostMapper {
 
 	int selectTotalCount();
 
-	Optional<PostDetailVO> selectPostDetails(int postId);
+	Optional<PostDetailVO> selectPostDetails(long postId);
 
-	int updateViewsAndGet(int postId);
+	int updateViewsAndGet(long postId);
 }
