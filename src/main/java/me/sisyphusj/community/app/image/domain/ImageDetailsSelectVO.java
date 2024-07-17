@@ -7,9 +7,9 @@ import lombok.Getter;
 @Getter
 public class ImageDetailsSelectVO {
 
-	private long imageId; // 이미지 고유 ID
+	private Long imageId; // 이미지 고유 ID
 
-	private long postId; // 게시글 고유 ID
+	private Long postId; // 게시글 고유 ID
 
 	private String originalName; // 파일 원본 이름
 
