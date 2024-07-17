@@ -26,4 +26,15 @@ public class PostVO {
 			.hasImage(postCreateReqDTO.getHasImage())
 			.build();
 	}
+
+	public static PostVO of(PostEditReqDTO postEditReqDTO) {
+		return PostVO.builder()
+			.postId(postEditReqDTO.getPostId())
+			.userId(SecurityUtil.getLoginUserId())
+			.title(postEditReqDTO.getTitle())
+			.content(postEditReqDTO.getContent())
+			.hasImage(postEditReqDTO.getHasImage())
+			.build();
+
+	}
 }

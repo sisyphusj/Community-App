@@ -51,9 +51,9 @@ public class PageResDTO {
 		}
 	}
 
-	public PageResDTO(int currentPage, int rowSizePerPage, int totalRowCount, List<PostSummaryResDTO> postSummaryResDTO) {
+	public PageResDTO(int currentPage, int totalRowCount, List<PostSummaryResDTO> postSummaryResDTO) {
 		this.currentPage = currentPage;
-		this.rowSizePerPage = rowSizePerPage;
+		this.rowSizePerPage = ROW_SIZE_PER_PAGE;
 		this.pageSize = PAGE_SIZE;
 		this.totalRowCount = totalRowCount;
 		this.postSummaryResDTO = postSummaryResDTO;

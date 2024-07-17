@@ -8,17 +8,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 import me.sisyphusj.community.app.image.service.ImageService;
-import me.sisyphusj.community.app.post.domain.CreatePostReqDTO;
 import me.sisyphusj.community.app.post.domain.HasImage;
 import me.sisyphusj.community.app.post.domain.PageResDTO;
 import me.sisyphusj.community.app.post.domain.PageSortType;
+import me.sisyphusj.community.app.post.domain.PostCreateReqDTO;
 import me.sisyphusj.community.app.post.domain.PostDetailResDTO;
+import me.sisyphusj.community.app.post.domain.PostEditReqDTO;
 import me.sisyphusj.community.app.post.domain.PostSummaryResDTO;
 import me.sisyphusj.community.app.post.domain.PostVO;
 import me.sisyphusj.community.app.post.mapper.PostMapper;
+import me.sisyphusj.community.app.utils.SecurityUtil;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -31,12 +35,12 @@ public class PostService {
 	 * 게시글 생성
 	 */
 	@Transactional
-	public void createPost(CreatePostReqDTO createPostReqDTO) {
-		PostVO postVO = PostVO.of(createPostReqDTO);
+	public void createPost(PostCreateReqDTO postCreateReqDTO) {
+		PostVO postVO = PostVO.of(postCreateReqDTO);
 		postMapper.insertPost(postVO);
 
-		if (postVO.getHasImage() == HasImage.Y && !(createPostReqDTO.getImages().isEmpty())) {
-			imageService.saveImage(postVO.getPostId(), createPostReqDTO.getImages());
+		if (postVO.getHasImage() == HasImage.Y && !(postCreateReqDTO.getImages().isEmpty())) {
+			imageService.saveImage(postVO.getPostId(), postCreateReqDTO.getImages());
 		}
 	}
 
@@ -74,5 +78,28 @@ public class PostService {
 		return postMapper.selectPostDetails(postId)
 			.map(PostDetailResDTO::of)
 			.orElseThrow(PostNotFoundException::new);
+	}
+
+	@Transactional
+	public void editPost(PostEditReqDTO postEditReqDTO) {
+		if (postMapper.selectCountPost(postEditReqDTO.getPostId(), SecurityUtil.getLoginUserId()) != 1) {
+			throw new PostNotFoundException();
+		}
+
+		PostVO postVO = PostVO.of(postEditReqDTO);
+		postMapper.updatePost(postVO);
+
+		if (postVO.getHasImage() == HasImage.Y && (postEditReqDTO.getImages() != null)) {
+			imageService.saveImage(postVO.getPostId(), postEditReqDTO.getImages());
+		}
+	}
+
+	@Transactional
+	public void removePost(long postId) {
+		if (postMapper.selectCountPost(postId, SecurityUtil.getLoginUserId()) != 1) {
+			throw new PostNotFoundException();
+		}
+
+		postMapper.deletePost(postId);
 	}
 }

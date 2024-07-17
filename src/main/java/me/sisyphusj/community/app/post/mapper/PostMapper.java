@@ -22,4 +22,11 @@ public interface PostMapper {
 	Optional<PostDetailVO> selectPostDetails(long postId);
 
 	int updateViewsAndGet(long postId);
+
+	int selectCountPost(long postId, long userId);
+
+	void updatePost(PostVO postVO);
+
+	void deletePost(long postId);
+
 }
