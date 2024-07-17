@@ -7,14 +7,12 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
-@Builder
-public class CreatePostReqDTO {
+@AllArgsConstructor
+public class PostCreateReqDTO {
 
 	@NotBlank
 	@Size(max = 50, message = "제목은 최대 50자까지 쓸 수 있습니다.")

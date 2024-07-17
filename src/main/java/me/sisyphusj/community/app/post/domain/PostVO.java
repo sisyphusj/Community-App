@@ -18,12 +18,12 @@ public class PostVO {
 
 	private HasImage hasImage;
 
-	public static PostVO of(CreatePostReqDTO createPostReqDTO) {
+	public static PostVO of(PostCreateReqDTO postCreateReqDTO) {
 		return PostVO.builder()
 			.userId(SecurityUtil.getLoginUserId())
-			.title(createPostReqDTO.getTitle())
-			.content(createPostReqDTO.getContent())
-			.hasImage(createPostReqDTO.getHasImage())
+			.title(postCreateReqDTO.getTitle())
+			.content(postCreateReqDTO.getContent())
+			.hasImage(postCreateReqDTO.getHasImage())
 			.build();
 	}
 }
