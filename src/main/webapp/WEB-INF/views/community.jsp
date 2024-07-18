@@ -1,3 +1,5 @@
+<%@ page import="org.springframework.security.core.Authentication" %>
+<%@ page import="org.springframework.security.core.context.SecurityContextHolder" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -37,22 +39,36 @@
             color: #333;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        function updateSort(event) {
-            event.preventDefault();
-            const sortValue = document.forms["textsearch"]["sort"].value;
-            const urlParams = new URLSearchParams(window.location.search);
-            urlParams.set('sort', sortValue);
-            urlParams.set('page', 1);
-            window.location.search = urlParams.toString();
+        $(function () {
+            $('#textSearch').on('submit', (event) => {
+                const sortValue = $(this).find('select[name="sort"]').val();
+                const urlParams = new URLSearchParams(window.location.search); // URL 쿼리 부분
+                urlParams.set('sort', sortValue);
+                urlParams.set('page', 1);
+                window.location.search = urlParams.toString();
+            });
+        });
+
+        const message = '<c:out value="${message}"/>';
+        if (message) {
+            alert(message);
         }
     </script>
 </head>
 <body>
+<%
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    boolean isLoginUser = (authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser"));
+    pageContext.setAttribute("isLoginUser", isLoginUser);
+%>
 <div>
-    <button onclick="location.href='/community/new'">게시글 쓰기</button>
+    <c:if test="${isLoginUser}">
+        <button onclick="location.href='/community/new'">게시글 쓰기</button>
+    </c:if>
 
-    <form name="textsearch" onsubmit="updateSort(event);">
+    <form id="textSearch">
         <label>
             <select name="sort">
                 <option value="DATE" <c:if test="${param.sort == 'DATE'}">selected</c:if>>최신순</option>
@@ -125,6 +141,6 @@
         </ul>
     </nav>
 </div>
-
+<button onclick="location.href='/'">메인으로 돌아가기</button>
 </body>
 </html>
