@@ -19,6 +19,8 @@ public class Constants {
 
 	public static final String MAV_400 = "error/400code.jsp";
 
+	public static final String REDIRECT_TO_COMMUNITY = "redirect:/community";
+
 	// Authorization default roll
 	public static final String USER = "USER";
 

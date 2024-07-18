@@ -1,9 +1,9 @@
 package me.sisyphusj.community.app.post.controller;
 
-import org.springframework.http.ResponseEntity;
+import static me.sisyphusj.community.app.commons.Constants.*;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,8 +56,8 @@ public class PostController {
 	@PostMapping("/posts")
 	public String createPost(@Valid @ModelAttribute PostCreateReqDTO postCreateReqDTO, RedirectAttributes redirectAttributes) {
 		postService.createPost(postCreateReqDTO);
-		redirectAttributes.addFlashAttribute("message", "게시글이 생성되었습니다.");
-		return "redirect:/community";
+		redirectAttributes.addFlashAttribute(MESSAGE, "게시글이 생성되었습니다.");
+		return REDIRECT_TO_COMMUNITY;
 	}
 
 	/**
@@ -83,6 +83,12 @@ public class PostController {
 	public String showPostEditPage(@PathVariable long postId, Model model) {
 		PostDetailResDTO postDetailResDTO = postService.getPostDetails(postId);
 		model.addAttribute("postDetailResDTO", postDetailResDTO);
+
+		// 조회하는 게시글의 첨부 이미지가 존재한다면 이미지 리스트 추가
+		if (postDetailResDTO.getHasImage() == HasImage.Y) {
+			model.addAttribute("ImageDetailsResDTOList", imageService.getImages(postId));
+		}
+
 		return "editPost";
 	}
 
@@ -92,16 +98,17 @@ public class PostController {
 	@PostMapping("/posts/edit")
 	public String editPost(@Valid @ModelAttribute PostEditReqDTO postEditReqDTO, RedirectAttributes redirectAttributes) {
 		postService.editPost(postEditReqDTO);
-		redirectAttributes.addFlashAttribute("message", "게시글이 수정되었습니다.");
-		return "redirect:/community";
+		redirectAttributes.addFlashAttribute(MESSAGE, "게시글이 수정되었습니다.");
+		return REDIRECT_TO_COMMUNITY;
 	}
 
 	/**
 	 * 게시글 삭제
 	 */
-	@DeleteMapping("/posts/remove")
-	public ResponseEntity<Void> removePost(@RequestParam long postId) {
+	@GetMapping("/posts/remove")
+	public String removePost(@RequestParam long postId, RedirectAttributes redirectAttributes) {
 		postService.removePost(postId);
-		return ResponseEntity.ok().build();
+		redirectAttributes.addFlashAttribute(MESSAGE, "게시글이 삭제되었습니다.");
+		return REDIRECT_TO_COMMUNITY;
 	}
 }
