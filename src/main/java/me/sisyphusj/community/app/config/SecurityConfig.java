@@ -2,6 +2,7 @@ package me.sisyphusj.community.app.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,7 +23,7 @@ import me.sisyphusj.community.app.security.CustomOAuthAuthenticationFailureHandl
 @Configuration
 public class SecurityConfig {
 
-	private final String[] permittedUrls = {"/", "/auth/**", "/uploads/**", "/WEB-INF/views/**", "/resource/**", "/auth/oauth2/code/**", "/community/**", "/images", "favicon.ico", "/error"};
+	private final String[] permittedUrls = {"/", "/auth/**", "/uploads/**", "/WEB-INF/views/**", "/js/**", "/auth/oauth2/code/**", "/community", "/community/posts/**", "favicon.ico", "/error"};
 
 	private final CustomAuthenticationEntryPoint authEntryPoint;
 
@@ -48,6 +49,7 @@ public class SecurityConfig {
 		http
 			.authorizeHttpRequests(
 				authorize -> authorize
+					.requestMatchers(HttpMethod.GET, "/images").permitAll()
 					.requestMatchers(permittedUrls).permitAll()
 					.anyRequest().authenticated()
 			)
