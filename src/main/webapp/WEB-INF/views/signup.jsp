@@ -12,7 +12,7 @@
     <title>회원가입 페이지</title>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script type="text/javascript">
+    <script>
         $(() => {
             $('form').on('submit', () => {
                 const username = $("#username").val();

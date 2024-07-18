@@ -58,7 +58,7 @@
             $('#postForm').on('submit', (event) => {
                 const title = $('#title').val();
                 const content = $('#content').val();
-                const imageFiles = $('#images')[0].files;
+                const imageFiles = $('#imageFiles')[0].files;
 
                 const hasImageInput = $('<input>').attr({
                     type: 'hidden',
@@ -136,8 +136,8 @@
     <label for="content">본문</label><br>
     <textarea id="content" name="content" rows="10" required></textarea><br><br>
 
-    <label for="images">이미지 첨부파일</label><br>
-    <input type="file" id="images" name="images" multiple>
+    <label for="imageFiles">이미지 첨부파일</label><br>
+    <input type="file" id="imageFiles" name="images" multiple>
     <ul id="imageList" class="imageList"></ul>
 
     <button type="submit" id="postSubmitBtn">등록</button>

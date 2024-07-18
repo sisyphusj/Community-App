@@ -25,7 +25,6 @@
 <button onclick=window.location.href="/">홈으로 돌아가기</button>
 
 <c:if test="${post.hasImage eq 'Y' }">
-    <div id="postImages"></div>
     <c:forEach var="file" items="${ImageDetailsResDTOList}">
         <img src="${file.imagePath}" alt="${file.storedName}"/>
     </c:forEach>
