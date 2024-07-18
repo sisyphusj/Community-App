@@ -17,6 +17,6 @@ public interface ImageMapper {
 
 	Optional<String> selectImagePath(long imageId);
 
-	int updateImage(long userId, long imageId);
+	int deleteImage(long userId, long imageId);
 
 }
