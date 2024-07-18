@@ -42,8 +42,11 @@ public class ImageUploadProvider {
 		return files;
 	}
 
+	/**
+	 * 로컬 디렉토리에서 지정된 이미지 삭제
+	 */
 	public void deleteFile(String imagePath) {
-		String path = Paths.get("C:/communityImages", imagePath.replace("/uploads", "")).toString();
+		String path = Paths.get(uploadPath, imagePath.replace("/uploads", "")).toString();
 		File file = new File(path);
 		if (!file.exists()) {
 			throw new IllegalArgumentException("파일이 존재하지 않습니다.");
