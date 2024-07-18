@@ -9,7 +9,7 @@
         values (#{username}, #{password}, #{name})
     </insert>
 
-    <insert id="insertOAuth" parameterType="me.sisyphusj.community.app.auth.domain.OAuthSelectVO" useGeneratedKeys="true" keyProperty="userId">
+    <insert id="insertOAuth" parameterType="me.sisyphusj.community.app.auth.domain.OAuthVO" useGeneratedKeys="true" keyProperty="userId">
         insert into user (username, name, provider)
         values (#{username}, #{name}, #{oAuthProvider, typeHandler=org.apache.ibatis.type.EnumTypeHandler})
     </insert>
@@ -20,7 +20,7 @@
         where username = #{username}
     </select>
 
-    <select id="selectOAuthByUsername" parameterType="String" resultType="me.sisyphusj.community.app.auth.domain.OAuthSelectVO">
+    <select id="selectOAuthByUsername" parameterType="String" resultType="me.sisyphusj.community.app.auth.domain.OAuthVO">
         select user_id, username, name, provider
         from user
         where username = #{username}

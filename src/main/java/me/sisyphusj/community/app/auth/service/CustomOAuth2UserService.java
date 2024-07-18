@@ -21,8 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.auth.domain.OAuthDTO;
-import me.sisyphusj.community.app.auth.domain.OAuthInsertVO;
-import me.sisyphusj.community.app.auth.domain.OAuthSelectVO;
+import me.sisyphusj.community.app.auth.domain.OAuthVO;
 import me.sisyphusj.community.app.auth.domain.attributes.OAuthAttributes;
 import me.sisyphusj.community.app.auth.mapper.AuthMapper;
 import me.sisyphusj.community.app.commons.OAuthAttributesFactory;
@@ -79,8 +78,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 	 * 기존 가입자인지 확인 <br> 최초 로그인 시 가입 절차 진행
 	 */
 	private long saveOrUpdate(OAuthDTO oAuthDTO) {
-		Optional<OAuthSelectVO> oAuthVO = authMapper.selectOAuthByUsername(oAuthDTO.getUsername());
-		return oAuthVO.map(OAuthSelectVO::getUserId)
+		Optional<OAuthVO> oAuthVO = authMapper.selectOAuthByUsername(oAuthDTO.getUsername());
+		return oAuthVO.map(OAuthVO::getUserId)
 			.orElseGet(() -> signupOAuth(oAuthDTO));
 	}
 
@@ -88,8 +87,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 	 * 가입과 동시에 반환된 oAuthVO 객체로부터 userId 반환
 	 */
 	private long signupOAuth(OAuthDTO oAuthDTO) {
-		OAuthInsertVO oAuthInsertVO = OAuthInsertVO.of(oAuthDTO);
-		authMapper.insertOAuth(oAuthInsertVO);
-		return oAuthInsertVO.getUserId();
+		OAuthVO oAuthVO = OAuthVO.of(oAuthDTO);
+		authMapper.insertOAuth(oAuthVO);
+		return oAuthVO.getUserId();
 	}
 }
