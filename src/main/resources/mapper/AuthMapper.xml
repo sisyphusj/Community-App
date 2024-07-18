@@ -14,19 +14,19 @@
         values (#{username}, #{name}, #{oAuthProvider, typeHandler=org.apache.ibatis.type.EnumTypeHandler})
     </insert>
 
-    <select id="selectAuthByUsername" resultType="me.sisyphusj.community.app.auth.domain.AuthVO">
+    <select id="selectAuthByUsername" parameterType="String" resultType="me.sisyphusj.community.app.auth.domain.AuthVO">
         select user_id, password
         from user
         where username = #{username}
     </select>
 
-    <select id="selectOAuthByUsername" resultType="me.sisyphusj.community.app.auth.domain.OAuthVO">
+    <select id="selectOAuthByUsername" parameterType="String" resultType="me.sisyphusj.community.app.auth.domain.OAuthVO">
         select user_id, username, name, provider
         from user
         where username = #{username}
     </select>
 
-    <select id="selectCountByUsername" resultType="int">
+    <select id="selectCountByUsername" parameterType="String" resultType="int">
         select count(*)
         from user
         where username = #{username}
