@@ -1,5 +1,4 @@
-<%@ page import="org.springframework.security.core.Authentication" %>
-<%@ page import="org.springframework.security.core.context.SecurityContextHolder" %>
+<%@ page import="me.sisyphusj.community.app.utils.SecurityUtil" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -59,8 +58,7 @@
 </head>
 <body>
 <%
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    boolean isLoginUser = (authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser"));
+    boolean isLoginUser = SecurityUtil.isLoginUser();
     pageContext.setAttribute("isLoginUser", isLoginUser);
 %>
 <div>

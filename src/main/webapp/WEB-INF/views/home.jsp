@@ -1,5 +1,4 @@
-<%@ page import="org.springframework.security.core.Authentication" %>
-<%@ page import="org.springframework.security.core.context.SecurityContextHolder" %>
+<%@ page import="me.sisyphusj.community.app.utils.SecurityUtil" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <!doctype html>
@@ -38,8 +37,7 @@
 <body>
 
 <%
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    boolean isLoginUser = (authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser"));
+    boolean isLoginUser = SecurityUtil.isLoginUser();
     pageContext.setAttribute("isLoginUser", isLoginUser);
 %>
 
@@ -49,7 +47,9 @@
 <c:if test="${!isLoginUser}">
     <button onclick="location.href='<c:url value='/auth/login'/>'">로그인</button>
 </c:if>
-<button onclick="location.href='<c:url value='/auth/my-page'/>'">마이 페이지</button>
+<c:if test="${isLoginUser}">
+    <button onclick="location.href='<c:url value='/auth/my-page'/>'">마이 페이지</button>
+</c:if>
 <button id="logoutBtn">로그아웃</button>
 <button onclick="location.href='<c:url value='/community?page=1&sort=DATE'/>'">게시판</button>
 </body>

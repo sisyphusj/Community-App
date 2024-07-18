@@ -1,11 +1,12 @@
-<%@ page import="org.springframework.security.core.Authentication" %>
-<%@ page import="org.springframework.security.core.context.SecurityContextHolder" %>
+<%@ page import="me.sisyphusj.community.app.utils.SecurityUtil" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    boolean isLoginUser = (authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser"));
-    pageContext.setAttribute("isLoginUser", isLoginUser);
+    boolean isLoginUser = SecurityUtil.isLoginUser();
+    if (isLoginUser) {
+        response.sendRedirect("/");
+    }
 %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -17,13 +18,8 @@
     <title>로그인</title>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript">
+    <script>
         $(() => {
-            if (`${isLoginUser}` === true) {
-                alert("로그인 유저입니다.");
-                window.location.href = "/";
-            }
-
             $('form').on('submit', () => {
                 const username = $("#username").val();
                 const password = $("#password").val();
@@ -39,21 +35,6 @@
                 }
 
                 return true;
-            });
-
-            $('#google-login-button').on('click', (e) => {
-                e.preventDefault();
-                window.location.href = "${pageContext.request.contextPath}/oauth2/authorization/google";
-            });
-
-            $('#naver-login-button').on('click', (e) => {
-                e.preventDefault();
-                window.location.href = "${pageContext.request.contextPath}/oauth2/authorization/naver";
-            });
-
-            $('#kakao-login-button').on('click', (e) => {
-                e.preventDefault();
-                window.location.href = "${pageContext.request.contextPath}/oauth2/authorization/kakao";
             });
         });
     </script>
@@ -73,8 +54,8 @@
     <input type="submit" value="로그인">
 </form>
 
-<button id="google-login-button">구글 로그인</button>
-<button id="naver-login-button">네이버 로그인</button>
-<button id="kakao-login-button">카카오 로그인</button>
+<button type="button" onclick="location.href='${pageContext.request.contextPath}/oauth2/authorization/google'">구글 로그인</button>
+<button type="button" onclick="location.href='${pageContext.request.contextPath}/oauth2/authorization/naver'">네이버 로그인</button>
+<button type="button" onclick="location.href='${pageContext.request.contextPath}/oauth2/authorization/kakao'">카카오 로그인</button>
 </body>
 </html>
