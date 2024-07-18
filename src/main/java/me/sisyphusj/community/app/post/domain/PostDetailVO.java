@@ -8,10 +8,10 @@ import lombok.Getter;
 public class PostDetailVO {
 
 	// 작성자 ID
-	private Long userId;
+	private long userId;
 
 	// 게시글 고유 ID
-	private Long postId;
+	private long postId;
 
 	// 작성자
 	private String author;

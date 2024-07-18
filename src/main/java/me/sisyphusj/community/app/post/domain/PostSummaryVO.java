@@ -2,15 +2,13 @@ package me.sisyphusj.community.app.post.domain;
 
 import java.util.Date;
 
-import lombok.Builder;
 import lombok.Getter;
 
-@Builder
 @Getter
 public class PostSummaryVO {
 
 	// 게시글 고유 ID
-	private Long postId;
+	private long postId;
 
 	// 작성자
 	private String author;
