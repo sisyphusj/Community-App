@@ -27,6 +27,7 @@ public class ImageService {
 	 */
 	@Transactional
 	public void saveImage(long postId, List<MultipartFile> images) {
+		// imageUploadProvider 에서 반환된 이미지 메타데이터 리스트를 DB에 저장
 		List<ImageDetailsInsertVO> imageDetailsInsertVOList = imageUploadProvider.uploadFiles(images).stream()
 			.map(ImageDetailsInsertVO::of)
 			.map(imageDetailsInsertVO -> imageDetailsInsertVO.updatePostId(postId))
@@ -50,10 +51,12 @@ public class ImageService {
 	 */
 	@Transactional
 	public void removeImage(long imageId) {
+		// 이미지 경로를 반환
 		String imagePath = imageMapper.selectImagePath(imageId)
 			.orElseThrow(ImageNotFoundException::new);
 
-		if (imageMapper.updateImage(SecurityUtil.getLoginUserId(), imageId) != 1) {
+		// 이미지 삭제 후 반환 값에 따라 예외 처리
+		if (imageMapper.deleteImage(SecurityUtil.getLoginUserId(), imageId) != 1) {
 			throw new ImageNotFoundException();
 		}
 

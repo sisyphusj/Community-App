@@ -13,6 +13,6 @@ import lombok.Setter;
 public class ImageUploadReqDTO {
 
 	@NotEmpty
-	private List<MultipartFile> uploadFiles;
+	private List<MultipartFile> uploadFiles; // 이미지 파일들
 
 }

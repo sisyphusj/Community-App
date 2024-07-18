@@ -9,6 +9,7 @@ import lombok.Getter;
 @Builder
 public class PostDetailResDTO {
 
+	// 사용자 고유 ID
 	private long userId;
 
 	// 게시글 고유 ID

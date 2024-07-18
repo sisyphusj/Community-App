@@ -16,15 +16,15 @@ public class PostCreateReqDTO {
 
 	@NotBlank
 	@Size(max = 50, message = "제목은 최대 50자까지 쓸 수 있습니다.")
-	private String title;
+	private String title; // 제목
 
 	@NotBlank
 	@Size(max = 500, message = "본문은 최대 500자까지 쓸 수 있습니다.")
-	private String content;
+	private String content; // 본문
 
 	@NotNull
-	private HasImage hasImage;
+	private HasImage hasImage; // 게시글의 이미지 첨부 여부
 
-	private List<MultipartFile> images;
+	private List<MultipartFile> images; // 추가된 이미지 리스트
 
 }

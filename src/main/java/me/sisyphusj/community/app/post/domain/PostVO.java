@@ -8,15 +8,15 @@ import me.sisyphusj.community.app.utils.SecurityUtil;
 @Getter
 public class PostVO {
 
-	private Long postId;
+	private Long postId; // 게시글 고유 ID
 
-	private Long userId;
+	private Long userId; // 사용자 고유 ID
 
-	private String title;
+	private String title; // 제목
 
-	private String content;
+	private String content; // 본문
 
-	private HasImage hasImage;
+	private HasImage hasImage; // 게시글의 이미지 첨부 여부
 
 	public static PostVO of(PostCreateReqDTO postCreateReqDTO) {
 		return PostVO.builder()

@@ -21,9 +21,13 @@ public class AuthService {
 
 	private final PasswordEncoder passwordEncoder;
 
+	/**
+	 * 사용자 회원가입
+	 */
 	@Transactional
 	public void signup(SignupReqDTO signupReqDTO) {
 
+		// 사용자 아이디 중복 체크
 		if (authMapper.selectCountByUsername(signupReqDTO.getUsername()) > 0) {
 			throw AlertException.of400("아이디 중복", RedirectType.BACK);
 		}
@@ -34,9 +38,14 @@ public class AuthService {
 
 		SignupVO signupVO = SignupVO.of(signupReqDTO);
 
+		// 사용자 정보 삽입
 		authMapper.insertAuth(signupVO);
 	}
 
+	/**
+	 * 사용자 아이디 중복 체크
+	 */
+	@Transactional
 	public boolean isUsernameDuplicated(String username) {
 		return authMapper.selectCountByUsername(username) > 0;
 	}

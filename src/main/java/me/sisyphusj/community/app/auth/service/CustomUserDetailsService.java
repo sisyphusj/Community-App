@@ -26,14 +26,13 @@ public class CustomUserDetailsService implements UserDetailsService {
 	@Override
 	@Transactional(readOnly = true)
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
+		// 사용자 이름을 통한 사용자 조회 후 User 객체 반환
 		return authMapper.selectAuthByUsername(username)
 			.map(this::createUserDetails)
 			.orElseThrow(() -> new UsernameNotFoundException(username + "을 찾을 수 없습니다."));
 	}
 
 	private UserDetails createUserDetails(AuthVO auth) {
-
 		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(USER);
 
 		return new User(

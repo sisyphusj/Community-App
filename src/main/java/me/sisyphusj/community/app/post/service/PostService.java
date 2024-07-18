@@ -37,8 +37,9 @@ public class PostService {
 	@Transactional
 	public void createPost(PostCreateReqDTO postCreateReqDTO) {
 		PostVO postVO = PostVO.of(postCreateReqDTO);
-		postMapper.insertPost(postVO);
+		postMapper.insertPost(postVO); // 게시글 삽입
 
+		// 게시글이 이미지를 첨부, 이미지 리스트가 NULL이 아니면 이미지 저장 요청
 		if (postVO.getHasImage() == HasImage.Y && !(postCreateReqDTO.getImages().isEmpty())) {
 			imageService.saveImage(postVO.getPostId(), postCreateReqDTO.getImages());
 		}
@@ -71,35 +72,48 @@ public class PostService {
 	 */
 	@Transactional
 	public PostDetailResDTO getPostDetails(long postId) {
+		// 조회 수 갱신 후 반환 값에 따라 예외 처리
 		if (postMapper.updateViewsAndGet(postId) == 0) {
 			throw new PostNotFoundException();
 		}
 
+		// 이미지 메타데이터
 		return postMapper.selectPostDetails(postId)
 			.map(PostDetailResDTO::of)
 			.orElseThrow(PostNotFoundException::new);
 	}
 
+	/**
+	 * 게시글 수정
+	 */
 	@Transactional
 	public void editPost(PostEditReqDTO postEditReqDTO) {
+		// 게시글의 존재 여부 확인
 		if (postMapper.selectCountPost(postEditReqDTO.getPostId(), SecurityUtil.getLoginUserId()) != 1) {
 			throw new PostNotFoundException();
 		}
 
+		// 게시글 갱신
 		PostVO postVO = PostVO.of(postEditReqDTO);
 		postMapper.updatePost(postVO);
 
+		// 게시글이 이미지를 첨부, 이미지 리스트가 NULL이 아니면 이미지 저장 요청
 		if (postVO.getHasImage() == HasImage.Y && (postEditReqDTO.getImages() != null)) {
 			imageService.saveImage(postVO.getPostId(), postEditReqDTO.getImages());
 		}
 	}
 
+	/**
+	 * 게시글 삭제
+	 */
 	@Transactional
 	public void removePost(long postId) {
+		// 게시글 존재 여부 확인
 		if (postMapper.selectCountPost(postId, SecurityUtil.getLoginUserId()) != 1) {
 			throw new PostNotFoundException();
 		}
 
+		// 게시글 삭제
 		postMapper.deletePost(postId);
 	}
 }
