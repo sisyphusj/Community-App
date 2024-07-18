@@ -1,6 +1,5 @@
 package me.sisyphusj.community.app.post.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,9 +10,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import me.sisyphusj.community.app.image.service.ImageService;
+import me.sisyphusj.community.app.post.domain.HasImage;
 import me.sisyphusj.community.app.post.domain.PageResDTO;
 import me.sisyphusj.community.app.post.domain.PageSortType;
 import me.sisyphusj.community.app.post.domain.PostCreateReqDTO;
@@ -27,6 +29,8 @@ import me.sisyphusj.community.app.post.service.PostService;
 public class PostController {
 
 	private final PostService postService;
+
+	private final ImageService imageService;
 
 	/**
 	 * 게시판 페이지, 현재 페이지에 맞는 게시글 리스트 반환
@@ -50,9 +54,10 @@ public class PostController {
 	 * 게시글 추가
 	 */
 	@PostMapping("/posts")
-	public ResponseEntity<HttpStatus> createPost(@Valid @ModelAttribute PostCreateReqDTO postCreateReqDTO) {
+	public String createPost(@Valid @ModelAttribute PostCreateReqDTO postCreateReqDTO, RedirectAttributes redirectAttributes) {
 		postService.createPost(postCreateReqDTO);
-		return ResponseEntity.ok(HttpStatus.OK);
+		redirectAttributes.addFlashAttribute("message", "게시글이 생성되었습니다.");
+		return "redirect:/community";
 	}
 
 	/**
@@ -62,6 +67,12 @@ public class PostController {
 	public String showPostPage(@PathVariable long postId, Model model) {
 		PostDetailResDTO postDetailResDTO = postService.getPostDetails(postId);
 		model.addAttribute("postDetailResDTO", postDetailResDTO);
+
+		// 조회하는 게시글의 첨부 이미지가 존재한다면 이미지 리스트 추가
+		if (postDetailResDTO.getHasImage() == HasImage.Y) {
+			model.addAttribute("ImageDetailsResDTOList", imageService.getImages(postId));
+		}
+
 		return "post";
 	}
 
@@ -79,9 +90,10 @@ public class PostController {
 	 * 게시글 수정
 	 */
 	@PostMapping("/posts/edit")
-	public String editPost(@Valid @ModelAttribute PostEditReqDTO postEditReqDTO) {
+	public String editPost(@Valid @ModelAttribute PostEditReqDTO postEditReqDTO, RedirectAttributes redirectAttributes) {
 		postService.editPost(postEditReqDTO);
-		return "community";
+		redirectAttributes.addFlashAttribute("message", "게시글이 수정되었습니다.");
+		return "redirect:/community";
 	}
 
 	/**

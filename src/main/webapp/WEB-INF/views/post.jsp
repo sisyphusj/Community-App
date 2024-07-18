@@ -3,17 +3,15 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="data:,">
     <script src="<c:url value='https://code.jquery.com/jquery-3.7.1.min.js'/>"></script>
     <title>게시글</title>
 </head>
 <body>
-<h1>게시판 작성</h1>
-
 <c:set var="post" value="${postDetailResDTO}"/>
+<h1>게시판 작성</h1>
 <h2>제목 : ${post.title}</h2>
 <h4>작성자 : ${post.author}</h4>
 <h4>조회수 : ${post.views}</h4>
@@ -28,14 +26,13 @@
 
 <c:if test="${post.hasImage eq 'Y' }">
     <div id="postImages"></div>
-    <script type="text/javascript">
-        const postId = "${post.postId}";
-    </script>
-    <script src="<c:url value='../../resource/js/getImages.js'/>"></script>
+    <c:forEach var="file" items="${ImageDetailsResDTOList}">
+        <img src="${file.imagePath}" alt="${file.storedName}"/>
+    </c:forEach>
 </c:if>
 
 <%
-    Integer currentUserId = null;
+    Long currentUserId = null;
     if (SecurityUtil.isLoginUser()) {
         currentUserId = SecurityUtil.getLoginUserId();
     }
@@ -43,11 +40,7 @@
 %>
 
 <c:if test="${post.userId eq currentUserId}">
-    <form action="./editPost.jsp">
-        <input type="hidden" name="data" value="${post}">
-        <button type="submit">수정</button>
-    </form>
-    <button>삭제</button>
+    <button onclick=window.location.href=`/community/posts/${post.postId}/edit`>수정</button>
 </c:if>
 
 </body>
