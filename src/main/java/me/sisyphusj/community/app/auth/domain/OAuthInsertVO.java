@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class OAuthVO {
+public class OAuthInsertVO {
 
 	// user Id
-	private long userId;
+	private Long userId;
 
 	// OAuth 제공자 ID
 	private String username;
@@ -19,8 +19,8 @@ public class OAuthVO {
 	// 제공자
 	private OAuthProvider oAuthProvider;
 
-	public static OAuthVO of(OAuthDTO oAuthDTO) {
-		return OAuthVO.builder()
+	public static OAuthInsertVO of(OAuthDTO oAuthDTO) {
+		return OAuthInsertVO.builder()
 			.username(oAuthDTO.getUsername())
 			.name(oAuthDTO.getName())
 			.oAuthProvider(oAuthDTO.getOAuthProvider())
