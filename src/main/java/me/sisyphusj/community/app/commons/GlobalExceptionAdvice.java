@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.commons.exception.AlertException;
 import me.sisyphusj.community.app.commons.exception.AuthorizeException;
 import me.sisyphusj.community.app.commons.exception.BlankInputException;
+import me.sisyphusj.community.app.commons.exception.CommentNotFountException;
 import me.sisyphusj.community.app.commons.exception.ImageNotFoundException;
 import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 
@@ -62,6 +63,16 @@ public class GlobalExceptionAdvice {
 	public ModelAndView handelPostNotFoundException(PostNotFoundException e) {
 		log.error("[PostNotFoundException 발생]");
 		return getModelAndView("요청하신 게시글을 찾을 수 없습니다.", LocationUrl.BACK);
+	}
+
+	/**
+	 * 댓글 조회에 실패한 경우를 처리하는 핸들러
+	 */
+	@ExceptionHandler(CommentNotFountException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ModelAndView handleCommentNotFountException(CommentNotFountException e) {
+		log.error("[CommentNotFountException 발생]");
+		return getModelAndView("댓글 조회를 실패하였습니다.", LocationUrl.BACK);
 	}
 
 	/**
