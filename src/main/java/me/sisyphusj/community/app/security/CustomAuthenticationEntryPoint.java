@@ -11,7 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import me.sisyphusj.community.app.commons.RedirectType;
+import me.sisyphusj.community.app.commons.LocationUrl;
 
 @Slf4j
 @Component
@@ -22,7 +22,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 		log.error("[인증 에러] : ", authException);
 
 		request.setAttribute("message", "로그인이 필요합니다.");
-		request.setAttribute("redirectUrl", RedirectType.HOME);
+		request.setAttribute("redirectUrl", LocationUrl.HOME);
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/error/alert.jsp");
 		dispatcher.forward(request, response);

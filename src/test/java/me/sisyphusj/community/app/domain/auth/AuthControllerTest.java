@@ -25,7 +25,7 @@ import me.sisyphusj.community.app.auth.controller.AuthController;
 import me.sisyphusj.community.app.auth.domain.SignupReqDTO;
 import me.sisyphusj.community.app.auth.service.AuthService;
 import me.sisyphusj.community.app.commons.GlobalExceptionAdvice;
-import me.sisyphusj.community.app.commons.RedirectType;
+import me.sisyphusj.community.app.commons.LocationUrl;
 import me.sisyphusj.community.app.commons.exception.AlertException;
 import me.sisyphusj.community.app.commons.exception.BlankInputException;
 
@@ -78,7 +78,7 @@ class AuthControllerTest {
 		void 회원가입_실패_아이디_중복() throws Exception {
 			// given
 			SignupReqDTO signupReqDTO = createSignupReqDTO();
-			willThrow(AlertException.of400("아이디 중복", RedirectType.BACK)).given(authService).signup(any(SignupReqDTO.class));
+			willThrow(AlertException.of400("아이디 중복", LocationUrl.BACK)).given(authService).signup(any(SignupReqDTO.class));
 
 			// when
 			ResultActions actions = mockMvc.perform(
@@ -101,7 +101,7 @@ class AuthControllerTest {
 		void 회원가입_실패_이름_중복() throws Exception {
 			// given
 			SignupReqDTO signupReqDTO = createSignupReqDTO();
-			willThrow(AlertException.of400("사용자 이름 중복", RedirectType.BACK)).given(authService).signup(any(SignupReqDTO.class));
+			willThrow(AlertException.of400("사용자 이름 중복", LocationUrl.BACK)).given(authService).signup(any(SignupReqDTO.class));
 
 			// when
 			ResultActions actions = mockMvc.perform(

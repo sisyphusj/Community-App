@@ -32,7 +32,7 @@ public class GlobalExceptionAdvice {
 			response.setStatus(e.getStatus().value());
 		}
 
-		return getModelAndView(e.getMessage(), e.getRedirectType());
+		return getModelAndView(e.getMessage(), e.getLocationUrl());
 	}
 
 	/**
@@ -41,7 +41,7 @@ public class GlobalExceptionAdvice {
 	@ExceptionHandler(AuthorizeException.class)
 	public ModelAndView handleAuthorizeException(AuthorizeException e) {
 		log.error("[AuthorizeException 발생] : {}", e.getMessage());
-		return getModelAndView("로그인이 필요합니다.", RedirectType.HOME);
+		return getModelAndView("로그인이 필요합니다.", LocationUrl.HOME);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class GlobalExceptionAdvice {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ModelAndView handleBlankInputException(BlankInputException e) {
 		log.error("[BlankInputException 발생]");
-		return getModelAndView("입력값이 존재하지 않습니다. 다시 입력해주십시오.", RedirectType.NONE);
+		return getModelAndView("입력값이 존재하지 않습니다. 다시 입력해주십시오.", LocationUrl.NONE);
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class GlobalExceptionAdvice {
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ModelAndView handelPostNotFoundException(PostNotFoundException e) {
 		log.error("[PostNotFoundException 발생]");
-		return getModelAndView("요청하신 게시글을 찾을 수 없습니다.", RedirectType.BACK);
+		return getModelAndView("요청하신 게시글을 찾을 수 없습니다.", LocationUrl.BACK);
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class GlobalExceptionAdvice {
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ModelAndView handleImageNotFoundException(ImageNotFoundException e) {
 		log.error("[ImageNotFoundException 발생]");
-		return getModelAndView("요청하신 이미지를 찾을 수 없습니다.", RedirectType.BACK);
+		return getModelAndView("요청하신 이미지를 찾을 수 없습니다.", LocationUrl.BACK);
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class GlobalExceptionAdvice {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public ModelAndView handleFileUploadException(FileUploadException e) {
 		log.error("[FileUploadException 발생]");
-		return getModelAndView("이미지 업로드에 실패하였습니다.", RedirectType.NONE);
+		return getModelAndView("이미지 업로드에 실패하였습니다.", LocationUrl.NONE);
 	}
 
 	/**
@@ -105,10 +105,10 @@ public class GlobalExceptionAdvice {
 	/**
 	 * message, RedirectType을 통해 mv를 반환
 	 */
-	private ModelAndView getModelAndView(String message, RedirectType redirectType) {
+	private ModelAndView getModelAndView(String message, LocationUrl locationUrl) {
 		ModelAndView mav = new ModelAndView(MAV_ALERT);
 		mav.addObject(MESSAGE, message);
-		mav.addObject(REDIRECT_URL, redirectType);
+		mav.addObject(REDIRECT_URL, locationUrl);
 		return mav;
 	}
 }

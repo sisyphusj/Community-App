@@ -11,7 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import me.sisyphusj.community.app.commons.RedirectType;
+import me.sisyphusj.community.app.commons.LocationUrl;
 
 @Slf4j
 @Component
@@ -22,7 +22,7 @@ public class CustomOAuthAuthenticationFailureHandler implements AuthenticationFa
 		log.error("[OAuth 로그인 중 에러] : ", exception);
 
 		request.setAttribute("message", "로그인에 실패했습니다. 다시 시도 해주세요.");
-		request.setAttribute("redirectUrl", RedirectType.HOME);
+		request.setAttribute("redirectUrl", LocationUrl.HOME);
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/error/alert.jsp");
 		dispatcher.forward(request, response);

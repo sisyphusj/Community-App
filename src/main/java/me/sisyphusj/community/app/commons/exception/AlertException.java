@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import me.sisyphusj.community.app.commons.RedirectType;
+import me.sisyphusj.community.app.commons.LocationUrl;
 
 @Builder
 @Getter
@@ -16,21 +16,21 @@ public class AlertException extends RuntimeException {
 
 	private final String message;
 
-	private final RedirectType redirectType;
+	private final LocationUrl locationUrl;
 
-	public static AlertException of500(String message, RedirectType redirectType) {
+	public static AlertException of500(String message, LocationUrl locationUrl) {
 		return AlertException.builder()
 			.status(HttpStatus.INTERNAL_SERVER_ERROR)
 			.message(message)
-			.redirectType(redirectType)
+			.locationUrl(locationUrl)
 			.build();
 	}
 
-	public static AlertException of400(String message, RedirectType redirectType) {
+	public static AlertException of400(String message, LocationUrl locationUrl) {
 		return AlertException.builder()
 			.status(HttpStatus.BAD_REQUEST)
 			.message(message)
-			.redirectType(redirectType)
+			.locationUrl(locationUrl)
 			.build();
 	}
 

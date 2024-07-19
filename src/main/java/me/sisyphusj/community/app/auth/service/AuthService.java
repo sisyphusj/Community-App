@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.auth.domain.SignupReqDTO;
 import me.sisyphusj.community.app.auth.domain.SignupVO;
 import me.sisyphusj.community.app.auth.mapper.AuthMapper;
-import me.sisyphusj.community.app.commons.RedirectType;
+import me.sisyphusj.community.app.commons.LocationUrl;
 import me.sisyphusj.community.app.commons.exception.AlertException;
 
 @Slf4j
@@ -29,7 +29,7 @@ public class AuthService {
 
 		// 사용자 아이디 중복 체크
 		if (authMapper.selectCountByUsername(signupReqDTO.getUsername()) > 0) {
-			throw AlertException.of400("아이디 중복", RedirectType.BACK);
+			throw AlertException.of400("아이디 중복", LocationUrl.BACK);
 		}
 
 		String newPassword = passwordEncoder.encode(signupReqDTO.getPassword());
