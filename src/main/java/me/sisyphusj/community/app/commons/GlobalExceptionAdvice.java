@@ -108,7 +108,7 @@ public class GlobalExceptionAdvice {
 	private ModelAndView getModelAndView(String message, LocationUrl locationUrl) {
 		ModelAndView mav = new ModelAndView(MAV_ALERT);
 		mav.addObject(MESSAGE, message);
-		mav.addObject(REDIRECT_URL, locationUrl);
+		mav.addObject(LOCATION_URL, locationUrl);
 		return mav;
 	}
 }

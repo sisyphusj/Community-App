@@ -10,16 +10,14 @@ public class Constants {
 	// alert message
 	public static final String MESSAGE = "message";
 
-	// alert redirect way
-	public static final String REDIRECT_URL = "redirectUrl";
+	// alert location Url
+	public static final String LOCATION_URL = "locationUrl";
 
 	public static final String MAV_ALERT = "error/alert";
 
 	public static final String MAV_500 = "error/500code.jsp";
 
 	public static final String MAV_400 = "error/400code.jsp";
-
-	public static final String REDIRECT_TO_COMMUNITY = "redirect:/community";
 
 	// Authorization default roll
 	public static final String USER = "USER";
