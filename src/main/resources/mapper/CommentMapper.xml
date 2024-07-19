@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybaits.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="me.sisyphusj.community.app.comment.mapper.CommentMapper">
+
+    <insert id="insertComment" parameterType="me.sisyphusj.community.app.comment.domain.CommentVO">
+        insert into comments (parent_id, user_id, post_id, content)
+        values (#{parentId}, #{userId}, #{postId}, #{content})
+    </insert>
+
+</mapper>

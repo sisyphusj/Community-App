@@ -3,6 +3,7 @@
 <script type="text/javascript">
     $(() => {
         const errorMessage = "${message}";
+        const customUrl = "${customUrl}"
         const locationUrl = "${locationUrl}";
 
         if (errorMessage) {
@@ -14,7 +15,9 @@
         } else if (locationUrl === "HOME") {
             location.href = "/";
         } else if (locationUrl === "COMMUNITY") {
-            location.href = "/community"
+            location.href = "/community";
+        } else if (locationUrl === "CUSTOM") {
+            location.href = customUrl;
         }
 
     });
