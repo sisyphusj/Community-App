@@ -9,6 +9,8 @@ public class CommentDetailVO {
 
 	private long commentId;
 
+	private long userId;
+
 	private Long parentId;
 
 	private long postId;

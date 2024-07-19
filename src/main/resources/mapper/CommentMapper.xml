@@ -17,7 +17,14 @@
     </select>
 
     <select id="selectComment" parameterType="long" resultMap="commentList">
-        select comment_id, parent_id, u.name, content, has_child, created_at, updated_at
+        select comment_id,
+               u.user_id,
+               parent_id,
+               u.name,
+               content,
+               has_child,
+               created_at,
+               updated_at
         from comments c
                  inner join user u on c.user_id = u.user_id
         where is_deleted = 'N'
@@ -27,12 +34,13 @@
 
     <resultMap id="commentList" type="me.sisyphusj.community.app.comment.domain.CommentDetailVO">
         <id property="commentId" column="comment_id"/>
-        <id property="parentId" column="parent_id"/>
-        <id property="author" column="name"/>
-        <id property="content" column="content"/>
-        <id property="hasChild" column="has_child" typeHandler="org.apache.ibatis.type.EnumTypeHandler" javaType="me.sisyphusj.community.app.comment.domain.HasChild"/>
-        <id property="createdDate" column="created_at"/>
-        <id property="updatedDate" column="updated_at"/>
+        <result property="userId" column="user_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="author" column="name"/>
+        <result property="content" column="content"/>
+        <result property="hasChild" column="has_child" typeHandler="org.apache.ibatis.type.EnumTypeHandler" javaType="me.sisyphusj.community.app.comment.domain.HasChild"/>
+        <result property="createdDate" column="created_at"/>
+        <result property="updatedDate" column="updated_at"/>
     </resultMap>
 
 </mapper>
