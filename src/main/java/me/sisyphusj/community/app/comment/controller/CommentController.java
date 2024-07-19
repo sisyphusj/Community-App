@@ -26,6 +26,7 @@ public class CommentController {
     @PostMapping
     public String createComment(@Valid @ModelAttribute CommentReqDTO commentReqDTO, Model model) {
         commentService.createComment(commentReqDTO);
+
         model.addAttribute(MESSAGE, "댓글이 등록되었습니다.");
         model.addAttribute(LOCATION_URL, LocationUrl.CUSTOM);
         model.addAttribute(CUSTOM_URL, "/community/posts/" + commentReqDTO.getPostId());
