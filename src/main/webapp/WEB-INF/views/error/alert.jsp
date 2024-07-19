@@ -3,17 +3,17 @@
 <script type="text/javascript">
     $(() => {
         const errorMessage = "${message}";
-        const redirectUrl = "${redirectUrl}";
+        const locationUrl = "${locationUrl}";
 
         if (errorMessage) {
             alert(errorMessage);
         }
 
-        if (redirectUrl === "BACK") {
+        if (locationUrl === "BACK") {
             window.history.back();
-        } else if (redirectUrl === "HOME") {
+        } else if (locationUrl === "HOME") {
             location.href = "/";
-        } else if (redirectUrl === "COMMUNITY") {
+        } else if (locationUrl === "COMMUNITY") {
             location.href = "/community"
         }
 

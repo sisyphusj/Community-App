@@ -49,11 +49,7 @@
                 window.location.search = urlParams.toString();
             });
         });
-
-        const message = '<c:out value="${message}"/>';
-        if (message) {
-            alert(message);
-        }
+        
     </script>
 </head>
 <body>
