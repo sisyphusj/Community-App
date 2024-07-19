@@ -32,6 +32,12 @@
         order by created_at desc
     </select>
 
+    <update id="updateCommentHasChild">
+        update comments
+        set has_child = #{hasChild, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
+        where comment_id = #{parentId}
+    </update>
+
     <resultMap id="commentList" type="me.sisyphusj.community.app.comment.domain.CommentDetailVO">
         <id property="commentId" column="comment_id"/>
         <result property="userId" column="user_id"/>

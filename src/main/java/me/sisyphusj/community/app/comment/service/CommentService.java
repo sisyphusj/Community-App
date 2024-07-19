@@ -27,6 +27,11 @@ public class CommentService {
 	 */
 	@Transactional
 	public void createComment(CommentReqDTO commentReqDTO) {
+		// 부모 댓글 ID 존재 시 갱신 요청
+		if (commentReqDTO.getParentId() != null) {
+			commentMapper.updateCommentHasChild(commentReqDTO.getParentId(), HasChild.Y);
+		}
+
 		commentMapper.insertComment(CommentVO.of(commentReqDTO));
 	}
 

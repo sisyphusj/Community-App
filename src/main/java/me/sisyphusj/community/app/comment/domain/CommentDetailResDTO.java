@@ -30,6 +30,7 @@ public class CommentDetailResDTO {
 	public static CommentDetailResDTO of(CommentDetailVO commentDetailVO) {
 		return CommentDetailResDTO.builder()
 			.commentId(commentDetailVO.getCommentId())
+			.userId(commentDetailVO.getUserId())
 			.parentId(commentDetailVO.getParentId())
 			.postId(commentDetailVO.getPostId())
 			.author(commentDetailVO.getAuthor())

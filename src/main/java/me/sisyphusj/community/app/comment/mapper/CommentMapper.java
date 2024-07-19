@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import me.sisyphusj.community.app.comment.domain.CommentDetailVO;
 import me.sisyphusj.community.app.comment.domain.CommentVO;
+import me.sisyphusj.community.app.comment.domain.HasChild;
 
 @Mapper
 public interface CommentMapper {
@@ -15,4 +16,7 @@ public interface CommentMapper {
 	int selectCountComment(long postId);
 
 	List<CommentDetailVO> selectComment(long postId);
+
+	void updateCommentHasChild(long parentId, HasChild hasChild);
+
 }
