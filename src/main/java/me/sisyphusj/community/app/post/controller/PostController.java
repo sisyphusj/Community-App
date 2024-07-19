@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import me.sisyphusj.community.app.comment.service.CommentService;
 import me.sisyphusj.community.app.commons.LocationUrl;
 import me.sisyphusj.community.app.image.service.ImageService;
 import me.sisyphusj.community.app.post.domain.HasImage;
@@ -31,6 +32,8 @@ public class PostController {
 	private final PostService postService;
 
 	private final ImageService imageService;
+
+	private final CommentService commentService;
 
 	/**
 	 * 게시판 페이지, 현재 페이지에 맞는 게시글 리스트 반환
@@ -75,6 +78,11 @@ public class PostController {
 		// 조회하는 게시글의 첨부 이미지가 존재한다면 이미지 리스트 추가
 		if (postDetailResDTO.getHasImage() == HasImage.Y) {
 			model.addAttribute("ImageDetailsResDTOList", imageService.getImages(postId));
+		}
+
+		// 조회하는 게시글의 댓글이 존재한다면 댓글 리스트 추가
+		if (commentService.hasComment(postId)) {
+			model.addAttribute("commentDetailResDTOList", commentService.getCommentListUseRecursion(postId));
 		}
 
 		return "post";
