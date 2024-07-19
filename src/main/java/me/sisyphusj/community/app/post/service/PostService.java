@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 import me.sisyphusj.community.app.image.service.ImageService;
 import me.sisyphusj.community.app.post.domain.HasImage;
+import me.sisyphusj.community.app.post.domain.PageReqDTO;
 import me.sisyphusj.community.app.post.domain.PageResDTO;
-import me.sisyphusj.community.app.post.domain.PageSortType;
 import me.sisyphusj.community.app.post.domain.PostCreateReqDTO;
 import me.sisyphusj.community.app.post.domain.PostDetailResDTO;
 import me.sisyphusj.community.app.post.domain.PostEditReqDTO;
@@ -47,22 +47,22 @@ public class PostService {
 	 * 한 페이지 당 조회될 게시글 리스트 및 페이지 정보 반환
 	 */
 	@Transactional(readOnly = true)
-	public PageResDTO getPostPage(int currentPage, PageSortType pageSortType) {
+	public PageResDTO getPostPage(PageReqDTO pageReqDTO) {
 		//TODO 페이지당 게시글 수 변경 기능 추가
 
 		// 전체 게시글 개수
 		int totalRowCount = postMapper.selectTotalCount();
 
 		// 마지막으로 호출된 row
-		int offset = (currentPage - 1) * ROW_SIZE_PER_PAGE;
+		int offset = (pageReqDTO.getPage() - 1) * ROW_SIZE_PER_PAGE;
 
 		// amount 만큼 게시글 리스트 조회
-		List<PostSummaryResDTO> postListDTO = postMapper.selectPostSummaryList(ROW_SIZE_PER_PAGE, offset, pageSortType).stream()
+		List<PostSummaryResDTO> postListDTO = postMapper.selectPostSummaryList(ROW_SIZE_PER_PAGE, offset, pageReqDTO.getSort()).stream()
 			.map(PostSummaryResDTO::of)
 			.toList();
 
 		// 현재 페이지 페이지네이션 메타데이터, 게시글 섬네일 리스트 반환
-		return new PageResDTO(currentPage, totalRowCount, postListDTO);
+		return new PageResDTO(pageReqDTO.getPage(), totalRowCount, postListDTO);
 	}
 
 	/**

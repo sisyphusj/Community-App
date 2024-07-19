@@ -15,7 +15,7 @@
         } else if (locationUrl === "HOME") {
             location.href = "/";
         } else if (locationUrl === "COMMUNITY") {
-            location.href = "/community";
+            location.href = "/community?page=1&sort=DATE";
         } else if (locationUrl === "CUSTOM") {
             location.href = customUrl;
         }

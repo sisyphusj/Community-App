@@ -38,19 +38,6 @@
             color: #333;
         }
     </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(function () {
-            $('#textSearch').on('submit', (event) => {
-                const sortValue = $(this).find('select[name="sort"]').val();
-                const urlParams = new URLSearchParams(window.location.search); // URL 쿼리 부분
-                urlParams.set('sort', sortValue);
-                urlParams.set('page', 1);
-                window.location.search = urlParams.toString();
-            });
-        });
-        
-    </script>
 </head>
 <body>
 <%
@@ -62,13 +49,13 @@
         <button onclick="location.href='/community/new'">게시글 쓰기</button>
     </c:if>
 
-    <form id="textSearch">
-        <label>
-            <select name="sort">
-                <option value="DATE" <c:if test="${param.sort == 'DATE'}">selected</c:if>>최신순</option>
-                <option value="VIEWS" <c:if test="${param.sort == 'VIEWS'}">selected</c:if>>조회순</option>
-            </select>
-        </label>
+    <form id="textSearch" action="/community" method="get">
+        <label for="sort">정렬</label>
+        <select name="sort" id="sort">
+            <option value="DATE" <c:if test="${param.sort eq 'DATE'}">selected</c:if>>최신순</option>
+            <option value="VIEWS" <c:if test="${param.sort eq 'VIEWS'}">selected</c:if>>조회순</option>
+        </select>
+        <input type="hidden" name="page" value="1"/>
         <input type="submit" value="검색">
     </form>
 
@@ -99,7 +86,6 @@
 
     <%-- 현재 페이지 --%>
     <c:set var="page" value="${pageResDTO.currentPage}"/>
-
     <nav>
         <ul class="pagination">
             <%-- 첫 페이지 링크 --%>
