@@ -15,7 +15,9 @@ public interface CommentMapper {
 
 	int selectCountComment(long postId);
 
-	List<CommentDetailVO> selectComment(long postId);
+	List<CommentDetailVO> selectCommentOrderByDesc(long postId);
+
+	List<CommentDetailVO> selectCommentOrderByAsc(long postId);
 
 	void updateCommentHasChild(long parentId, HasChild hasChild);
 

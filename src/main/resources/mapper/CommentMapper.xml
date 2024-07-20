@@ -16,7 +16,7 @@
           and is_deleted = 'N'
     </select>
 
-    <select id="selectComment" parameterType="long" resultMap="commentList">
+    <select id="selectCommentOrderByDesc" parameterType="long" resultMap="commentList">
         select comment_id,
                u.user_id,
                parent_id,
@@ -30,6 +30,21 @@
         where is_deleted = 'N'
           and post_id = #{postId}
         order by created_at desc
+    </select>
+
+    <select id="selectCommentOrderByAsc" parameterType="long" resultMap="commentList">
+        select comment_id,
+               u.user_id,
+               parent_id,
+               u.name,
+               content,
+               has_child,
+               created_at,
+               updated_at
+        from comments c
+                 inner join user u on c.user_id = u.user_id
+        where is_deleted = 'N'
+          and post_id = #{postId}
     </select>
 
     <update id="updateCommentHasChild">
