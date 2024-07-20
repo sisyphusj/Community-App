@@ -91,9 +91,8 @@ public class CommentService {
 	 */
 	@Transactional
 	public void editComment(CommentEditReqDTO commentEditReqDTO) {
-
 		// 작성자와 수정하려는 댓글이 존재하는지 확인
-		if (commentMapper.selectCountCommentByUserIdAndCommentId(SecurityUtil.getLoginUserId(), commentEditReqDTO.getCommentId()) != 1) {
+		if (commentMapper.selectComment(SecurityUtil.getLoginUserId(), commentEditReqDTO.getCommentId()).isEmpty()) {
 			throw new CommentNotFoundException();
 		}
 

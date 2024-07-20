@@ -56,14 +56,6 @@
         where comment_id = #{commentId}
     </update>
 
-    <select id="selectCountCommentByUserIdAndCommentId" parameterType="long" resultType="int">
-        select count(*)
-        from comments
-        where is_deleted = 'N'
-          and user_id = #{userId}
-          and comment_id = #{commentId}
-    </select>
-
     <update id="editComment" parameterType="me.sisyphusj.community.app.comment.domain.CommentEditVO">
         update comments
         set content = #{content}

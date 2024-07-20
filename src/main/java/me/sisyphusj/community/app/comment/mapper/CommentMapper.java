@@ -23,8 +23,6 @@ public interface CommentMapper {
 
 	void updateCommentHasChild(long commentId, HasChild hasChild);
 
-	int selectCountCommentByUserIdAndCommentId(long userId, long commentId);
-
 	void editComment(CommentEditVO commentEditVO);
 
 	void deleteChildComment(long parentId);
