@@ -34,7 +34,7 @@
 
     <update id="updateCommentHasChild">
         update comments
-        set has_child = #{hasChild, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
+        set has_child = #{hasChild}
         where comment_id = #{parentId}
     </update>
 
