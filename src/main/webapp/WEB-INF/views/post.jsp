@@ -14,25 +14,41 @@
         <c:set var="post" value="${postDetailResDTO}"/>
 
         <script>
-            $(document).ready(function () {
+            $(document).ready(() => {
                 $('.replyButton').click(function () {
                     const commentDiv = $(this).closest('.commentDiv');
                     const commentId = commentDiv.data('comment-id');
-                    console.log('Comment ID:', commentId); // 디버깅을 위한 로그
 
                     // 모든 replyInputContainer 비우기
                     $('.replyInputContainer').empty();
 
                     // 선택된 replyInputContainer에 답글 입력 폼 추가
                     $(`#replyInputContainer-${'${commentId}'}`).html(`
-            <form action="/comment" method="post">
-               <sec:csrfInput/>
-                <textarea name="content" required></textarea>
-                <input type="hidden" name="parentId" value="${'${commentId}'}">
-                <input type="hidden" name="postId" value="${post.postId}">
-                <button type="submit">등록</button>
-            </form>
-        `);
+                        <form action="/comment" method="post">
+                            <sec:csrfInput/>
+                            <textarea name="content" required></textarea>
+                            <input type="hidden" name="parentId" value="${'${commentId}'}">
+                            <input type="hidden" name="postId" value="${post.postId}">
+                            <button type="submit">등록</button>
+                        </form> `);
+                });
+
+                $('.editButton').click(function () {
+                    const commentDiv = $(this).closest('.commentDiv');
+                    const commentId = commentDiv.data('comment-id');
+
+                    // 모든 editInputContainer 비우기
+                    $('.editInputContainer').empty();
+
+                    // 선택된 editInputContainer에 답글 입력 폼 추가
+                    $(`#editInputContainer-${'${commentId}'}`).html(`
+                        <form action="/comment/edit" method="post">
+                            <sec:csrfInput/>
+                            <textarea name="content" required></textarea>
+                            <input type="hidden" name="commentId" value="${'${commentId}'}">
+                            <input type="hidden" name="postId" value="${post.postId}">
+                            <button type="submit">등록</button>
+                        </form> `);
                 });
             });
 
@@ -84,10 +100,15 @@
                                 ${comment.author} : ${comment.content}
                                 ${comment.createdDate}
                         </p>
-                        <c:if test="${currentUserId == comment.userId}">
+                        <c:if test="${currentUserId != null}">
                             <button type="button" class="replyButton">답글 쓰기</button>
                         </c:if>
+                        <c:if test="${currentUserId == comment.userId}">
+                            <button type="button" class="editButton">수정</button>
+                            <button onclick=window.location.href=`/comment/${comment.postId}/remove?commentId=${comment.commentId}`>삭제</button>
+                        </c:if>
                         <div class="replyInputContainer" id="replyInputContainer-${comment.commentId}"></div>
+                        <div class="editInputContainer" id="editInputContainer-${comment.commentId}"></div>
                     </div>
                 </c:when>
                 <c:otherwise>
@@ -96,10 +117,15 @@
                                 ${comment.author} : ${comment.content}
                                 ${comment.createdDate}
                         </p>
-                        <c:if test="${currentUserId == comment.userId}">
+                        <c:if test="${currentUserId != null}">
                             <button type="button" class="replyButton">답글 쓰기</button>
                         </c:if>
+                        <c:if test="${currentUserId == comment.userId}">
+                            <button type="button" class="editButton">수정</button>
+                            <button onclick=window.location.href=`/comment/${comment.postId}/remove?commentId=${comment.commentId}`>삭제</button>
+                        </c:if>
                         <div class="replyInputContainer" id="replyInputContainer-${comment.commentId}"></div>
+                        <div class="editInputContainer" id="editInputContainer-${comment.commentId}"></div>
                     </div>
                 </c:otherwise>
             </c:choose>

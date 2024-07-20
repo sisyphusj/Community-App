@@ -2,6 +2,7 @@ package me.sisyphusj.community.app.comment.service;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -14,10 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.comment.domain.CommentDetailResDTO;
 import me.sisyphusj.community.app.comment.domain.CommentDetailVO;
+import me.sisyphusj.community.app.comment.domain.CommentEditReqDTO;
+import me.sisyphusj.community.app.comment.domain.CommentEditVO;
 import me.sisyphusj.community.app.comment.domain.CommentReqDTO;
 import me.sisyphusj.community.app.comment.domain.CommentVO;
 import me.sisyphusj.community.app.comment.domain.HasChild;
 import me.sisyphusj.community.app.comment.mapper.CommentMapper;
+import me.sisyphusj.community.app.commons.exception.CommentNotFoundException;
+import me.sisyphusj.community.app.utils.SecurityUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +57,7 @@ public class CommentService {
 	@Transactional(readOnly = true)
 	public List<CommentDetailResDTO> getCommentListUseRecursion(long postId) {
 		// 최신순으로 정렬된 댓글 리스트 가져오기
-		List<CommentDetailVO> comments = commentMapper.selectCommentOrderByDesc(postId);
+		List<CommentDetailVO> comments = commentMapper.selectCommentList(postId);
 
 		// 최종 저장되는 댓글 리스트 생성
 		List<CommentDetailVO> newComments = new ArrayList<>();
@@ -81,10 +86,49 @@ public class CommentService {
 			.toList();
 	}
 
+	/**
+	 * 댓글 수정
+	 */
+	@Transactional
+	public void editComment(CommentEditReqDTO commentEditReqDTO) {
+
+		// 작성자와 수정하려는 댓글이 존재하는지 확인
+		if (commentMapper.selectCountCommentByUserIdAndCommentId(SecurityUtil.getLoginUserId(), commentEditReqDTO.getCommentId()) != 1) {
+			throw new CommentNotFoundException();
+		}
+
+		commentMapper.editComment(CommentEditVO.of(commentEditReqDTO));
+	}
+
+	/**
+	 * 댓글 삭제
+	 */
+	@Transactional
+	public void removeComment(long commentId) {
+		// 작성자 확인 및 삭제하려는 댓글 조회
+		CommentDetailVO commentDetailVO = commentMapper.selectComment(SecurityUtil.getLoginUserId(), commentId).orElseThrow(CommentNotFoundException::new);
+
+		// 해당 댓글의 자식 댓글이 존재한다면 자식 댓글도 삭제
+		if (commentDetailVO.getHasChild() == HasChild.Y) {
+			commentMapper.deleteChildComment(commentId);
+		}
+
+		commentMapper.deleteComment(SecurityUtil.getLoginUserId(), commentId);
+
+		// 해당 댓글 삭제 후 더 이상 자신을 포함한 자식 댓글이 존재하지 않으면 부모 댓글의 HasChild 수정
+		if (commentDetailVO.getParentId() != null && commentMapper.selectCountChildComment(commentDetailVO.getParentId()) < 1) {
+			commentMapper.updateCommentHasChild(commentDetailVO.getParentId(), HasChild.N);
+		}
+	}
+
+	/**
+	 * 댓글 리스트 조회 (스택)
+	 */
 	@Transactional(readOnly = true)
 	public List<CommentDetailResDTO> getCommentListUseStack(long postId) {
-		// 최신순으로 정렬된 댓글 리스트 가져오기
-		List<CommentDetailVO> comments = commentMapper.selectCommentOrderByAsc(postId);
+		// 댓글 리스트 가져오기
+		List<CommentDetailVO> comments = commentMapper.selectCommentList(postId).stream()
+			.sorted(Collections.reverseOrder()).toList();
 
 		// 최종 저장되는 댓글 리스트 생성
 		List<CommentDetailVO> newComments = new ArrayList<>();
