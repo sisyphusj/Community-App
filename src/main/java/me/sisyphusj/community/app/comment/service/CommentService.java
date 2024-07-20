@@ -126,8 +126,8 @@ public class CommentService {
 	@Transactional(readOnly = true)
 	public List<CommentDetailResDTO> getCommentListUseStack(long postId) {
 		// 댓글 리스트 가져오기
-		List<CommentDetailVO> comments = commentMapper.selectCommentList(postId).stream()
-			.sorted(Collections.reverseOrder()).toList();
+		List<CommentDetailVO> comments = commentMapper.selectCommentList(postId);
+		Collections.reverse(comments);
 
 		// 최종 저장되는 댓글 리스트 생성
 		List<CommentDetailVO> newComments = new ArrayList<>();
