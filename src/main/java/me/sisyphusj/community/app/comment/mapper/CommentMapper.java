@@ -5,10 +5,7 @@ import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import me.sisyphusj.community.app.comment.domain.CommentDetailVO;
-import me.sisyphusj.community.app.comment.domain.CommentEditVO;
 import me.sisyphusj.community.app.comment.domain.CommentVO;
-import me.sisyphusj.community.app.comment.domain.HasChild;
 
 @Mapper
 public interface CommentMapper {
@@ -17,18 +14,18 @@ public interface CommentMapper {
 
 	int selectCountComment(long postId);
 
-	List<CommentDetailVO> selectCommentList(long postId);
+	List<CommentVO> selectCommentList(long postId);
 
-	Optional<CommentDetailVO> selectComment(long userId, long commentId);
+	List<CommentVO> selectCommentListOrderByAsc(long postId);
 
-	void updateCommentHasChild(long commentId, HasChild hasChild);
+	Optional<CommentVO> selectComment(long userId, long commentId);
 
-	void editComment(CommentEditVO commentEditVO);
+	void editComment(CommentVO commentEditVO);
 
-	void deleteChildComment(long parentId);
-
-	void deleteComment(long userId, long commentId);
+	void deleteComment(long userId, List<Long> deleteCommentIdList);
 
 	int selectCountChildComment(long parentId);
+
+	List<Long> selectChildCommentIdList(long parentId);
 
 }

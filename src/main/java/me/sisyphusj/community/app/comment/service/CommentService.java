@@ -2,7 +2,6 @@ package me.sisyphusj.community.app.comment.service;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -14,12 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.comment.domain.CommentDetailResDTO;
-import me.sisyphusj.community.app.comment.domain.CommentDetailVO;
 import me.sisyphusj.community.app.comment.domain.CommentEditReqDTO;
-import me.sisyphusj.community.app.comment.domain.CommentEditVO;
 import me.sisyphusj.community.app.comment.domain.CommentReqDTO;
 import me.sisyphusj.community.app.comment.domain.CommentVO;
-import me.sisyphusj.community.app.comment.domain.HasChild;
 import me.sisyphusj.community.app.comment.mapper.CommentMapper;
 import me.sisyphusj.community.app.commons.exception.CommentNotFoundException;
 import me.sisyphusj.community.app.utils.SecurityUtil;
@@ -35,11 +31,6 @@ public class CommentService {
 	 */
 	@Transactional
 	public void createComment(CommentReqDTO commentReqDTO) {
-		// 부모 댓글 ID 존재 시 갱신 요청
-		if (commentReqDTO.getParentId() != null) {
-			commentMapper.updateCommentHasChild(commentReqDTO.getParentId(), HasChild.Y);
-		}
-
 		commentMapper.insertComment(CommentVO.of(commentReqDTO));
 	}
 
@@ -57,25 +48,25 @@ public class CommentService {
 	@Transactional(readOnly = true)
 	public List<CommentDetailResDTO> getCommentListUseRecursion(long postId) {
 		// 최신순으로 정렬된 댓글 리스트 가져오기
-		List<CommentDetailVO> comments = commentMapper.selectCommentList(postId);
+		List<CommentVO> comments = commentMapper.selectCommentList(postId);
 
 		// 최종 저장되는 댓글 리스트 생성
-		List<CommentDetailVO> newComments = new ArrayList<>();
+		List<CommentVO> newComments = new ArrayList<>();
 
 		// 댓글 ID, 자식 댓글 리스트를 매핑하는 해시 맵 생성
-		Map<Long, List<CommentDetailVO>> childrenMap = comments.stream()
+		Map<Long, List<CommentVO>> childrenMap = comments.stream()
 			.filter(comment -> comment.getParentId() != null)
-			.collect(Collectors.groupingBy(CommentDetailVO::getParentId));
+			.collect(Collectors.groupingBy(CommentVO::getParentId));
 
 		// 최상위 부모 댓글 리스트 생성
-		List<CommentDetailVO> rootComments = comments.stream()
+		List<CommentVO> rootComments = comments.stream()
 			.filter(comment -> comment.getParentId() == null)
 			.toList();
 
-		// 최상위 부모 댓글에서 자식 댓글 조회 
-		for (CommentDetailVO rootComment : rootComments) {
+		// 최상위 부모 댓글에서 자식 댓글 조회
+		for (CommentVO rootComment : rootComments) {
 			newComments.add(rootComment);
-			if (rootComment.getHasChild() == HasChild.Y) {
+			if (commentMapper.selectCountChildComment(rootComment.getCommentId()) > 0) {
 				addChildrenComments(rootComment, childrenMap, newComments);
 			}
 		}
@@ -96,7 +87,7 @@ public class CommentService {
 			throw new CommentNotFoundException();
 		}
 
-		commentMapper.editComment(CommentEditVO.of(commentEditReqDTO));
+		commentMapper.editComment(CommentVO.of(commentEditReqDTO));
 	}
 
 	/**
@@ -104,20 +95,18 @@ public class CommentService {
 	 */
 	@Transactional
 	public void removeComment(long commentId) {
+		// 삭제 대상 댓글 id 리스트
+		List<Long> deleteCommentIdList = new ArrayList<>();
+
 		// 작성자 확인 및 삭제하려는 댓글 조회
-		CommentDetailVO commentDetailVO = commentMapper.selectComment(SecurityUtil.getLoginUserId(), commentId).orElseThrow(CommentNotFoundException::new);
+		CommentVO commentVO = commentMapper.selectComment(SecurityUtil.getLoginUserId(), commentId)
+			.orElseThrow(CommentNotFoundException::new);
 
 		// 해당 댓글의 자식 댓글이 존재한다면 자식 댓글도 삭제
-		if (commentDetailVO.getHasChild() == HasChild.Y) {
-			commentMapper.deleteChildComment(commentId);
-		}
+		collectDeletableComments(commentVO.getCommentId(), deleteCommentIdList);
 
-		commentMapper.deleteComment(SecurityUtil.getLoginUserId(), commentId);
-
-		// 해당 댓글 삭제 후 더 이상 자신을 포함한 자식 댓글이 존재하지 않으면 부모 댓글의 HasChild 수정
-		if (commentDetailVO.getParentId() != null && commentMapper.selectCountChildComment(commentDetailVO.getParentId()) < 1) {
-			commentMapper.updateCommentHasChild(commentDetailVO.getParentId(), HasChild.N);
-		}
+		// 작성자의 id 및 댓글 id 리스트를 통해 삭제 요청
+		commentMapper.deleteComment(SecurityUtil.getLoginUserId(), deleteCommentIdList);
 	}
 
 	/**
@@ -126,42 +115,42 @@ public class CommentService {
 	@Transactional(readOnly = true)
 	public List<CommentDetailResDTO> getCommentListUseStack(long postId) {
 		// 댓글 리스트 가져오기
-		List<CommentDetailVO> comments = commentMapper.selectCommentList(postId);
-		Collections.reverse(comments);
+		List<CommentVO> comments = commentMapper.selectCommentListOrderByAsc(postId);
 
 		// 최종 저장되는 댓글 리스트 생성
-		List<CommentDetailVO> newComments = new ArrayList<>();
+		List<CommentVO> newComments = new ArrayList<>();
 
 		// 스택 생성
-		Deque<CommentDetailVO> stack = new ArrayDeque<>();
+		Deque<CommentVO> stack = new ArrayDeque<>();
 
 		// 댓글 ID, 자식 댓글 리스트를 매핑하는 해시 맵 생성
-		Map<Long, List<CommentDetailVO>> childrenMap = new HashMap<>();
+		Map<Long, List<CommentVO>> childrenMap = new HashMap<>();
 
 		// 최상위 부모 댓글 스택 삽입, 자식 댓글은 해시 맵에 삽입
-		for (CommentDetailVO comment : comments) {
+		for (CommentVO comment : comments) {
 			if (comment.getParentId() == null) {
 				stack.push(comment);
 			} else {
-				childrenMap.computeIfAbsent(comment.getParentId(), k -> new ArrayList<>()).add(comment);
+				childrenMap.computeIfAbsent(comment.getParentId(), k -> new ArrayList<>())
+					.add(comment);
 			}
 		}
 
 		while (!stack.isEmpty()) {
-			CommentDetailVO comment = stack.pop();
+			CommentVO comment = stack.pop();
 			newComments.add(comment);
 
 			// 자식 댓글이 존재하지 않으면 continue
-			if (comment.getHasChild() == HasChild.N) {
+			if (commentMapper.selectCountChildComment(comment.getCommentId()) == 0) {
 				continue;
 			}
 
 			// 현재 댓글의 자식 댓글 리스트 조회
-			List<CommentDetailVO> children = childrenMap.get(comment.getCommentId());
+			List<CommentVO> children = childrenMap.get(comment.getCommentId());
 
 			// 자식 댓글들 스택에 삽입
 			if (children != null && !children.isEmpty()) {
-				for (CommentDetailVO childComment : children) {
+				for (CommentVO childComment : children) {
 					stack.push(childComment);
 				}
 			}
@@ -180,15 +169,26 @@ public class CommentService {
 	 * @param childrenMap 자식 댓글 해시 맵
 	 * @param newComments 최종 저장되는 댓글 리스트
 	 */
-	private void addChildrenComments(CommentDetailVO currentComment, Map<Long, List<CommentDetailVO>> childrenMap, List<CommentDetailVO> newComments) {
+	private void addChildrenComments(CommentVO currentComment, Map<Long, List<CommentVO>> childrenMap, List<CommentVO> newComments) {
 		// 현재 댓글의 자식 댓글 리스트
-		List<CommentDetailVO> children = childrenMap.get(currentComment.getCommentId());
+		List<CommentVO> children = childrenMap.get(currentComment.getCommentId());
 
-		for (CommentDetailVO childComment : children) {
+		for (CommentVO childComment : children) {
 			newComments.add(childComment);
-			if (childComment.getHasChild() == HasChild.Y) {
+			if (commentMapper.selectCountChildComment(childComment.getCommentId()) > 0) {
 				addChildrenComments(childComment, childrenMap, newComments);
 			}
 		}
+	}
+
+	/**
+	 * 재귀적으로 자식 댓글의 ID를 조회하여 자신의 ID와 함께 deleteCommentIdList 에 저장
+	 */
+	private void collectDeletableComments(long commentId, List<Long> deleteCommentIdList) {
+		deleteCommentIdList.add(commentId);
+
+		// 자식 댓글 리스트 조회 후 각 댓글을 통해 메소드 호출
+		commentMapper.selectChildCommentIdList(commentId)
+			.forEach(childCommentId -> collectDeletableComments(childCommentId, deleteCommentIdList));
 	}
 }

@@ -21,23 +21,20 @@ public class CommentDetailResDTO {
 
 	private String content; // 댓글 내용
 
-	private HasChild hasChild; // 자식 댓글 보유 유무
-
 	private Date createdDate; // 댓글 생성일
 
 	private Date updatedDate; // 댓글 수정일
 
-	public static CommentDetailResDTO of(CommentDetailVO commentDetailVO) {
+	public static CommentDetailResDTO of(CommentVO commentVO) {
 		return CommentDetailResDTO.builder()
-			.commentId(commentDetailVO.getCommentId())
-			.userId(commentDetailVO.getUserId())
-			.parentId(commentDetailVO.getParentId())
-			.postId(commentDetailVO.getPostId())
-			.author(commentDetailVO.getAuthor())
-			.content(commentDetailVO.getContent())
-			.hasChild(commentDetailVO.getHasChild())
-			.createdDate(commentDetailVO.getCreatedDate())
-			.updatedDate(commentDetailVO.getUpdatedDate())
+			.commentId(commentVO.getCommentId())
+			.userId(commentVO.getUserId())
+			.parentId(commentVO.getParentId())
+			.postId(commentVO.getPostId())
+			.author(commentVO.getAuthor())
+			.content(commentVO.getContent())
+			.createdDate(commentVO.getCreatedDate())
+			.updatedDate(commentVO.getUpdatedDate())
 			.build();
 	}
 }

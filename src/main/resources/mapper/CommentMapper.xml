@@ -18,12 +18,11 @@
 
     <select id="selectCommentList" parameterType="long" resultMap="commentList">
         select comment_id,
-               u.user_id,
                parent_id,
+               u.user_id,
                c.post_id,
                u.name,
                content,
-               has_child,
                created_at,
                updated_at
         from comments c
@@ -33,14 +32,28 @@
         order by created_at desc
     </select>
 
-    <select id="selectComment" parameterType="long" resultMap="commentList">
+    <select id="selectCommentListOrderByAsc" parameterType="long" resultMap="commentList">
         select comment_id,
-               u.user_id,
                parent_id,
+               u.user_id,
                c.post_id,
                u.name,
                content,
-               has_child,
+               created_at,
+               updated_at
+        from comments c
+                 inner join user u on c.user_id = u.user_id
+        where is_deleted = 'N'
+          and post_id = #{postId}
+    </select>
+
+    <select id="selectComment" parameterType="long" resultMap="commentList">
+        select comment_id,
+               parent_id,
+               u.user_id,
+               c.post_id,
+               u.name,
+               content,
                created_at,
                updated_at
         from comments c
@@ -50,13 +63,7 @@
           and comment_id = #{commentId}
     </select>
 
-    <update id="updateCommentHasChild">
-        update comments
-        set has_child = #{hasChild}
-        where comment_id = #{commentId}
-    </update>
-
-    <update id="editComment" parameterType="me.sisyphusj.community.app.comment.domain.CommentEditVO">
+    <update id="editComment" parameterType="me.sisyphusj.community.app.comment.domain.CommentVO">
         update comments
         set content = #{content}
         where is_deleted = 'N'
@@ -64,19 +71,13 @@
           and comment_id = #{commentId}
     </update>
 
-    <update id="deleteChildComment" parameterType="long">
+    <update id="deleteComment">
         update comments
         set is_deleted = 'Y'
-        where is_deleted = 'N'
-          and parent_id = #{parentId}
-    </update>
-
-    <update id="deleteComment" parameterType="long">
-        update comments
-        set is_deleted = 'Y'
-        where is_deleted = 'N'
-          and user_id = #{userId}
-          and comment_id = #{commentId}
+        where user_id = #{userId} and comment_id in
+        <foreach item="commentId" collection="deleteCommentIdList" open="(" separator="," close=")">
+            #{commentId}
+        </foreach>
     </update>
 
     <select id="selectCountChildComment" parameterType="long" resultType="int">
@@ -86,14 +87,20 @@
           and parent_id = #{parentId}
     </select>
 
-    <resultMap id="commentList" type="me.sisyphusj.community.app.comment.domain.CommentDetailVO">
+    <select id="selectChildCommentIdList" parameterType="long" resultType="long">
+        select comment_id
+        from comments
+        where is_deleted = 'N'
+          and parent_id = #{parentId}
+    </select>
+
+    <resultMap id="commentList" type="me.sisyphusj.community.app.comment.domain.CommentVO">
         <id property="commentId" column="comment_id"/>
-        <result property="userId" column="user_id"/>
         <result property="parentId" column="parent_id"/>
+        <result property="userId" column="user_id"/>
         <result property="postId" column="post_id"/>
         <result property="author" column="name"/>
         <result property="content" column="content"/>
-        <result property="hasChild" column="has_child" typeHandler="org.apache.ibatis.type.EnumTypeHandler" javaType="me.sisyphusj.community.app.comment.domain.HasChild"/>
         <result property="createdDate" column="created_at"/>
         <result property="updatedDate" column="updated_at"/>
     </resultMap>
