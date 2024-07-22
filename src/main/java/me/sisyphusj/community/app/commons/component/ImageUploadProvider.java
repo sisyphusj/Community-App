@@ -78,7 +78,7 @@ public class ImageUploadProvider {
 		return ImageMetadata.builder()
 			.originalName(multipartFile.getOriginalFilename())
 			.storedName(storedName)
-			.imagePath(String.format("/uploads/%s/%s", today, storedName))
+			.imagePath("/uploads/" + today + "/" + storedName)
 			.size(multipartFile.getSize())
 			.build();
 	}
@@ -92,10 +92,10 @@ public class ImageUploadProvider {
 
 		// 허용된 이미지 확장자가 아니면 예외 처리
 		if (extension == null || !ALLOWED_EXTENSIONS.contains(extension.toLowerCase())) {
-			throw new IllegalArgumentException(String.format("허용되지 않는 파일 형식입니다. : %s", extension));
+			throw new IllegalArgumentException("허용되지 않는 파일 형식입니다. : " + extension);
 		}
 
-		return String.format("%s.%s", uuid, extension);
+		return uuid + '.' + extension;
 	}
 
 	/**
