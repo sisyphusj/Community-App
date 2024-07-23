@@ -5,15 +5,20 @@ import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import me.sisyphusj.community.app.image.domain.ImageDetailsInsertVO;
-import me.sisyphusj.community.app.image.domain.ImageDetailsSelectVO;
+import me.sisyphusj.community.app.image.domain.ImageVO;
 
 @Mapper
 public interface ImageMapper {
 
-	void insertImages(List<ImageDetailsInsertVO> images);
+	void insertImageList(List<ImageVO> images);
 
-	List<ImageDetailsSelectVO> selectImageList(long postId);
+	void insertPostImageList(List<ImageVO> images);
+
+	void insertCommentImageList(List<ImageVO> images);
+
+	List<ImageVO> selectPostImageList(long postId);
+
+	List<ImageVO> selectCommentImageList(long commentId);
 
 	Optional<String> selectImagePath(long imageId);
 

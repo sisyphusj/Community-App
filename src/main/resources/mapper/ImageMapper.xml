@@ -4,18 +4,55 @@
 
 <mapper namespace="me.sisyphusj.community.app.image.mapper.ImageMapper">
 
-    <insert id="insertImages" parameterType="java.util.List">
-        insert into image (user_id, post_id, origin_name, stored_name, size, image_path)
+    <insert id="insertImageList" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="imageId">
+        insert into image (user_id, origin_name, stored_name, size, image_path)
         values
         <foreach collection="list" item="image" separator=",">
-            (#{image.userId}, #{image.postId}, #{image.originalName}, #{image.storedName}, #{image.size}, #{image.imagePath})
+            (#{image.userId}, #{image.originalName}, #{image.storedName}, #{image.size}, #{image.imagePath})
         </foreach>
     </insert>
 
-    <select id="selectImageList" parameterType="long" resultMap="imageList">
-        select image_id, post_id, origin_name, stored_name, size, image_path, created_at
+    <insert id="insertPostImageList" parameterType="java.util.List">
+        insert into post_image (post_id, image_id)
+        values
+        <foreach collection="list" item="image" separator=",">
+            (#{image.postId}, #{image.imageId})
+        </foreach>
+    </insert>
+
+    <insert id="insertCommentImageList" parameterType="java.util.List">
+        insert into comment_image (comment_id, image_id)
+        values
+        <foreach collection="list" item="image" separator=",">
+            (#{image.commentId}, #{image.imageId})
+        </foreach>
+    </insert>
+
+    <select id="selectPostImageList" parameterType="long" resultMap="postImageList">
+        select image.image_id,
+               post_image.post_id,
+               image.origin_name,
+               image.stored_name,
+               image.size,
+               image.image_path,
+               image.created_at
         from image
-        where post_id = #{postId}
+                 inner join post_image on image.image_id = post_image.image_id
+        where post_image.post_id = #{postId}
+          and image.is_deleted = 'N'
+    </select>
+
+    <select id="selectCommentImageList" parameterType="long" resultMap="commentImageList">
+        select image.image_id,
+               comment_image.comment_id,
+               image.origin_name,
+               image.stored_name,
+               image.size,
+               image.image_path,
+               image.created_at
+        from image
+                 inner join comment_image on image.image_id = comment_image.image_id
+        where comment_image.comment_id = #{comentId}
           and is_deleted = 'N'
     </select>
 
@@ -33,9 +70,19 @@
           and user_id = #{userId}
     </update>
 
-    <resultMap id="imageList" type="me.sisyphusj.community.app.image.domain.ImageDetailsSelectVO">
+    <resultMap id="postImageList" type="me.sisyphusj.community.app.image.domain.ImageVO">
         <id property="imageId" column="image_id"/>
         <result property="postId" column="post_id"/>
+        <result property="originalName" column="origin_name"/>
+        <result property="storedName" column="stored_name"/>
+        <result property="size" column="size"/>
+        <result property="imagePath" column="image_path"/>
+        <result property="createdDate" column="created_at"/>
+    </resultMap>
+
+    <resultMap id="commentImageList" type="me.sisyphusj.community.app.image.domain.ImageVO">
+        <id property="imageId" column="image_id"/>
+        <result property="commentId" column="comment_id"/>
         <result property="originalName" column="origin_name"/>
         <result property="storedName" column="stored_name"/>
         <result property="size" column="size"/>

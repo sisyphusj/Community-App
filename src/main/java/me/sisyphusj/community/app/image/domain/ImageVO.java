@@ -2,12 +2,16 @@ package me.sisyphusj.community.app.image.domain;
 
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import me.sisyphusj.community.app.utils.SecurityUtil;
 
 @Builder
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ImageVO {
 
 	private Long imageId; // 이미지 고유 ID
