@@ -23,14 +23,14 @@ public class ImageDetailsResDTO {
 
 	private Date createdDate; // 이미지 업로드 날짜
 
-	public static ImageDetailsResDTO of(ImageDetailsSelectVO imageDetailsSelectVO) {
+	public static ImageDetailsResDTO of(ImageVO imageVO) {
 		return ImageDetailsResDTO.builder()
-			.imageId(imageDetailsSelectVO.getImageId())
-			.postId(imageDetailsSelectVO.getPostId())
-			.originalName(imageDetailsSelectVO.getOriginalName())
-			.storedName(imageDetailsSelectVO.getStoredName())
-			.imagePath(imageDetailsSelectVO.getImagePath())
-			.createdDate(imageDetailsSelectVO.getCreatedDate())
+			.imageId(imageVO.getImageId())
+			.postId(imageVO.getPostId())
+			.originalName(imageVO.getOriginalName())
+			.storedName(imageVO.getStoredName())
+			.imagePath(imageVO.getImagePath())
+			.createdDate(imageVO.getCreatedDate())
 			.build();
 	}
 }
