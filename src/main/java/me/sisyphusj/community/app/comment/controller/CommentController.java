@@ -56,7 +56,7 @@ public class CommentController {
 	 */
 	@GetMapping("/{postId}/remove")
 	public String removeComment(@PathVariable long postId, @RequestParam long commentId, Model model) {
-		commentService.removeComment(commentId);
+		commentService.removeComment(postId, commentId);
 
 		model.addAttribute(MESSAGE, "댓글이 삭제되었습니다.");
 		model.addAttribute(LOCATION_URL, LocationUrl.CUSTOM);

@@ -74,25 +74,11 @@
     <update id="deleteComment">
         update comments
         set is_deleted = 'Y'
-        where user_id = #{userId} and comment_id in
+        where comment_id in
         <foreach item="commentId" collection="deleteCommentIdList" open="(" separator="," close=")">
             #{commentId}
         </foreach>
     </update>
-
-    <select id="selectCountChildComment" parameterType="long" resultType="int">
-        select count(*)
-        from comments
-        where is_deleted = 'N'
-          and parent_id = #{parentId}
-    </select>
-
-    <select id="selectChildCommentIdList" parameterType="long" resultType="long">
-        select comment_id
-        from comments
-        where is_deleted = 'N'
-          and parent_id = #{parentId}
-    </select>
 
     <resultMap id="commentList" type="me.sisyphusj.community.app.comment.domain.CommentVO">
         <id property="commentId" column="comment_id"/>

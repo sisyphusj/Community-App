@@ -24,8 +24,4 @@ public interface CommentMapper {
 
 	void deleteComment(long userId, List<Long> deleteCommentIdList);
 
-	int selectCountChildComment(long parentId);
-
-	List<Long> selectChildCommentIdList(long parentId);
-
 }
