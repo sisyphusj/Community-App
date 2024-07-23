@@ -39,7 +39,7 @@ public class PostService {
 
 		// 게시글이 이미지를 첨부, 이미지 리스트가 NULL이 아니면 이미지 저장 요청
 		if (postVO.getHasImage() == HasImage.Y && !(postCreateReqDTO.getImages().isEmpty())) {
-			imageService.saveImage(postVO.getPostId(), postCreateReqDTO.getImages());
+			imageService.savePostImages(postVO.getPostId(), postCreateReqDTO.getImages());
 		}
 	}
 
@@ -97,7 +97,7 @@ public class PostService {
 
 		// 게시글이 이미지를 첨부, 이미지 리스트가 NULL이 아니면 이미지 저장 요청
 		if (postVO.getHasImage() == HasImage.Y && (postEditReqDTO.getImages() != null)) {
-			imageService.saveImage(postVO.getPostId(), postEditReqDTO.getImages());
+			imageService.savePostImages(postVO.getPostId(), postEditReqDTO.getImages());
 		}
 	}
 

@@ -18,6 +18,7 @@ import me.sisyphusj.community.app.comment.domain.CommentReqDTO;
 import me.sisyphusj.community.app.comment.domain.CommentVO;
 import me.sisyphusj.community.app.comment.mapper.CommentMapper;
 import me.sisyphusj.community.app.commons.exception.CommentNotFoundException;
+import me.sisyphusj.community.app.image.service.ImageService;
 import me.sisyphusj.community.app.utils.SecurityUtil;
 
 @Service
@@ -26,12 +27,20 @@ public class CommentService {
 
 	private final CommentMapper commentMapper;
 
+	private final ImageService imageService;
+
 	/**
 	 * 댓글 등록
 	 */
 	@Transactional
 	public void createComment(CommentReqDTO commentReqDTO) {
-		commentMapper.insertComment(CommentVO.of(commentReqDTO));
+		CommentVO commentVO = CommentVO.of(commentReqDTO);
+		commentMapper.insertComment(commentVO);
+
+		// 댓글 이미지 추가
+		if (commentReqDTO.getImages() != null && !(commentReqDTO.getImages().isEmpty())) {
+			imageService.saveCommentImages(commentVO.getCommentId(), commentReqDTO.getImages());
+		}
 	}
 
 	/**

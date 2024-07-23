@@ -77,7 +77,7 @@ public class PostController {
 
 		// 조회하는 게시글의 첨부 이미지가 존재한다면 이미지 리스트 추가
 		if (postDetailResDTO.getHasImage() == HasImage.Y) {
-			model.addAttribute("ImageDetailsResDTOList", imageService.getImages(postId));
+			model.addAttribute("ImageDetailsResDTOList", imageService.getPostImages(postId));
 		}
 
 		// 조회하는 게시글의 댓글이 존재한다면 댓글 리스트 추가
@@ -99,7 +99,7 @@ public class PostController {
 
 		// 조회하는 게시글의 첨부 이미지가 존재한다면 이미지 리스트 추가
 		if (postDetailResDTO.getHasImage() == HasImage.Y) {
-			model.addAttribute("ImageDetailsResDTOList", imageService.getImages(postId));
+			model.addAttribute("ImageDetailsResDTOList", imageService.getPostImages(postId));
 		}
 
 		return "editPost";

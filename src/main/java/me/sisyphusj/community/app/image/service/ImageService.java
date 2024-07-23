@@ -9,8 +9,9 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.commons.component.ImageUploadProvider;
 import me.sisyphusj.community.app.commons.exception.ImageNotFoundException;
-import me.sisyphusj.community.app.image.domain.ImageDetailsInsertVO;
-import me.sisyphusj.community.app.image.domain.ImageDetailsResDTO;
+import me.sisyphusj.community.app.image.domain.CommentImageResDTO;
+import me.sisyphusj.community.app.image.domain.ImageVO;
+import me.sisyphusj.community.app.image.domain.PostImageResDTO;
 import me.sisyphusj.community.app.image.mapper.ImageMapper;
 import me.sisyphusj.community.app.utils.SecurityUtil;
 
@@ -23,26 +24,58 @@ public class ImageService {
 	private final ImageUploadProvider imageUploadProvider;
 
 	/**
-	 * 디렉토리에 이미지 저장 및 이미지 메타 데이터 DB 저장
+	 * 게시글 첨부 이미지를 디렉토리에 이미지 저장 및 이미지 메타 데이터 DB 저장
 	 */
 	@Transactional
-	public void saveImage(long postId, List<MultipartFile> images) {
+	public void savePostImages(long postId, List<MultipartFile> images) {
 		// imageUploadProvider 에서 반환된 이미지 메타데이터 리스트를 DB에 저장
-		List<ImageDetailsInsertVO> imageDetailsInsertVOList = imageUploadProvider.uploadFiles(images).stream()
-			.map(ImageDetailsInsertVO::of)
-			.map(imageDetailsInsertVO -> imageDetailsInsertVO.updatePostId(postId))
+		List<ImageVO> imageVOList = imageUploadProvider.uploadFiles(images).stream()
+			.map(ImageVO::of)
+			.map(imageVO -> imageVO.updatePostId(postId))
 			.toList();
 
-		imageMapper.insertImages(imageDetailsInsertVOList);
+		// 이미지 테이블에 저장
+		imageMapper.insertImageList(imageVOList);
+
+		// 게시글 - 이미지 중간 테이블에 정보 저장
+		imageMapper.insertPostImageList(imageVOList);
 	}
 
 	/**
-	 * 이미지 메타 데이터 리스트 조회
+	 * 댓글 첨부 이미지를 디렉토리에 이미지 저장 및 이미지 메타 데이터 DB 저장
+	 */
+	@Transactional
+	public void saveCommentImages(long commentId, List<MultipartFile> images) {
+		// imageUploadProvider 에서 반환된 이미지 메타데이터 리스트를 DB에 저장
+		List<ImageVO> imageVOList = imageUploadProvider.uploadFiles(images).stream()
+			.map(ImageVO::of)
+			.map(imageVO -> imageVO.updateCommentId(commentId))
+			.toList();
+
+		// 이미지 테이블에 저장
+		imageMapper.insertImageList(imageVOList);
+
+		// 댓글 - 이미지 중간 테이블에 정보 저장
+		imageMapper.insertCommentImageList(imageVOList);
+	}
+
+	/**
+	 * 게시글 이미지 메타 데이터 리스트 조회
 	 */
 	@Transactional(readOnly = true)
-	public List<ImageDetailsResDTO> getImages(long postId) {
-		return imageMapper.selectImageList(postId).stream()
-			.map(ImageDetailsResDTO::of)
+	public List<PostImageResDTO> getPostImages(long postId) {
+		return imageMapper.selectPostImageList(postId).stream()
+			.map(PostImageResDTO::of)
+			.toList();
+	}
+
+	/**
+	 * 댓글 이미지 메타 데이터 리스트 조회
+	 */
+	@Transactional(readOnly = true)
+	public List<CommentImageResDTO> getCommentImages(long commentId) {
+		return imageMapper.selectCommentImageList(commentId).stream()
+			.map(CommentImageResDTO::of)
 			.toList();
 	}
 

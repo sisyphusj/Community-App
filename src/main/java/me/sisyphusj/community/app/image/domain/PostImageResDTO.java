@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ImageDetailsResDTO {
+public class PostImageResDTO {
 
 	private long imageId; // 이미지 고유 ID
 
@@ -23,8 +23,8 @@ public class ImageDetailsResDTO {
 
 	private Date createdDate; // 이미지 업로드 날짜
 
-	public static ImageDetailsResDTO of(ImageVO imageVO) {
-		return ImageDetailsResDTO.builder()
+	public static PostImageResDTO of(ImageVO imageVO) {
+		return PostImageResDTO.builder()
 			.imageId(imageVO.getImageId())
 			.postId(imageVO.getPostId())
 			.originalName(imageVO.getOriginalName())

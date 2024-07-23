@@ -4,7 +4,7 @@
 
 <mapper namespace="me.sisyphusj.community.app.comment.mapper.CommentMapper">
 
-    <insert id="insertComment" parameterType="me.sisyphusj.community.app.comment.domain.CommentVO">
+    <insert id="insertComment" parameterType="me.sisyphusj.community.app.comment.domain.CommentVO" useGeneratedKeys="true" keyProperty="commentId">
         insert into comments (parent_id, user_id, post_id, content)
         values (#{parentId}, #{userId}, #{postId}, #{content})
     </insert>
