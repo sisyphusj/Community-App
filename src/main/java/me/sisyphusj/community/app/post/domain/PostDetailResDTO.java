@@ -19,8 +19,6 @@ public class PostDetailResDTO {
 
 	private String content; // 본문
 
-	private HasImage hasImage; // 이미지 첨부 여부
-
 	private int views; // 조회 수
 
 	private Date createdAt; // 생성일
@@ -34,7 +32,6 @@ public class PostDetailResDTO {
 			.name(postDetailVO.getName())
 			.title(postDetailVO.getTitle())
 			.content(postDetailVO.getContent())
-			.hasImage(postDetailVO.getHasImage())
 			.views(postDetailVO.getViews())
 			.createdAt(postDetailVO.getCreatedAt())
 			.updatedAt(postDetailVO.getUpdatedAt())

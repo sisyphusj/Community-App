@@ -60,6 +60,22 @@ public class ImageService {
 	}
 
 	/**
+	 * 게시글에 이미지 첨부 여부
+	 */
+	@Transactional(readOnly = true)
+	public boolean hasPostImage(long postId) {
+		return !(imageMapper.selectPostImageList(postId).isEmpty());
+	}
+
+	/**
+	 * 댓글에 이미지 첨부 여부
+	 */
+	@Transactional(readOnly = true)
+	public boolean hasCommentImage(long commentId) {
+		return !(imageMapper.selectCommentImageList(commentId).isEmpty());
+	}
+
+	/**
 	 * 게시글 이미지 메타 데이터 리스트 조회
 	 */
 	@Transactional(readOnly = true)

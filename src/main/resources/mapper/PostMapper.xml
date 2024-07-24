@@ -5,8 +5,8 @@
 <mapper namespace="me.sisyphusj.community.app.post.mapper.PostMapper">
 
     <insert id="insertPost" parameterType="me.sisyphusj.community.app.post.domain.PostVO" useGeneratedKeys="true" keyProperty="postId">
-        insert into posts (user_id, title, content, has_image)
-        values (#{userId}, #{title}, #{content}, #{hasImage})
+        insert into posts (user_id, title, content)
+        values (#{userId}, #{title}, #{content})
     </insert>
 
     <select id="selectPostSummaryList" resultType="me.sisyphusj.community.app.post.domain.PostVO">
@@ -41,7 +41,6 @@
                title,
                content,
                views,
-               has_image,
                created_at,
                updated_at
         from posts p
@@ -67,9 +66,8 @@
 
     <update id="updatePost" parameterType="me.sisyphusj.community.app.post.domain.PostVO">
         update posts
-        set title     = #{title},
-            content   = #{content},
-            has_image = #{hasImage}
+        set title   = #{title},
+            content = #{content}
         where post_id = #{postId}
     </update>
 

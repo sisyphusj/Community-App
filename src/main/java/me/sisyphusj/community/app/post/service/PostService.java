@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 import me.sisyphusj.community.app.image.service.ImageService;
-import me.sisyphusj.community.app.post.domain.HasImage;
 import me.sisyphusj.community.app.post.domain.PageReqDTO;
 import me.sisyphusj.community.app.post.domain.PageResDTO;
 import me.sisyphusj.community.app.post.domain.PostCreateReqDTO;
@@ -88,16 +87,14 @@ public class PostService {
 	@Transactional
 	public void editPost(PostEditReqDTO postEditReqDTO) {
 		// 게시글의 존재 여부 확인
-		if (postMapper.selectCountPost(postEditReqDTO.getPostId(), SecurityUtil.getLoginUserId()) != 1) {
-			throw new PostNotFoundException();
-		}
+		validatePostExists(postEditReqDTO.getPostId());
 
 		// 게시글 갱신
 		PostVO postVO = PostVO.of(postEditReqDTO);
 		postMapper.updatePost(postVO);
 
 		// 게시글이 이미지를 첨부, 이미지 리스트가 NULL이 아니면 이미지 저장 요청
-		if (postVO.getHasImage() == HasImage.Y && (postEditReqDTO.getImages() != null)) {
+		if (ListValidationUtil.isValidMultiPartFileList(postEditReqDTO.getImages())) {
 			imageService.savePostImages(postVO.getPostId(), postEditReqDTO.getImages());
 		}
 	}
@@ -108,11 +105,18 @@ public class PostService {
 	@Transactional
 	public void removePost(long postId) {
 		// 게시글 존재 여부 확인
-		if (postMapper.selectCountPost(postId, SecurityUtil.getLoginUserId()) != 1) {
-			throw new PostNotFoundException();
-		}
+		validatePostExists(postId);
 
 		// 게시글 삭제
 		postMapper.deletePost(postId);
+	}
+
+	/**
+	 * 게시글의 존재 여부를 확인
+	 */
+	private void validatePostExists(long postId) {
+		if (postMapper.selectCountPost(postId, SecurityUtil.getLoginUserId()) != 1) {
+			throw new PostNotFoundException();
+		}
 	}
 }

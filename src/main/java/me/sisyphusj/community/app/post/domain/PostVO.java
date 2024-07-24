@@ -24,8 +24,6 @@ public class PostVO {
 
 	private String content; // 본문
 
-	private HasImage hasImage; // 게시글의 이미지 첨부 여부
-
 	private int views; // 조회 수
 
 	private Date createdAt; // 생성일
@@ -37,7 +35,6 @@ public class PostVO {
 			.userId(SecurityUtil.getLoginUserId())
 			.title(postCreateReqDTO.getTitle())
 			.content(postCreateReqDTO.getContent())
-			.hasImage(postCreateReqDTO.getHasImage())
 			.build();
 	}
 
@@ -47,8 +44,6 @@ public class PostVO {
 			.userId(SecurityUtil.getLoginUserId())
 			.title(postEditReqDTO.getTitle())
 			.content(postEditReqDTO.getContent())
-			.hasImage(postEditReqDTO.getHasImage())
 			.build();
-
 	}
 }

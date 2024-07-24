@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.comment.service.CommentService;
 import me.sisyphusj.community.app.commons.LocationUrl;
 import me.sisyphusj.community.app.image.service.ImageService;
-import me.sisyphusj.community.app.post.domain.HasImage;
 import me.sisyphusj.community.app.post.domain.PageReqDTO;
 import me.sisyphusj.community.app.post.domain.PageResDTO;
 import me.sisyphusj.community.app.post.domain.PostCreateReqDTO;
@@ -76,7 +75,7 @@ public class PostController {
 		model.addAttribute("postDetailResDTO", postDetailResDTO);
 
 		// 조회하는 게시글의 첨부 이미지가 존재한다면 이미지 리스트 추가
-		if (postDetailResDTO.getHasImage() == HasImage.Y) {
+		if (imageService.hasPostImage(postId)) {
 			model.addAttribute("ImageDetailsResDTOList", imageService.getPostImages(postId));
 		}
 
@@ -98,7 +97,7 @@ public class PostController {
 		model.addAttribute("postDetailResDTO", postDetailResDTO);
 
 		// 조회하는 게시글의 첨부 이미지가 존재한다면 이미지 리스트 추가
-		if (postDetailResDTO.getHasImage() == HasImage.Y) {
+		if (imageService.hasPostImage(postId)) {
 			model.addAttribute("ImageDetailsResDTOList", imageService.getPostImages(postId));
 		}
 
