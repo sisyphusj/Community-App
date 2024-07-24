@@ -18,11 +18,11 @@ public class ImageVO {
 
 	private Long userId; // 작성자 고유 ID
 
+	private String originName; // 파일 원본 이름
+
 	private Long postId; // 게시글 고유 ID
 
 	private Long commentId; // 댓글 고유 ID
-
-	private String originalName; // 파일 원본 이름
 
 	private String storedName; // 저장소에 저장된 파일의 이름
 
@@ -30,7 +30,7 @@ public class ImageVO {
 
 	private String imagePath; // 저장소의 Image 주소
 
-	private Date createdDate; // 이미지 업로드 날짜
+	private Date createdAt; // 이미지 업로드 날짜
 
 	public ImageVO updatePostId(long postId) {
 		this.postId = postId;
@@ -45,7 +45,7 @@ public class ImageVO {
 	public static ImageVO of(ImageMetadata imageMetadata) {
 		return ImageVO.builder()
 			.userId(SecurityUtil.getLoginUserId())
-			.originalName(imageMetadata.getOriginalName())
+			.originName(imageMetadata.getOriginName())
 			.storedName(imageMetadata.getStoredName())
 			.size(imageMetadata.getSize())
 			.imagePath(imageMetadata.getImagePath())

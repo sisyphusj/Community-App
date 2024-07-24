@@ -6,8 +6,6 @@ import java.util.Optional;
 import org.apache.ibatis.annotations.Mapper;
 
 import me.sisyphusj.community.app.post.domain.PageSortType;
-import me.sisyphusj.community.app.post.domain.PostDetailVO;
-import me.sisyphusj.community.app.post.domain.PostSummaryVO;
 import me.sisyphusj.community.app.post.domain.PostVO;
 
 @Mapper
@@ -15,11 +13,11 @@ public interface PostMapper {
 
 	void insertPost(PostVO postVO);
 
-	List<PostSummaryVO> selectPostSummaryList(int amount, int offset, PageSortType sortType);
+	List<PostVO> selectPostSummaryList(int amount, int offset, PageSortType sortType);
 
 	int selectTotalCount();
 
-	Optional<PostDetailVO> selectPostDetails(long postId);
+	Optional<PostVO> selectPostDetails(long postId);
 
 	int updateViewsAndGet(long postId);
 

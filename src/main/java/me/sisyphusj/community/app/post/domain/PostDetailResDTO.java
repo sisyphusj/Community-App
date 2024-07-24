@@ -9,44 +9,35 @@ import lombok.Getter;
 @Builder
 public class PostDetailResDTO {
 
-	// 사용자 고유 ID
-	private long userId;
+	private long userId; // 사용자 고유 ID
 
-	// 게시글 고유 ID
-	private long postId;
+	private long postId; // 게시글 고유 ID
 
-	// 작성자
-	private String author;
+	private String name; // 작성자 이름
 
-	// 제목
-	private String title;
+	private String title; // 제목
 
-	// 본문
-	private String content;
+	private String content; // 본문
 
-	// 이미지 첨부 여부
-	private HasImage hasImage;
+	private HasImage hasImage; // 이미지 첨부 여부
 
-	// 조회 수
-	private int views;
+	private int views; // 조회 수
 
-	// 생성일
-	private Date createdDate;
+	private Date createdAt; // 생성일
 
-	// 최종 수정일
-	private Date updatedDate;
+	private Date updatedAt; // 최종 수정일
 
-	public static PostDetailResDTO of(PostDetailVO postDetailVO) {
+	public static PostDetailResDTO of(PostVO postDetailVO) {
 		return PostDetailResDTO.builder()
 			.userId(postDetailVO.getUserId())
 			.postId(postDetailVO.getPostId())
-			.author(postDetailVO.getAuthor())
+			.name(postDetailVO.getName())
 			.title(postDetailVO.getTitle())
 			.content(postDetailVO.getContent())
 			.hasImage(postDetailVO.getHasImage())
 			.views(postDetailVO.getViews())
-			.createdDate(postDetailVO.getCreatedDate())
-			.updatedDate(postDetailVO.getUpdatedDate())
+			.createdAt(postDetailVO.getCreatedAt())
+			.updatedAt(postDetailVO.getUpdatedAt())
 			.build();
 	}
 }

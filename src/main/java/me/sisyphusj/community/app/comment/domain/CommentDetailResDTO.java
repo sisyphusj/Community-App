@@ -17,13 +17,13 @@ public class CommentDetailResDTO {
 
 	private long postId; // 게시글 고유 ID
 
-	private String author; // 작성자 이름
+	private String name; // 작성자 이름
 
 	private String content; // 댓글 내용
 
-	private Date createdDate; // 댓글 생성일
+	private Date createdAt; // 댓글 생성일
 
-	private Date updatedDate; // 댓글 수정일
+	private Date updatedAt; // 댓글 수정일
 
 	public static CommentDetailResDTO of(CommentVO commentVO) {
 		return CommentDetailResDTO.builder()
@@ -31,10 +31,10 @@ public class CommentDetailResDTO {
 			.userId(commentVO.getUserId())
 			.parentId(commentVO.getParentId())
 			.postId(commentVO.getPostId())
-			.author(commentVO.getAuthor())
+			.name(commentVO.getName())
 			.content(commentVO.getContent())
-			.createdDate(commentVO.getCreatedDate())
-			.updatedDate(commentVO.getUpdatedDate())
+			.createdAt(commentVO.getCreatedAt())
+			.updatedAt(commentVO.getUpdatedAt())
 			.build();
 	}
 }

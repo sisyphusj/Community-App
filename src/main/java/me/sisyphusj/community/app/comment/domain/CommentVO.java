@@ -2,12 +2,16 @@ package me.sisyphusj.community.app.comment.domain;
 
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import me.sisyphusj.community.app.utils.SecurityUtil;
 
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CommentVO {
 
 	private Long commentId; // 댓글 고유 ID
@@ -18,13 +22,13 @@ public class CommentVO {
 
 	private Long postId; // 게시글 고유 ID
 
-	private String author; // 작성자 이름
+	private String name; // 작성자 이름
 
 	private String content; // 댓글 내용
 
-	private Date createdDate; // 댓글 생성일
+	private Date createdAt; // 댓글 생성일
 
-	private Date updatedDate; // 댓글 수정일
+	private Date updatedAt; // 댓글 수정일
 
 	public static CommentVO of(CommentReqDTO commentReqDTO) {
 		return CommentVO.builder()

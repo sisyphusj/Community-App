@@ -9,28 +9,26 @@ import lombok.Getter;
 @Getter
 public class PostSummaryResDTO {
 
-	// 게시글 고유 ID
-	private long postId;
+	private long postId; // 게시글 고유 ID
 
-	// 작성자
-	private String author;
+	private String name; // 작성자
 
-	// 제목
-	private String title;
+	private String title; // 제목
 
-	// 조회 수
-	private int views;
+	private int views; // 조회 수
 
-	// 생성 시간
-	private Date createdDate;
+	private Date createdAt; // 생성 시간
 
-	public static PostSummaryResDTO of(PostSummaryVO postVO) {
+	private Date updatedAt; // 최종 수정일
+
+	public static PostSummaryResDTO of(PostVO postVO) {
 		return PostSummaryResDTO.builder()
 			.postId(postVO.getPostId())
-			.author(postVO.getAuthor())
+			.name(postVO.getName())
 			.title(postVO.getTitle())
 			.views(postVO.getViews())
-			.createdDate(postVO.getCreatedDate())
+			.createdAt(postVO.getCreatedAt())
+			.updatedAt(postVO.getUpdatedAt())
 			.build();
 	}
 }

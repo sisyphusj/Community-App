@@ -13,7 +13,7 @@ public class PostImageResDTO {
 
 	private long postId; // 게시글 고유 ID
 
-	private String originalName; // 파일 원본 이름
+	private String originName; // 파일 원본 이름
 
 	private String storedName; // 저장소에 저장된 파일의 이름
 
@@ -21,16 +21,16 @@ public class PostImageResDTO {
 
 	private String imagePath; // 저장소의 Image 주소
 
-	private Date createdDate; // 이미지 업로드 날짜
+	private Date createdAt; // 이미지 업로드 날짜
 
 	public static PostImageResDTO of(ImageVO imageVO) {
 		return PostImageResDTO.builder()
 			.imageId(imageVO.getImageId())
 			.postId(imageVO.getPostId())
-			.originalName(imageVO.getOriginalName())
+			.originName(imageVO.getOriginName())
 			.storedName(imageVO.getStoredName())
 			.imagePath(imageVO.getImagePath())
-			.createdDate(imageVO.getCreatedDate())
+			.createdAt(imageVO.getCreatedAt())
 			.build();
 	}
 }

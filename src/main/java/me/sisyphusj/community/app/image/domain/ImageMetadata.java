@@ -8,7 +8,7 @@ import lombok.Getter;
 public class ImageMetadata {
 
 	// 파일 원본 이름
-	private String originalName;
+	private String originName;
 
 	// 저장소에 저장된 파일의 이름
 	private String storedName;

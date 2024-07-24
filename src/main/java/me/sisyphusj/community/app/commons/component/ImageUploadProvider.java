@@ -76,7 +76,7 @@ public class ImageUploadProvider {
 
 		// 메타데이터 반환
 		return ImageMetadata.builder()
-			.originalName(multipartFile.getOriginalFilename())
+			.originName(multipartFile.getOriginalFilename())
 			.storedName(storedName)
 			.imagePath("/uploads/" + today + "/" + storedName)
 			.size(multipartFile.getSize())

@@ -16,7 +16,7 @@
           and is_deleted = 'N'
     </select>
 
-    <select id="selectCommentList" parameterType="long" resultMap="commentList">
+    <select id="selectCommentList" parameterType="long" resultType="me.sisyphusj.community.app.comment.domain.CommentVO">
         select comment_id,
                parent_id,
                u.user_id,
@@ -32,7 +32,7 @@
         order by created_at desc
     </select>
 
-    <select id="selectCommentListOrderByAsc" parameterType="long" resultMap="commentList">
+    <select id="selectCommentListOrderByAsc" parameterType="long" resultType="me.sisyphusj.community.app.comment.domain.CommentVO">
         select comment_id,
                parent_id,
                u.user_id,
@@ -47,7 +47,7 @@
           and post_id = #{postId}
     </select>
 
-    <select id="selectComment" parameterType="long" resultMap="commentList">
+    <select id="selectComment" parameterType="long" resultType="me.sisyphusj.community.app.comment.domain.CommentVO">
         select comment_id,
                parent_id,
                u.user_id,
@@ -79,16 +79,5 @@
             #{commentId}
         </foreach>
     </update>
-
-    <resultMap id="commentList" type="me.sisyphusj.community.app.comment.domain.CommentVO">
-        <id property="commentId" column="comment_id"/>
-        <result property="parentId" column="parent_id"/>
-        <result property="userId" column="user_id"/>
-        <result property="postId" column="post_id"/>
-        <result property="author" column="name"/>
-        <result property="content" column="content"/>
-        <result property="createdDate" column="created_at"/>
-        <result property="updatedDate" column="updated_at"/>
-    </resultMap>
 
 </mapper>
