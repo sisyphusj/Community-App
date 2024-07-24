@@ -22,6 +22,8 @@ public interface CommentMapper {
 
 	void editComment(CommentVO commentEditVO);
 
-	void deleteComment(long userId, List<Long> deleteCommentIdList);
+	void deleteComment(List<Long> deleteCommentIdList);
+
+	void deleteCommentImage(List<Long> deleteCommentIdList);
 
 }

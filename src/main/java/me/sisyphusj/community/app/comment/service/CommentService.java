@@ -94,6 +94,11 @@ public class CommentService {
 		}
 
 		commentMapper.editComment(CommentVO.of(commentEditReqDTO));
+
+		// 댓글 이미지 추가
+		if (ListValidationUtil.isValidMultiPartFileList(commentEditReqDTO.getImages())) {
+			imageService.saveCommentImages(commentEditReqDTO.getCommentId(), commentEditReqDTO.getImages());
+		}
 	}
 
 	/**
@@ -118,8 +123,12 @@ public class CommentService {
 		// 해당 댓글의 자식 댓글이 존재한다면 자식 댓글도 삭제
 		collectDeletableComments(commentId, comments, deleteCommentIdList);
 
-		// 작성자의 id 및 댓글 id 리스트를 통해 삭제 요청
-		commentMapper.deleteComment(SecurityUtil.getLoginUserId(), deleteCommentIdList);
+		// 삭제 대상 댓글 id 리스트를 통해 삭제 요청
+		commentMapper.deleteComment(deleteCommentIdList);
+
+		// 삭제 대상 댓글 id 리스트를 통해 댓글-이미지 테이블에서 정보 삭제
+		commentMapper.deleteCommentImage(deleteCommentIdList);
+
 	}
 
 	/**

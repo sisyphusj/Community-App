@@ -15,6 +15,24 @@
         <c:set var="post" value="${postDetailResDTO}"/>
 
         <script>
+            const removeImage = (imageId, element) => {
+                const csrfToken = $('input[name="_csrf"]').val();
+                $.ajax({
+                    url: `/images/remove?imageId=${'${imageId}'}`,
+                    type: "GET",
+                    beforeSend: (xhr) => {
+                        xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+                    },
+                    success: function () {
+                        alert("이미지가 제거되었습니다.");
+                        $(element).closest('div.image-container').remove();
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert("이미지 삭제 중 오류가 발생하였습니다.");
+                    }
+                });
+            }
             $(document).ready(() => {
                 $('.replyButton').click(function () {
                     const commentDiv = $(this).closest('.commentDiv');
@@ -37,20 +55,40 @@
                 $('.editButton').click(function () {
                     const commentDiv = $(this).closest('.commentDiv');
                     const commentId = commentDiv.data('comment-id');
+                    const content = commentDiv.data('comment-content');
 
                     // 모든 editInputContainer 비우기
                     $('.editInputContainer').empty();
 
                     // 선택된 editInputContainer에 답글 입력 폼 추가
                     $(`#editInputContainer-${'${commentId}'}`).html(`
-                        <form action="/comment/edit" method="post">
+                        <form action="/comment/edit" method="post" enctype="multipart/form-data">
                             <sec:csrfInput/>
-                            <textarea name="content" required></textarea>
+                            <textarea name="content" required>${'${content}'}</textarea>
                             <input type="hidden" name="commentId" value="${'${commentId}'}">
+                            <label for="imageFiles">이미지 첨부파일</label><br>
+                            <input type="file" id="imageFiles" name="images" multiple>
+                            <ul id="imageList" class="imageList"></ul>
                             <input type="hidden" name="postId" value="${post.postId}">
                             <button type="submit">등록</button>
-                        </form> `);
+                        </form>
+                    `);
+
+                    // 기존 이미지 삭제 버튼 포함
+                    commentDiv.find('.image-container').each(function () {
+                        const imageId = $(this).data('image-id');
+                        $(this).append(`
+                            <button type="button" class="removeImage" onclick="removeImage('${'${imageId}'}', this)">기존 이미지 삭제</button>
+                        `);
+                    });
+
+                    // 취소 버튼 이벤트 핸들러 추가
+                    $('.cancelEditButton').click(function () {
+                        $(`#editInputContainer-${'${commentId}'}`).empty();
+                        $(`.removeImage`).empty();
+                    });
                 });
+
                 let fileList = [];
 
                 $('#imageFiles').on('change', (event) => {
@@ -181,14 +219,16 @@
         <c:forEach var="comment" items="${commentDetailResDTOList}">
             <c:choose>
                 <c:when test="${comment.parentId != null}">
-                    <div class="commentDiv" data-comment-id="${comment.commentId}">
+                    <div class="commentDiv" data-comment-id="${comment.commentId}" data-comment-content="${comment.content}">
                         <p class="topLevelComment">
                                 ${comment.name} : ${comment.content}
                                 ${comment.createdAt}
                         </p>
                         <c:if test="${comment.images != null && fn:length(comment.images) > 0}">
                             <c:forEach var="file" items="${comment.images}">
-                                <img src="${file.imagePath}" alt="${file.storedName}"/>
+                                <div class="image-container" data-image-id="${file.imageId}">
+                                    <img width="100" height="100" src="${file.imagePath}" alt="${file.storedName}"/>
+                                </div>
                             </c:forEach>
                         </c:if>
                         <c:if test="${currentUserId != null}">
@@ -196,6 +236,7 @@
                         </c:if>
                         <c:if test="${currentUserId == comment.userId}">
                             <button type="button" class="editButton">수정</button>
+                            <button type="button" class="cancelEditButton">수정 취소</button>
                             <button onclick=window.location.href=`/comment/${comment.postId}/remove?commentId=${comment.commentId}`>삭제</button>
                         </c:if>
                         <div class="replyInputContainer" id="replyInputContainer-${comment.commentId}"></div>
@@ -203,14 +244,16 @@
                     </div>
                 </c:when>
                 <c:otherwise>
-                    <div class="commentDiv" data-comment-id="${comment.commentId}">
+                    <div class="commentDiv" data-comment-id="${comment.commentId}" data-comment-content="${comment.content}">>
                         <p class="comment">
                                 ${comment.name} : ${comment.content}
                                 ${comment.createdAt}
                         </p>
                         <c:if test="${comment.images != null && fn:length(comment.images) > 0}">
                             <c:forEach var="file" items="${comment.images}">
-                                <img src="${file.imagePath}" alt="${file.storedName}"/>
+                                <div class="image-container" data-image-id="${file.imageId}">
+                                    <img width="100" height="100" src="${file.imagePath}" alt="${file.storedName}"/>
+                                </div>
                             </c:forEach>
                         </c:if>
                         <c:if test="${currentUserId != null}">
@@ -218,6 +261,7 @@
                         </c:if>
                         <c:if test="${currentUserId == comment.userId}">
                             <button type="button" class="editButton">수정</button>
+                            <button type="button" class="cancelEditButton">수정 취소</button>
                             <button onclick=window.location.href=`/comment/${comment.postId}/remove?commentId=${comment.commentId}`>삭제</button>
                         </c:if>
                         <div class="replyInputContainer" id="replyInputContainer-${comment.commentId}"></div>

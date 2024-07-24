@@ -109,6 +109,9 @@ public class PostService {
 
 		// 게시글 삭제
 		postMapper.deletePost(postId);
+
+		// 게시글 - 이미지 중간 테이블 정보 삭제
+		postMapper.deletePostImage(postId);
 	}
 
 	/**

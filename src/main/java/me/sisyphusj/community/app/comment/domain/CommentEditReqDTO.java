@@ -1,5 +1,9 @@
 package me.sisyphusj.community.app.comment.domain;
 
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -17,5 +21,7 @@ public class CommentEditReqDTO {
 
 	@NotBlank
 	private String content; // 댓글 내용
+
+	private List<MultipartFile> images; // 추가된 이미지 리스트
 
 }

@@ -11,8 +11,6 @@ public class CommentImageResDTO {
 
 	private long imageId; // 이미지 고유 ID
 
-	private long commentId; // 댓글 고유 ID
-
 	private String originName; // 파일 원본 이름
 
 	private String storedName; // 저장소에 저장된 파일의 이름
@@ -26,7 +24,6 @@ public class CommentImageResDTO {
 	public static CommentImageResDTO of(ImageVO imageVO) {
 		return CommentImageResDTO.builder()
 			.imageId(imageVO.getImageId())
-			.commentId(imageVO.getCommentId())
 			.originName(imageVO.getOriginName())
 			.storedName(imageVO.getStoredName())
 			.imagePath(imageVO.getImagePath())

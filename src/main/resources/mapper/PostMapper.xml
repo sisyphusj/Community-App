@@ -77,4 +77,10 @@
         where post_id = #{postId}
     </update>
 
+    <delete id="deletePostImage" parameterType="long">
+        delete
+        from post_image
+        where post_id = #{postId};
+    </delete>
+
 </mapper>

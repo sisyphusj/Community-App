@@ -27,4 +27,6 @@ public interface PostMapper {
 
 	void deletePost(long postId);
 
+	void deletePostImage(long postId);
+
 }
