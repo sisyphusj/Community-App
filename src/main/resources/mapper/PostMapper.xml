@@ -9,11 +9,16 @@
         values (#{userId}, #{title}, #{content})
     </insert>
 
-    <select id="selectPostSummaryList" resultType="me.sisyphusj.community.app.post.domain.PostVO">
+    <select id="selectPostSummaryList" parameterType="me.sisyphusj.community.app.post.domain.PageVO" resultType="me.sisyphusj.community.app.post.domain.PostVO">
         select post_id, u.name, title, views, created_at
         from posts p
         inner join user u on p.user_id = u.user_id
-        where is_deleted = 'N'
+        <where>
+            is_deleted = 'N'
+            <if test="keyword != null and keyword != ''">
+                AND (title LIKE CONCAT('%', #{keyword}, '%') OR content LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
         <choose>
             <when test="sortType.toString() == 'DATE'">
                 ORDER BY created_at DESC

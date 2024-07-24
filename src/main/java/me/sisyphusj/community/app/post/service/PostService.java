@@ -1,7 +1,5 @@
 package me.sisyphusj.community.app.post.service;
 
-import static me.sisyphusj.community.app.commons.Constants.*;
-
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -12,6 +10,7 @@ import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 import me.sisyphusj.community.app.image.service.ImageService;
 import me.sisyphusj.community.app.post.domain.PageReqDTO;
 import me.sisyphusj.community.app.post.domain.PageResDTO;
+import me.sisyphusj.community.app.post.domain.PageVO;
 import me.sisyphusj.community.app.post.domain.PostCreateReqDTO;
 import me.sisyphusj.community.app.post.domain.PostDetailResDTO;
 import me.sisyphusj.community.app.post.domain.PostEditReqDTO;
@@ -53,11 +52,8 @@ public class PostService {
 		// 전체 게시글 개수
 		int totalRowCount = postMapper.selectTotalCount();
 
-		// 마지막으로 호출된 row
-		int offset = (pageReqDTO.getPage() - 1) * ROW_SIZE_PER_PAGE;
-
 		// amount 만큼 게시글 리스트 조회
-		List<PostSummaryResDTO> postListDTO = postMapper.selectPostSummaryList(ROW_SIZE_PER_PAGE, offset, pageReqDTO.getSort()).stream()
+		List<PostSummaryResDTO> postListDTO = postMapper.selectPostSummaryList(PageVO.of(pageReqDTO)).stream()
 			.map(PostSummaryResDTO::of)
 			.toList();
 

@@ -1,6 +1,6 @@
 package me.sisyphusj.community.app.post.domain;
 
 public enum PageSortType {
-	DATE,
-	VIEWS
+	DATE, // 최신순
+	VIEWS // 조회순
 }

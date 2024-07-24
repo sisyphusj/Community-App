@@ -8,10 +8,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PageReqDTO {
 
-    @NotNull
-    private Integer page;
+	@NotNull
+	private Integer page; // 현재 페이지
 
-    @NotNull
-    private PageSortType sort;
+	@NotNull
+	private PageSortType sort; // 정렬 타입
+
+	private String keyword; // 검색 키워드
 
 }
