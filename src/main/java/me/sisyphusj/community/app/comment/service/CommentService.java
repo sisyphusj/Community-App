@@ -19,6 +19,7 @@ import me.sisyphusj.community.app.comment.domain.CommentVO;
 import me.sisyphusj.community.app.comment.mapper.CommentMapper;
 import me.sisyphusj.community.app.commons.exception.CommentNotFoundException;
 import me.sisyphusj.community.app.image.service.ImageService;
+import me.sisyphusj.community.app.utils.ListValidationUtil;
 import me.sisyphusj.community.app.utils.SecurityUtil;
 
 @Service
@@ -38,7 +39,7 @@ public class CommentService {
 		commentMapper.insertComment(commentVO);
 
 		// 댓글 이미지 추가
-		if (commentReqDTO.getImages() != null && !(commentReqDTO.getImages().isEmpty())) {
+		if (ListValidationUtil.isValidMultiPartFileList(commentReqDTO.getImages())) {
 			imageService.saveCommentImages(commentVO.getCommentId(), commentReqDTO.getImages());
 		}
 	}

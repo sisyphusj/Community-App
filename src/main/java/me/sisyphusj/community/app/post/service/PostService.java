@@ -19,6 +19,7 @@ import me.sisyphusj.community.app.post.domain.PostEditReqDTO;
 import me.sisyphusj.community.app.post.domain.PostSummaryResDTO;
 import me.sisyphusj.community.app.post.domain.PostVO;
 import me.sisyphusj.community.app.post.mapper.PostMapper;
+import me.sisyphusj.community.app.utils.ListValidationUtil;
 import me.sisyphusj.community.app.utils.SecurityUtil;
 
 @Service
@@ -38,7 +39,7 @@ public class PostService {
 		postMapper.insertPost(postVO); // 게시글 삽입
 
 		// 게시글이 이미지를 첨부, 이미지 리스트가 NULL이 아니면 이미지 저장 요청
-		if (postVO.getHasImage() == HasImage.Y && !(postCreateReqDTO.getImages().isEmpty())) {
+		if (ListValidationUtil.isValidMultiPartFileList(postCreateReqDTO.getImages())) {
 			imageService.savePostImages(postVO.getPostId(), postCreateReqDTO.getImages());
 		}
 	}
