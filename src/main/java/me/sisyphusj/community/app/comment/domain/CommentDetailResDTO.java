@@ -1,9 +1,11 @@
 package me.sisyphusj.community.app.comment.domain;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Builder;
 import lombok.Getter;
+import me.sisyphusj.community.app.image.domain.CommentImageResDTO;
 
 @Getter
 @Builder
@@ -25,6 +27,8 @@ public class CommentDetailResDTO {
 
 	private Date updatedAt; // 댓글 수정일
 
+	private List<CommentImageResDTO> images; // 첨부 이미지 리스트
+
 	public static CommentDetailResDTO of(CommentVO commentVO) {
 		return CommentDetailResDTO.builder()
 			.commentId(commentVO.getCommentId())
@@ -35,6 +39,9 @@ public class CommentDetailResDTO {
 			.content(commentVO.getContent())
 			.createdAt(commentVO.getCreatedAt())
 			.updatedAt(commentVO.getUpdatedAt())
+			.images(commentVO.getImages().stream()
+				.map(CommentImageResDTO::of)
+				.toList())
 			.build();
 	}
 }

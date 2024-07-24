@@ -16,20 +16,29 @@
           and is_deleted = 'N'
     </select>
 
-    <select id="selectCommentList" parameterType="long" resultType="me.sisyphusj.community.app.comment.domain.CommentVO">
-        select comment_id,
-               parent_id,
+    <select id="selectCommentList" parameterType="long" resultMap="CommentWithImageList">
+        SELECT c.comment_id,
+               c.parent_id,
                u.user_id,
                c.post_id,
                u.name,
-               content,
-               created_at,
-               updated_at
-        from comments c
-                 inner join user u on c.user_id = u.user_id
-        where is_deleted = 'N'
-          and post_id = #{postId}
-        order by created_at desc
+               c.content,
+               c.created_at  as comment_created_at,
+               c.updated_at,
+               i.image_id,
+               ci.comment_id as comment_image_id,
+               i.origin_name,
+               i.stored_name,
+               i.size,
+               i.image_path,
+               i.created_at  as image_created_at
+        FROM comments c
+                 INNER JOIN user u ON c.user_id = u.user_id
+                 LEFT JOIN comment_image ci ON c.comment_id = ci.comment_id
+                 LEFT JOIN image i ON ci.image_id = i.image_id
+        WHERE c.is_deleted = 'N'
+          AND c.post_id = #{postId}
+        ORDER BY c.created_at DESC;
     </select>
 
     <select id="selectCommentListOrderByAsc" parameterType="long" resultType="me.sisyphusj.community.app.comment.domain.CommentVO">
@@ -79,5 +88,25 @@
             #{commentId}
         </foreach>
     </update>
+
+    <resultMap id="CommentWithImageList" type="me.sisyphusj.community.app.comment.domain.CommentVO">
+        <id property="commentId" column="comment_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="postId" column="post_id"/>
+        <result property="name" column="name"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="comment_created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <collection property="images" javaType="java.util.List" ofType="me.sisyphusj.community.app.image.domain.ImageVO">
+            <id property="imageId" column="image_id"/>
+            <result property="commentId" column="comment_image_id"/>
+            <result property="originName" column="origin_name"/>
+            <result property="storedName" column="stored_name"/>
+            <result property="size" column="size"/>
+            <result property="imagePath" column="image_path"/>
+            <result property="createdAt" column="image_created_at"/>
+        </collection>
+    </resultMap>
 
 </mapper>

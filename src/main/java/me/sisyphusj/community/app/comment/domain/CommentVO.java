@@ -1,11 +1,13 @@
 package me.sisyphusj.community.app.comment.domain;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.sisyphusj.community.app.image.domain.ImageVO;
 import me.sisyphusj.community.app.utils.SecurityUtil;
 
 @Getter
@@ -29,6 +31,8 @@ public class CommentVO {
 	private Date createdAt; // 댓글 생성일
 
 	private Date updatedAt; // 댓글 수정일
+
+	private List<ImageVO> images; // 댓글 이미지 정보
 
 	public static CommentVO of(CommentReqDTO commentReqDTO) {
 		return CommentVO.builder()

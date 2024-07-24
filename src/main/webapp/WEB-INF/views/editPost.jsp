@@ -1,5 +1,6 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 
 <!DOCTYPE html>
@@ -38,22 +39,12 @@
                     const content = $('#content').val();
                     const imageFiles = $('#imageFiles')[0].files;
 
-                    const hasImageInput = $('<input>').attr({
-                        type: 'hidden',
-                        name: 'hasImage',
-                    });
-
                     try {
                         if (imageFiles.length > 0) {
                             checkValidImages(imageFiles);
-                            hasImageInput.val("Y");
-                        } else {
-                            hasImageInput.val("N");
                         }
 
                         checkValidTitleAndContent(title, content);
-
-                        $('#postForm').append(hasImageInput); // 폼에 hidden input 추가
                     } catch (error) {
                         event.preventDefault(); // 폼 제출 중지
                         alert("게시글 등록을 실패하였습니다.");
@@ -157,7 +148,7 @@
             <label for="content">본문</label><br>
             <textarea id="content" name="content" rows="10" required>${post.content}</textarea><br><br>
 
-            <c:if test="${post.hasImage eq 'Y' }">
+            <c:if test="${ImageDetailsResDTOList != null && fn:length(ImageDetailsResDTOList) > 0}">
                 <h3>기존 이미지</h3><br>
                 <c:forEach var="file" items="${ImageDetailsResDTOList}">
                     <div class="image-container">
