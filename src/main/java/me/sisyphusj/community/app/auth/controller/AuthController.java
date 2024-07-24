@@ -11,13 +11,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.auth.domain.SignupReqDTO;
 import me.sisyphusj.community.app.auth.service.AuthService;
 import me.sisyphusj.community.app.commons.exception.BlankInputException;
 import me.sisyphusj.community.app.utils.SecurityUtil;
 
-@Slf4j
 @Controller
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -39,7 +37,7 @@ public class AuthController {
 	@PostMapping("/register")
 	public String register(@Valid @ModelAttribute SignupReqDTO signupReqDTO) {
 		authService.signup(signupReqDTO);
-		return "redirect:/";
+		return "home";
 	}
 
 	/**

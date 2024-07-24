@@ -19,14 +19,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.auth.domain.OAuthDTO;
 import me.sisyphusj.community.app.auth.domain.OAuthVO;
 import me.sisyphusj.community.app.auth.domain.attributes.OAuthAttributes;
 import me.sisyphusj.community.app.auth.mapper.AuthMapper;
 import me.sisyphusj.community.app.commons.OAuthAttributesFactory;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {

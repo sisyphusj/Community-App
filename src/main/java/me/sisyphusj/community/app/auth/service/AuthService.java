@@ -5,14 +5,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.auth.domain.SignupReqDTO;
 import me.sisyphusj.community.app.auth.domain.SignupVO;
 import me.sisyphusj.community.app.auth.mapper.AuthMapper;
 import me.sisyphusj.community.app.commons.LocationUrl;
 import me.sisyphusj.community.app.commons.exception.AlertException;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {

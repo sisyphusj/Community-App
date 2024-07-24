@@ -4,9 +4,6 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class ListValidationUtil {
 
 	private ListValidationUtil() {
