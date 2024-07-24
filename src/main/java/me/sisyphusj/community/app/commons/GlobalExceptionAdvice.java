@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.ModelAndView;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -102,6 +103,15 @@ public class GlobalExceptionAdvice {
 	public ModelAndView handleIllegalArgumentException(IllegalArgumentException e) {
 		log.error("[IllegalArgumentException 발생] : {}", e.getMessage(), e);
 		return new ModelAndView(MAV_400);
+	}
+
+	/**
+	 * 이미지의 크기가 지정된 크기를 넘어설 시 발생하는 예외를 처리하는 핸들러
+	 */
+	@ExceptionHandler(MaxUploadSizeExceededException.class)
+	public ModelAndView handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
+		log.error("[MaxUploadSizeExceededException 발생] : ", e);
+		return getModelAndView("최대 이미지 크기는 10MB 입니다.", LocationUrl.BACK);
 	}
 
 	/**
