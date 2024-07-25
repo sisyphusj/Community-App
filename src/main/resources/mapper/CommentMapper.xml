@@ -34,7 +34,7 @@
         from comments c
                  inner join user u on c.user_id = u.user_id
                  left join comment_image ci on c.comment_id = ci.comment_id
-                 left join image i on ci.image_id = i.image_id and i.is_deleted = 'N'
+                 left join image i on ci.image_id = i.image_id
         where c.is_deleted = 'N'
           and c.post_id = #{postId}
         order by c.created_at desc;

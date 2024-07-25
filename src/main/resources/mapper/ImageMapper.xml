@@ -39,7 +39,6 @@
         from image i
                  inner join post_image pi on i.image_id = pi.image_id
         where pi.post_id = #{postId}
-          and i.is_deleted = 'N'
     </select>
 
     <select id="selectCommentImageList" parameterType="long" resultType="me.sisyphusj.community.app.image.domain.ImageVO">
@@ -53,21 +52,42 @@
         from image i
                  inner join comment_image ci on i.image_id = ci.image_id
         where ci.comment_id = #{commentId}
-          and i.is_deleted = 'N'
+    </select>
+
+    <select id="selectCountPostImage" parameterType="long" resultType="int">
+        select count(*)
+        from image i
+                 inner join post_image pi on i.image_id = pi.image_id
+        where i.user_id = #{userId}
+          and pi.post_id = #{postId}
+          and pi.image_id = #{imageId}
+    </select>
+
+    <select id="selectCountCommentImage" parameterType="long" resultType="int">
+        select count(*)
+        from image i
+                 inner join comment_image ci on i.image_id = ci.image_id
+        where i.user_id = #{userId}
+          and ci.comment_id = #{commentId}
+          and ci.image_id = #{imageId}
     </select>
 
     <select id="selectImagePath" parameterType="long" resultType="string">
         select image_path
         from image
         where image_id = #{imageId}
-          and is_deleted = 'N'
     </select>
 
-    <update id="deleteImage" parameterType="long">
-        update image
-        set is_deleted = 'Y'
+    <delete id="deletePostImage" parameterType="long">
+        delete
+        from post_image
         where image_id = #{imageId}
-          and user_id = #{userId}
-    </update>
+    </delete>
+
+    <delete id="deleteCommentImage" parameterType="long">
+        delete
+        from comment_image
+        where image_id = #{imageId}
+    </delete>
 
 </mapper>

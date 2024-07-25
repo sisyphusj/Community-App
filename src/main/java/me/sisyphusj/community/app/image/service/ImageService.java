@@ -96,16 +96,44 @@ public class ImageService {
 	}
 
 	/**
-	 * 이미지 제거
+	 * 게시글 이미지 제거
 	 */
 	@Transactional
-	public void removeImage(long imageId) {
+	public void removePostImage(long postId, long imageId) {
+
+		// 작성자 확인 및 게시글에 이미지가 존재하는지 확인
+		if (imageMapper.selectCountPostImage(SecurityUtil.getLoginUserId(), postId, imageId) != 1) {
+			throw new ImageNotFoundException();
+		}
+
 		// 이미지 경로를 반환
 		String imagePath = imageMapper.selectImagePath(imageId)
 			.orElseThrow(ImageNotFoundException::new);
 
 		// 이미지 삭제 후 반환 값에 따라 예외 처리
-		if (imageMapper.deleteImage(SecurityUtil.getLoginUserId(), imageId) != 1) {
+		if (imageMapper.deletePostImage(imageId) != 1) {
+			throw new ImageNotFoundException();
+		}
+
+		imageUploadProvider.deleteFile(imagePath);
+	}
+
+	/**
+	 * 댓글 이미지 제거
+	 */
+	@Transactional
+	public void removeCommentImage(long commentId, long imageId) {
+		// 작성자 확인 및 댓글에 이미지가 존재하는지 확인
+		if (imageMapper.selectCountCommentImage(SecurityUtil.getLoginUserId(), commentId, imageId) != 1) {
+			throw new ImageNotFoundException();
+		}
+
+		// 이미지 경로를 반환
+		String imagePath = imageMapper.selectImagePath(imageId)
+			.orElseThrow(ImageNotFoundException::new);
+
+		// 이미지 삭제 후 반환 값에 따라 예외 처리
+		if (imageMapper.deleteCommentImage(imageId) != 1) {
 			throw new ImageNotFoundException();
 		}
 

@@ -15,10 +15,10 @@
         <c:set var="post" value="${postDetailResDTO}"/>
 
         <script>
-            const removeImage = (imageId, element) => {
+            const removeCommentImage = (commentId, imageId, element) => {
                 const csrfToken = $('input[name="_csrf"]').val();
                 $.ajax({
-                    url: `/images/remove?imageId=${'${imageId}'}`,
+                    url: `/images/comment/remove?commentId=${'${commentId}'}&imageId=${'${imageId}'}`,
                     type: "GET",
                     beforeSend: (xhr) => {
                         xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
@@ -43,10 +43,13 @@
 
                     // 선택된 replyInputContainer에 답글 입력 폼 추가
                     $(`#replyInputContainer-${'${commentId}'}`).html(`
-                        <form action="/comment" method="post">
+                        <form action="/comment" method="post" enctype="multipart/form-data">
                             <sec:csrfInput/>
                             <textarea name="content" required></textarea>
                             <input type="hidden" name="parentId" value="${'${commentId}'}">
+                             <label for="imageFiles">이미지 첨부파일</label><br>
+                            <input type="file" id="imageFiles" name="images" multiple>
+                            <ul id="imageList" class="imageList"></ul>
                             <input type="hidden" name="postId" value="${post.postId}">
                             <button type="submit">등록</button>
                         </form> `);
@@ -77,8 +80,9 @@
                     // 기존 이미지 삭제 버튼 포함
                     commentDiv.find('.image-container').each(function () {
                         const imageId = $(this).data('image-id');
+                        const commentId = $(this).closest('.commentDiv').data('comment-id')
                         $(this).append(`
-                            <button type="button" class="removeImage" onclick="removeImage('${'${imageId}'}', this)">기존 이미지 삭제</button>
+                            <button type="button" class="removeImage" onclick="removeCommentImage('${'${commentId}'}','${'${imageId}'}', this)">기존 이미지 삭제</button>
                         `);
                     });
 
@@ -244,7 +248,7 @@
                     </div>
                 </c:when>
                 <c:otherwise>
-                    <div class="commentDiv" data-comment-id="${comment.commentId}" data-comment-content="${comment.content}">>
+                    <div class="commentDiv" data-comment-id="${comment.commentId}" data-comment-content="${comment.content}">
                         <p class="comment">
                                 ${comment.name} : ${comment.content}
                                 ${comment.createdAt}

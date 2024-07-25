@@ -122,7 +122,7 @@
             const removeImage = (imageId, element) => {
                 const csrfToken = $('input[name="_csrf"]').val();
                 $.ajax({
-                    url: `/images/remove?imageId=${'${imageId}'}`,
+                    url: `/images/post/remove?postId=${post.postId}&imageId=${'${imageId}'}`,
                     type: "GET",
                     beforeSend: (xhr) => {
                         xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
