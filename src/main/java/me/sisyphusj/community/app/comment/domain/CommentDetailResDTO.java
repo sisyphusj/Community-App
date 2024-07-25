@@ -1,7 +1,9 @@
 package me.sisyphusj.community.app.comment.domain;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -39,7 +41,9 @@ public class CommentDetailResDTO {
 			.content(commentVO.getContent())
 			.createdAt(commentVO.getCreatedAt())
 			.updatedAt(commentVO.getUpdatedAt())
-			.images(commentVO.getImages().stream()
+			.images(Optional.ofNullable(commentVO.getImages())
+				.orElseGet(Collections::emptyList) // CommentVO.getImages()가 NULL일 경우 빈 리스트 생성 
+				.stream()
 				.map(CommentImageResDTO::of)
 				.toList())
 			.build();
