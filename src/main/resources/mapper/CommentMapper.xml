@@ -32,11 +32,10 @@
                i.image_path,
                i.created_at as image_created_at
         from comments c
-                 INNER JOIN user u ON c.user_id = u.user_id
-                 LEFT JOIN comment_image ci ON c.comment_id = ci.comment_id
-                 LEFT JOIN image i ON ci.image_id = i.image_id
+                 inner join user u on c.user_id = u.user_id
+                 left join comment_image ci on c.comment_id = ci.comment_id
+                 left join image i on ci.image_id = i.image_id and i.is_deleted = 'N'
         where c.is_deleted = 'N'
-          and i.is_deleted = 'N'
           and c.post_id = #{postId}
         order by c.created_at desc;
     </select>
