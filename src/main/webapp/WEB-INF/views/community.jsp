@@ -56,8 +56,13 @@
                     <option value="VIEWS" <c:if test="${param.sort eq 'VIEWS'}">selected</c:if>>조회순</option>
                 </select>
 
-                <label for="keyword">검색하기</label>
-                <input type="text" id="keyword" name="keyword" value="${param.keyword}"/>
+                <label for="keywordType">검색 조건</label>
+                <select name="keywordType" id="keywordType">
+                    <option value=TITLE <c:if test="${param.keywordType eq 'TITLE'}">selected</c:if>>제목</option>
+                    <option value=CONTENT <c:if test="${param.keywordType eq 'CONTENT'}">selected</c:if>>본문</option>
+                    <option value=AUTHOR <c:if test="${param.keywordType eq 'AUTHOR'}">selected</c:if>>작성자</option>
+                </select>
+                <input type="text" id="keyword" name="keyword" value="${param.keyword}" aria-label="Keyword"/>
 
                 <input type="hidden" name="page" value="1"/>
 

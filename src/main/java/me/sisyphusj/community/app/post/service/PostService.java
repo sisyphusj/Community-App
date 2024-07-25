@@ -2,10 +2,12 @@ package me.sisyphusj.community.app.post.service;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import me.sisyphusj.community.app.commons.exception.KeywordTypeException;
 import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 import me.sisyphusj.community.app.image.service.ImageService;
 import me.sisyphusj.community.app.post.domain.PageReqDTO;
@@ -47,6 +49,12 @@ public class PostService {
 	 */
 	@Transactional(readOnly = true)
 	public PageResDTO getPostPage(PageReqDTO pageReqDTO) {
+
+		// 검색 keyword가 존재한다면 keywordType 확인
+		if (StringUtils.isNotBlank(pageReqDTO.getKeyword()) && pageReqDTO.getKeywordType() == null) {
+			throw new KeywordTypeException();
+		}
+
 		// 전체 게시글 개수
 		int totalRowCount = postMapper.selectTotalCount();
 

@@ -17,6 +17,7 @@ import me.sisyphusj.community.app.commons.exception.AuthorizeException;
 import me.sisyphusj.community.app.commons.exception.BlankInputException;
 import me.sisyphusj.community.app.commons.exception.CommentNotFoundException;
 import me.sisyphusj.community.app.commons.exception.ImageNotFoundException;
+import me.sisyphusj.community.app.commons.exception.KeywordTypeException;
 import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 
 @Slf4j
@@ -52,7 +53,7 @@ public class GlobalExceptionAdvice {
 	@ExceptionHandler(BlankInputException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ModelAndView handleBlankInputException(BlankInputException e) {
-		log.error("[BlankInputException 발생]");
+		log.error("[BlankInputException 발생]", e);
 		return getModelAndView("입력값이 존재하지 않습니다. 다시 입력해주십시오.", LocationUrl.NONE);
 	}
 
@@ -62,8 +63,18 @@ public class GlobalExceptionAdvice {
 	@ExceptionHandler(PostNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ModelAndView handelPostNotFoundException(PostNotFoundException e) {
-		log.error("[PostNotFoundException 발생]");
+		log.error("[PostNotFoundException] 발생] : ", e);
 		return getModelAndView("요청하신 게시글을 찾을 수 없습니다.", LocationUrl.BACK);
+	}
+
+	/**
+	 * keyword가 존재하지만 keywordType이 존재하지 않을 때의 예외를 처리하는 핸들러
+	 */
+	@ExceptionHandler(KeywordTypeException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ModelAndView handelKeywordTypeException(KeywordTypeException e) {
+		log.error("[KeywordTypeException] 발생] : ", e);
+		return getModelAndView("검색 요청을 실패하였습니다. 다시 시도하여주십시오.", LocationUrl.BACK);
 	}
 
 	/**
@@ -72,7 +83,7 @@ public class GlobalExceptionAdvice {
 	@ExceptionHandler(CommentNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ModelAndView handleCommentNotFountException(CommentNotFoundException e) {
-		log.error("[CommentNotFountException 발생]");
+		log.error("[CommentNotFountException 발생] : ", e);
 		return getModelAndView("댓글 조회를 실패하였습니다.", LocationUrl.BACK);
 	}
 
@@ -82,7 +93,7 @@ public class GlobalExceptionAdvice {
 	@ExceptionHandler(ImageNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ModelAndView handleImageNotFoundException(ImageNotFoundException e) {
-		log.error("[ImageNotFoundException 발생]");
+		log.error("[ImageNotFoundException 발생] : ", e);
 		return getModelAndView("요청하신 이미지를 찾을 수 없습니다.", LocationUrl.BACK);
 	}
 
@@ -92,7 +103,7 @@ public class GlobalExceptionAdvice {
 	@ExceptionHandler(FileUploadException.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public ModelAndView handleFileUploadException(FileUploadException e) {
-		log.error("[FileUploadException 발생]");
+		log.error("[FileUploadException 발생] : ", e);
 		return getModelAndView("이미지 업로드에 실패하였습니다.", LocationUrl.NONE);
 	}
 

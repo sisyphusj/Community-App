@@ -11,6 +11,8 @@ public class PageVO {
 
 	PageSortType sortType; // 정렬 타입
 
+	KeywordType keywordType; // 키워드 타입
+
 	String keyword; // 검색 키워드
 
 	public static PageVO of(PageReqDTO pageReqDTO) {
@@ -18,6 +20,7 @@ public class PageVO {
 			.amount(pageReqDTO.getRow())
 			.offset((pageReqDTO.getPage() - 1) * pageReqDTO.getRow())
 			.sortType(pageReqDTO.getSort())
+			.keywordType(pageReqDTO.getKeywordType())
 			.keyword(pageReqDTO.getKeyword())
 			.build();
 	}

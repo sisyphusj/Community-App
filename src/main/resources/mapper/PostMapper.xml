@@ -16,7 +16,17 @@
         <where>
             is_deleted = 'N'
             <if test="keyword != null and keyword != ''">
-                and (title like CONCAT('%', #{keyword}, '%') or content like CONCAT('%', #{keyword}, '%'))
+                <choose>
+                    <when test="keywordType.toString() == 'TITLE'">
+                        and title like CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <when test="keywordType.toString() == 'CONTENT'">
+                        and content like CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <when test="keywordType.toString() == 'AUTHOR'">
+                        and name like CONCAT('%', #{keyword}, '%')
+                    </when>
+                </choose>
             </if>
         </where>
         <choose>
