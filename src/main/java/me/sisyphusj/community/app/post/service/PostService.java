@@ -120,7 +120,8 @@ public class PostService {
 	 * 게시글의 존재 여부를 확인
 	 */
 	private void validatePostExists(long postId) {
-		if (postMapper.selectCountPost(postId, SecurityUtil.getLoginUserId()) != 1) {
+		// 게시글 존재 여부, 해당 게시글의 작성자가 사용자인지 확인
+		if (postMapper.selectCountPostByUserId(postId, SecurityUtil.getLoginUserId()) != 1) {
 			throw new PostNotFoundException();
 		}
 	}

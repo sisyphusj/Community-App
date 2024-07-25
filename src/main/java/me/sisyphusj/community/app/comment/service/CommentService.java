@@ -18,7 +18,9 @@ import me.sisyphusj.community.app.comment.domain.CommentReqDTO;
 import me.sisyphusj.community.app.comment.domain.CommentVO;
 import me.sisyphusj.community.app.comment.mapper.CommentMapper;
 import me.sisyphusj.community.app.commons.exception.CommentNotFoundException;
+import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 import me.sisyphusj.community.app.image.service.ImageService;
+import me.sisyphusj.community.app.post.mapper.PostMapper;
 import me.sisyphusj.community.app.utils.ListValidationUtil;
 import me.sisyphusj.community.app.utils.SecurityUtil;
 
@@ -30,11 +32,18 @@ public class CommentService {
 
 	private final ImageService imageService;
 
+	private final PostMapper postMapper;
+
 	/**
 	 * 댓글 등록
 	 */
 	@Transactional
 	public void createComment(CommentReqDTO commentReqDTO) {
+		// DTO로 받은 postId를 통해 게시글이 존재하는지 확인
+		if (postMapper.selectCountPost(commentReqDTO.getPostId()) != 1) {
+			throw new PostNotFoundException();
+		}
+
 		CommentVO commentVO = CommentVO.of(commentReqDTO);
 		commentMapper.insertComment(commentVO);
 
