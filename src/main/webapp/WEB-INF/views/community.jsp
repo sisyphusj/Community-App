@@ -60,6 +60,14 @@
                 <input type="text" id="keyword" name="keyword" value="${param.keyword}"/>
 
                 <input type="hidden" name="page" value="1"/>
+
+                <label for="row">게시글 개수</label>
+                <select name="row" id="row">
+                    <option value=10 <c:if test="${param.row eq 10}">selected</c:if>>10개씩</option>
+                    <option value=30 <c:if test="${param.row eq 30}">selected</c:if>>30개씩</option>
+                    <option value=50 <c:if test="${param.row eq 50}">selected</c:if>>50개씩</option>
+                    <option value=100 <c:if test="${param.row eq 100}">selected</c:if>>100개씩</option>
+                </select>
                 <input type="submit" value="검색">
             </form>
 
@@ -94,33 +102,33 @@
                 <ul class="pagination">
                     <%-- 첫 페이지 링크 --%>
                     <li>
-                        <a href="/community?page=1&sort=${param.sort}&keyword=${param.keyword}">&laquo;</a>
+                        <a href="/community?page=1&sort=${param.sort}&keyword=${param.keyword}&row=${param.row}">&laquo;</a>
                     </li>
 
                     <%-- 이전 페이지 링크 : 현재 페이지가 2페이지 이상일 때 --%>
                     <c:if test="${page > 1}">
                         <li>
-                            <a href="/community?page=${page - 1}&sort=${param.sort}&keyword=${param.keyword}">&lt;</a>
+                            <a href="/community?page=${page - 1}&sort=${param.sort}&keyword=${param.keyword}&row=${param.row}">&lt;</a>
                         </li>
                     </c:if>
 
                     <%-- 페이지 번호 링크 : 현재 페이지 기준 렌더링되는 첫 페이지 번호, 마지막 페이지 번호 --%>
                     <c:forEach begin="${pageResDTO.firstPage}" end="${pageResDTO.lastPage}" var="i">
                         <li>
-                            <a href="/community?page=${i}&sort=${param.sort}&keyword=${param.keyword}">${i}</a>
+                            <a href="/community?page=${i}&sort=${param.sort}&keyword=${param.keyword}&row=${param.row}">${i}</a>
                         </li>
                     </c:forEach>
 
                     <%-- 다음 페이지 링크 : 현재 페이지가 끝 페이지가 아닐 때 --%>
                     <c:if test="${page < pageResDTO.totalPageCount}">
                         <li>
-                            <a href="/community?page=${page + 1}&sort=${param.sort}&keyword=${param.keyword}">&gt;</a>
+                            <a href="/community?page=${page + 1}&sort=${param.sort}&keyword=${param.keyword}&row=${param.row}">&gt;</a>
                         </li>
                     </c:if>
 
                     <%-- 끝 페이지 링크 --%>
                     <li>
-                        <a href="/community?page=${pageResDTO.totalPageCount}&sort=${param.sort}&keyword=${param.keyword}">&raquo;</a>
+                        <a href="/community?page=${pageResDTO.totalPageCount}&sort=${param.sort}&keyword=${param.keyword}&row=${param.row}">&raquo;</a>
                     </li>
                 </ul>
             </nav>

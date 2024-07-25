@@ -1,7 +1,5 @@
 package me.sisyphusj.community.app.post.domain;
 
-import static me.sisyphusj.community.app.commons.Constants.*;
-
 import lombok.Builder;
 
 @Builder
@@ -17,8 +15,8 @@ public class PageVO {
 
 	public static PageVO of(PageReqDTO pageReqDTO) {
 		return PageVO.builder()
-			.amount(ROW_SIZE_PER_PAGE)
-			.offset((pageReqDTO.getPage() - 1) * ROW_SIZE_PER_PAGE)
+			.amount(pageReqDTO.getRow())
+			.offset((pageReqDTO.getPage() - 1) * pageReqDTO.getRow())
 			.sortType(pageReqDTO.getSort())
 			.keyword(pageReqDTO.getKeyword())
 			.build();

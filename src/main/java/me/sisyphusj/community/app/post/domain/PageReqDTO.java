@@ -16,4 +16,7 @@ public class PageReqDTO {
 
 	private String keyword; // 검색 키워드
 
+	@NotNull
+	private Integer row; // 페이지 당 게시글 개수
+
 }

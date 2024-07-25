@@ -47,8 +47,6 @@ public class PostService {
 	 */
 	@Transactional(readOnly = true)
 	public PageResDTO getPostPage(PageReqDTO pageReqDTO) {
-		//TODO 페이지당 게시글 수 변경 기능 추가
-
 		// 전체 게시글 개수
 		int totalRowCount = postMapper.selectTotalCount();
 
@@ -58,7 +56,7 @@ public class PostService {
 			.toList();
 
 		// 현재 페이지 페이지네이션 메타데이터, 게시글 섬네일 리스트 반환
-		return new PageResDTO(pageReqDTO.getPage(), totalRowCount, postListDTO);
+		return new PageResDTO(pageReqDTO, totalRowCount, postListDTO);
 	}
 
 	/**
