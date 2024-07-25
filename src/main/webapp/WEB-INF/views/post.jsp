@@ -187,7 +187,7 @@
         생성일 : <fmt:formatDate value="${post.createdAt}" pattern="yyyy-MM-dd HH:mm:ss"/> <br>
         최종 수정일 : <fmt:formatDate value="${post.updatedAt}" pattern="yyyy-MM-dd HH:mm:ss"/>
 
-        <button onclick=window.location.href="/community?page=1&sort=DATE">목록으로 돌아가기</button>
+        <button onclick=window.history.back()>목록으로 돌아가기</button>
         <button onclick=window.location.href="/">홈으로 돌아가기</button>
 
         <c:if test="${ImageDetailsResDTOList != null && fn:length(ImageDetailsResDTOList) > 0}">
