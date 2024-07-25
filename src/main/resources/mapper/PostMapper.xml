@@ -16,18 +16,18 @@
         <where>
             is_deleted = 'N'
             <if test="keyword != null and keyword != ''">
-                AND (title LIKE CONCAT('%', #{keyword}, '%') OR content LIKE CONCAT('%', #{keyword}, '%'))
+                and (title like CONCAT('%', #{keyword}, '%') or content like CONCAT('%', #{keyword}, '%'))
             </if>
         </where>
         <choose>
             <when test="sortType.toString() == 'DATE'">
-                ORDER BY created_at DESC
+                order by created_at desc
             </when>
             <when test="sortType.toString() == 'VIEWS'">
-                ORDER BY views DESC, created_at DESC
+                order by views desc, created_at desc
             </when>
             <otherwise>
-                ORDER BY created_at DESC
+                order by created_at desc
             </otherwise>
         </choose>
         limit #{amount} offset #{offset}
