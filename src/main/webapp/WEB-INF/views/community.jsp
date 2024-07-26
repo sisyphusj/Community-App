@@ -86,6 +86,7 @@
                         <th>작성자</th>
                         <th>조회수</th>
                         <th>작성일</th>
+                        <th>좋아요</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -96,6 +97,7 @@
                             <td>${post.name}</td>
                             <td>${post.views}</td>
                             <td><fmt:formatDate value="${post.createdAt}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                            <td>${post.likes}</td>
                         </tr>
                     </c:forEach>
                 </tbody>

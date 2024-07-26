@@ -25,6 +25,8 @@ public class PostDetailResDTO {
 
 	private Date updatedAt; // 최종 수정일
 
+	private int likes; // 게시글 좋아요 수
+
 	public static PostDetailResDTO of(PostVO postDetailVO) {
 		return PostDetailResDTO.builder()
 			.userId(postDetailVO.getUserId())
@@ -35,6 +37,7 @@ public class PostDetailResDTO {
 			.views(postDetailVO.getViews())
 			.createdAt(postDetailVO.getCreatedAt())
 			.updatedAt(postDetailVO.getUpdatedAt())
+			.likes(postDetailVO.getLikes())
 			.build();
 	}
 }

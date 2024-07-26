@@ -14,6 +14,14 @@
     <body>
         <c:set var="post" value="${postDetailResDTO}"/>
 
+        <%
+            Long currentUserId = null;
+            if (SecurityUtil.isLoginUser()) {
+                currentUserId = SecurityUtil.getLoginUserId();
+            }
+            pageContext.setAttribute("currentUserId", currentUserId);
+        %>
+
         <script>
             const removeCommentImage = (commentId, imageId, element) => {
                 const csrfToken = $('input[name="_csrf"]').val();
@@ -33,7 +41,36 @@
                     }
                 });
             }
+
+            const handleLikeButton = () => {
+                const liked = $('#postLikeButton').data('liked');
+
+                if (liked) {
+                    $.ajax({
+                        url: '/likes/post/dislike',
+                        type: 'GET',
+                        data: {postId: ${post.postId}},
+                        success: (response) => {
+                            $('#postLikes').text("좋아요 수 : " + response);
+                            $('#postLikeButton').text('좋아요').data('liked', false);
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        url: '/likes/post',
+                        type: 'GET',
+                        data: {postId: ${post.postId}},
+                        success: (response) => {
+                            $('#postLikes').text("좋아요 수 : " + response);
+                            $('#postLikeButton').text('좋아요 취소').data('liked', true);
+                        }
+                    });
+                }
+            }
             $(document).ready(() => {
+                const userId = ${currentUserId == null ? 'null' : currentUserId};
+                let fileList = [];
+
                 $('.replyButton').click(function () {
                     const commentDiv = $(this).closest('.commentDiv');
                     const commentId = commentDiv.data('comment-id');
@@ -92,8 +129,6 @@
                         $(`.removeImage`).empty();
                     });
                 });
-
-                let fileList = [];
 
                 $('#imageFiles').on('change', (event) => {
                     const imageList = $('#imageList');
@@ -174,6 +209,21 @@
                         throw new Error("전체 파일 크기가 10MB를 초과합니다.");
                     }
                 }
+
+                if (userId) {
+                    $.ajax({
+                        url: '/likes/post/check',
+                        type: 'GET',
+                        data: {postId: ${post.postId}},
+                        success: (response) => {
+                            if (response) {
+                                $('#postLikeButton').text('좋아요 취소').data('liked', true);
+                            } else {
+                                $('#postLikeButton').text('좋아요').data('liked', false);
+                            }
+                        }
+                    });
+                }
             });
 
         </script>
@@ -182,6 +232,7 @@
         <h2>제목 : ${post.title}</h2>
         <h4>작성자 : ${post.name}</h4>
         <h4>조회수 : ${post.views}</h4>
+        <h4 id="postLikes">좋아요 수 : ${post.likes}</h4>
         <h3>본문</h3>
         <p>${post.content}</p>
         생성일 : <fmt:formatDate value="${post.createdAt}" pattern="yyyy-MM-dd HH:mm:ss"/> <br>
@@ -195,14 +246,6 @@
                 <img src="${file.imagePath}" alt="${file.storedName}"/>
             </c:forEach>
         </c:if>
-
-        <%
-            Long currentUserId = null;
-            if (SecurityUtil.isLoginUser()) {
-                currentUserId = SecurityUtil.getLoginUserId();
-            }
-            pageContext.setAttribute("currentUserId", currentUserId);
-        %>
 
         <c:if test="${currentUserId != null}">
             <form action="/comment" method="post" enctype="multipart/form-data">
@@ -218,6 +261,8 @@
 
                 <button id="commentForm" type="submit">등록</button>
             </form>
+
+            <button id="postLikeButton" type="button" data-liked="false" onclick="handleLikeButton()">좋아요</button>
         </c:if>
 
         <c:forEach var="comment" items="${commentDetailResDTOList}">
@@ -227,6 +272,7 @@
                         <p class="topLevelComment">
                                 ${comment.name} : ${comment.content}
                                 ${comment.createdAt}
+                            좋아요 개수 : ${comment.likes}
                         </p>
                         <c:if test="${comment.images != null && fn:length(comment.images) > 0}">
                             <c:forEach var="file" items="${comment.images}">
@@ -252,6 +298,7 @@
                         <p class="comment">
                                 ${comment.name} : ${comment.content}
                                 ${comment.createdAt}
+                            좋아요 개수 : ${comment.likes}
                         </p>
                         <c:if test="${comment.images != null && fn:length(comment.images) > 0}">
                             <c:forEach var="file" items="${comment.images}">

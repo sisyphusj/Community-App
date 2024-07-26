@@ -21,6 +21,8 @@ public class PostSummaryResDTO {
 
 	private Date updatedAt; // 최종 수정일
 
+	private int likes; // 게시글 좋아요 수
+
 	public static PostSummaryResDTO of(PostVO postVO) {
 		return PostSummaryResDTO.builder()
 			.postId(postVO.getPostId())
@@ -29,6 +31,7 @@ public class PostSummaryResDTO {
 			.views(postVO.getViews())
 			.createdAt(postVO.getCreatedAt())
 			.updatedAt(postVO.getUpdatedAt())
+			.likes(postVO.getLikes())
 			.build();
 	}
 }

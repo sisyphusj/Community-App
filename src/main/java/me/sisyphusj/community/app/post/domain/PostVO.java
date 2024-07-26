@@ -30,6 +30,8 @@ public class PostVO {
 
 	private Date updatedAt; // 최종 수정일
 
+	private int likes; // 게시글 좋아요 수
+
 	public static PostVO of(PostCreateReqDTO postCreateReqDTO) {
 		return PostVO.builder()
 			.userId(SecurityUtil.getLoginUserId())

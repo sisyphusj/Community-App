@@ -10,9 +10,10 @@
     </insert>
 
     <select id="selectPostSummaryList" parameterType="me.sisyphusj.community.app.post.domain.PageVO" resultType="me.sisyphusj.community.app.post.domain.PostVO">
-        select post_id, u.name, title, views, created_at
+        select p.post_id, u.name, title, views, created_at, updated_at, count(pl.like_id) as likes
         from posts p
         inner join user u on p.user_id = u.user_id
+        left join post_likes pl on p.post_id = pl.post_id
         <where>
             is_deleted = 'N'
             <if test="keyword != null and keyword != ''">
@@ -29,6 +30,7 @@
                 </choose>
             </if>
         </where>
+        group by p.post_id, u.name, title, views, created_at, updated_at
         <choose>
             <when test="sortType.toString() == 'DATE'">
                 order by created_at desc
@@ -50,18 +52,21 @@
     </select>
 
     <select id="selectPostDetails" parameterType="long" resultType="me.sisyphusj.community.app.post.domain.PostVO">
-        select post_id,
+        select p.post_id,
                u.user_id,
                u.name,
                title,
                content,
                views,
                created_at,
-               updated_at
+               updated_at,
+               count(pl.like_id) as likes
         from posts p
                  inner join user u on p.user_id = u.user_id
+                 left join post_likes pl on p.post_id = pl.post_id
         where p.post_id = #{postId}
           and is_deleted = 'N'
+        group by p.post_id, u.user_id, u.name, title, content, views, created_at, updated_at
     </select>
 
     <update id="updateViewsAndGet" parameterType="long">
