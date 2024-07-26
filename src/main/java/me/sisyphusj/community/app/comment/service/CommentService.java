@@ -20,6 +20,7 @@ import me.sisyphusj.community.app.comment.mapper.CommentMapper;
 import me.sisyphusj.community.app.commons.exception.CommentNotFoundException;
 import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 import me.sisyphusj.community.app.image.service.ImageService;
+import me.sisyphusj.community.app.like.mapper.LikeMapper;
 import me.sisyphusj.community.app.post.mapper.PostMapper;
 import me.sisyphusj.community.app.utils.ListValidationUtil;
 import me.sisyphusj.community.app.utils.SecurityUtil;
@@ -33,6 +34,8 @@ public class CommentService {
 	private final ImageService imageService;
 
 	private final PostMapper postMapper;
+
+	private final LikeMapper likeMapper;
 
 	/**
 	 * 댓글 등록
@@ -138,6 +141,8 @@ public class CommentService {
 		// 삭제 대상 댓글 id 리스트를 통해 댓글-이미지 테이블에서 정보 삭제
 		commentMapper.deleteCommentImage(deleteCommentIdList);
 
+		// 삭제 대상 댓글 id 리스트를 통해 댓글 좋아요 테이블에서 정보 삭제
+		likeMapper.deleteAllLikeComment(deleteCommentIdList);
 	}
 
 	/**

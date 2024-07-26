@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.commons.exception.KeywordTypeException;
 import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 import me.sisyphusj.community.app.image.service.ImageService;
+import me.sisyphusj.community.app.like.mapper.LikeMapper;
 import me.sisyphusj.community.app.post.domain.PageReqDTO;
 import me.sisyphusj.community.app.post.domain.PageResDTO;
 import me.sisyphusj.community.app.post.domain.PageVO;
@@ -29,6 +30,8 @@ public class PostService {
 	private final PostMapper postMapper;
 
 	private final ImageService imageService;
+
+	private final LikeMapper likeMapper;
 
 	/**
 	 * 게시글 생성
@@ -114,6 +117,9 @@ public class PostService {
 
 		// 게시글 - 이미지 중간 테이블 정보 삭제
 		postMapper.deletePostImage(postId);
+
+		// 게시글 좋아요 테이블 정보 삭제
+		likeMapper.deleteAllLikePost(postId);
 	}
 
 	/**

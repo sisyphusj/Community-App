@@ -46,11 +46,26 @@
           and post_id = #{postId}
     </delete>
 
+    <delete id="deleteAllLikePost" parameterType="long">
+        delete
+        from post_likes
+        where post_id = #{postId}
+    </delete>
+
     <delete id="deleteLikeComment" parameterType="long">
         delete
         from comment_likes
         where user_id = #{userId}
           and comment_id = #{commentId}
+    </delete>
+
+    <delete id="deleteAllLikeComment" parameterType="long">
+        delete
+        from comment_likes
+        where comment_id in
+        <foreach item="commentId" collection="deleteCommentIdList" open="(" separator="," close=")">
+            #{commentId}
+        </foreach>;
     </delete>
 
 </mapper>
