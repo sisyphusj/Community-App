@@ -12,11 +12,13 @@ public interface CommentMapper {
 
 	void insertComment(CommentVO commentVO);
 
-	int selectCountComment(long postId);
+	int selectCountCommentByPostId(long postId);
 
-	List<CommentVO> selectCommentList(long postId);
+	int selectCountCommentByCommentId(long commentId);
 
-	List<CommentVO> selectCommentListOrderByAsc(long postId);
+	List<CommentVO> selectCommentList(long postId, boolean isAscending);
+
+	List<CommentVO> selectCommentListByUserId(long userId, long postId, boolean isAscending);
 
 	Optional<CommentVO> selectComment(long userId, long commentId);
 

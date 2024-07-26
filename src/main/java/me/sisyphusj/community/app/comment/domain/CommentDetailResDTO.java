@@ -31,6 +31,10 @@ public class CommentDetailResDTO {
 
 	private List<CommentImageResDTO> images; // 첨부 이미지 리스트
 
+	private int likes; // 댓글 좋아요 개수
+
+	private boolean hasLike; // 현재 사용자의 좋아요 여부
+
 	public static CommentDetailResDTO of(CommentVO commentVO) {
 		return CommentDetailResDTO.builder()
 			.commentId(commentVO.getCommentId())
@@ -46,6 +50,8 @@ public class CommentDetailResDTO {
 				.stream()
 				.map(CommentImageResDTO::of)
 				.toList())
+			.likes(commentVO.getLikes())
+			.hasLike(commentVO.getHasLike() == 1)
 			.build();
 	}
 }

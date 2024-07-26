@@ -58,7 +58,7 @@ public class CommentService {
 	 */
 	@Transactional(readOnly = true)
 	public boolean hasComment(long postId) {
-		return commentMapper.selectCountComment(postId) > 0;
+		return commentMapper.selectCountCommentByPostId(postId) > 0;
 	}
 
 	/**
@@ -66,8 +66,8 @@ public class CommentService {
 	 */
 	@Transactional(readOnly = true)
 	public List<CommentDetailResDTO> getCommentListUseRecursion(long postId) {
-		// 최신순으로 정렬된 댓글 리스트 가져오기
-		List<CommentVO> comments = commentMapper.selectCommentList(postId);
+		// 최신순으로 정렬된 댓글 리스트 조회
+		List<CommentVO> comments = getCommentList(postId, false);
 
 		// 최종 저장되는 댓글 리스트 생성
 		List<CommentVO> newComments = new ArrayList<>();
@@ -119,7 +119,7 @@ public class CommentService {
 		List<Long> deleteCommentIdList = new ArrayList<>();
 
 		// 최신순으로 정렬된 댓글 리스트 가져오기
-		List<CommentVO> comments = commentMapper.selectCommentList(postId);
+		List<CommentVO> comments = commentMapper.selectCommentList(postId, false);
 
 		// 작성자 확인 및 삭제하려는 댓글이 존재하는지 확인
 		boolean isCommentExist = comments.stream()
@@ -146,7 +146,7 @@ public class CommentService {
 	@Transactional(readOnly = true)
 	public List<CommentDetailResDTO> getCommentListUseStack(long postId) {
 		// 댓글 리스트 가져오기
-		List<CommentVO> comments = commentMapper.selectCommentListOrderByAsc(postId);
+		List<CommentVO> comments = getCommentList(postId, true);
 
 		// 최종 저장되는 댓글 리스트 생성
 		List<CommentVO> newComments = new ArrayList<>();
@@ -183,6 +183,19 @@ public class CommentService {
 		return newComments.stream()
 			.map(CommentDetailResDTO::of)
 			.toList();
+	}
+
+	/**
+	 * 게시글의 댓글 리스트 반환
+	 *
+	 * @param isAscending 오름차순 정렬을 설정하는 boolean 변수, true -> 오름차순, false -> 내림차순
+	 * @return 로그인 사용자는 댓글의 좋아요 여부에 대한 정보를 응답받는다.
+	 */
+	private List<CommentVO> getCommentList(long postId, boolean isAscending) {
+		if (SecurityUtil.isLoginUser()) {
+			return commentMapper.selectCommentListByUserId(SecurityUtil.getLoginUserId(), postId, isAscending);
+		}
+		return commentMapper.selectCommentList(postId, isAscending);
 	}
 
 	/**

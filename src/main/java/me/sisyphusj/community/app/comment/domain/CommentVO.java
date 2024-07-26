@@ -34,6 +34,10 @@ public class CommentVO {
 
 	private List<ImageVO> images; // 댓글 이미지 정보
 
+	private int likes; // 댓글 좋아요 개수
+
+	private int hasLike; // 현재 사용자의 좋아요 여부를 0,1로 구분
+
 	public static CommentVO of(CommentReqDTO commentReqDTO) {
 		return CommentVO.builder()
 			.userId(SecurityUtil.getLoginUserId())

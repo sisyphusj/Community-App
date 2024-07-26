@@ -42,7 +42,7 @@
                 });
             }
 
-            const handleLikeButton = () => {
+            const handlePostLikeButton = () => {
                 const liked = $('#postLikeButton').data('liked');
 
                 if (liked) {
@@ -53,6 +53,10 @@
                         success: (response) => {
                             $('#postLikes').text("좋아요 수 : " + response);
                             $('#postLikeButton').text('좋아요').data('liked', false);
+                        },
+                        error: (error) => {
+                            alert("페이지를 불러오던 도중 문제가 생겼습니다.");
+                            window.location.href = "/"
                         }
                     });
                 } else {
@@ -63,6 +67,46 @@
                         success: (response) => {
                             $('#postLikes').text("좋아요 수 : " + response);
                             $('#postLikeButton').text('좋아요 취소').data('liked', true);
+                        },
+                        error: (error) => {
+                            alert("페이지를 불러오던 도중 문제가 생겼습니다.");
+                            window.location.href = "/"
+                        }
+                    });
+                }
+            }
+
+            const handleCommentLikeButton = (commentId) => {
+                const commentLikeButton = $(`#comment-like-button-${'${commentId}'}`);
+                const liked = commentLikeButton.data('liked');
+
+
+                if (liked) {
+                    $.ajax({
+                        url: '/likes/comment/dislike',
+                        type: 'GET',
+                        data: {commentId: commentId},
+                        success: (response) => {
+                            $(`#comment-likes-${'${commentId}'}`).text("좋아요 개수 : " + response);
+                            $(`#comment-like-button-${'${commentId}'}`).text('좋아요').data('liked', false);
+                        },
+                        error: (error) => {
+                            alert("페이지를 불러오던 도중 문제가 생겼습니다.");
+                            window.location.href = "/"
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        url: '/likes/comment',
+                        type: 'GET',
+                        data: {commentId: commentId},
+                        success: (response) => {
+                            $(`#comment-likes-${'${commentId}'}`).text("좋아요 개수 : " + response);
+                            $(`#comment-like-button-${'${commentId}'}`).text('좋아요 취소').data('liked', true);
+                        },
+                        error: (error) => {
+                            alert("페이지를 불러오던 도중 문제가 생겼습니다.");
+                            window.location.href = "/"
                         }
                     });
                 }
@@ -175,8 +219,7 @@
 
                 $('#commentForm').on('submit', (event) => {
                     const imageFiles = $('#imageFiles')[0].files;
-
-                    console.log(imageFiles);
+                    
                     try {
                         checkValidImages(imageFiles);
                     } catch (error) {
@@ -221,6 +264,10 @@
                             } else {
                                 $('#postLikeButton').text('좋아요').data('liked', false);
                             }
+                        },
+                        error: (error) => {
+                            alert("페이지를 불러오던 도중 문제가 생겼습니다.");
+                            window.location.href = "/"
                         }
                     });
                 }
@@ -262,7 +309,7 @@
                 <button id="commentForm" type="submit">등록</button>
             </form>
 
-            <button id="postLikeButton" type="button" data-liked="false" onclick="handleLikeButton()">좋아요</button>
+            <button id="postLikeButton" type="button" data-liked="false" onclick="handlePostLikeButton()">좋아요</button>
         </c:if>
 
         <c:forEach var="comment" items="${commentDetailResDTOList}">
@@ -272,8 +319,8 @@
                         <p class="topLevelComment">
                                 ${comment.name} : ${comment.content}
                                 ${comment.createdAt}
-                            좋아요 개수 : ${comment.likes}
                         </p>
+                        <p id="comment-likes-${comment.commentId}">좋아요 개수 : ${comment.likes}</p>
                         <c:if test="${comment.images != null && fn:length(comment.images) > 0}">
                             <c:forEach var="file" items="${comment.images}">
                                 <div class="image-container" data-image-id="${file.imageId}">
@@ -283,6 +330,16 @@
                         </c:if>
                         <c:if test="${currentUserId != null}">
                             <button type="button" class="replyButton">답글 쓰기</button>
+                            <c:if test="${!comment.hasLike}">
+                                <button id="comment-like-button-${comment.commentId}" type="button" data-comment-id="${comment.commentId}"
+                                        data-liked=${comment.hasLike} onclick="handleCommentLikeButton(${comment.commentId})">좋아요
+                                </button>
+                            </c:if>
+                            <c:if test="${comment.hasLike}">
+                                <button id="comment-like-button-${comment.commentId}" type="button" data-comment-id="${comment.commentId}"
+                                        data-liked=${comment.hasLike} onclick="handleCommentLikeButton(${comment.commentId})">좋아요 취소
+                                </button>
+                            </c:if>
                         </c:if>
                         <c:if test="${currentUserId == comment.userId}">
                             <button type="button" class="editButton">수정</button>
@@ -298,8 +355,8 @@
                         <p class="comment">
                                 ${comment.name} : ${comment.content}
                                 ${comment.createdAt}
-                            좋아요 개수 : ${comment.likes}
                         </p>
+                        <p id="comment-likes-${comment.commentId}">좋아요 개수 : ${comment.likes}</p>
                         <c:if test="${comment.images != null && fn:length(comment.images) > 0}">
                             <c:forEach var="file" items="${comment.images}">
                                 <div class="image-container" data-image-id="${file.imageId}">
@@ -309,6 +366,16 @@
                         </c:if>
                         <c:if test="${currentUserId != null}">
                             <button type="button" class="replyButton">답글 쓰기</button>
+                            <c:if test="${!comment.hasLike}">
+                                <button id="comment-like-button-${comment.commentId}" type="button" data-comment-id="${comment.commentId}"
+                                        data-liked=${comment.hasLike} onclick="handleCommentLikeButton(${comment.commentId})">좋아요
+                                </button>
+                            </c:if>
+                            <c:if test="${comment.hasLike}">
+                                <button id="comment-like-button-${comment.commentId}" type="button" data-comment-id="${comment.commentId}"
+                                        data-liked=${comment.hasLike} onclick="handleCommentLikeButton(${comment.commentId})">좋아요 취소
+                                </button>
+                            </c:if>
                         </c:if>
                         <c:if test="${currentUserId == comment.userId}">
                             <button type="button" class="editButton">수정</button>
