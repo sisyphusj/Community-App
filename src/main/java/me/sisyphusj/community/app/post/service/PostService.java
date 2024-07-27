@@ -80,6 +80,12 @@ public class PostService {
 			throw new PostNotFoundException();
 		}
 
+		if (SecurityUtil.isLoginUser()) {
+			return postMapper.selectPostDetailsByUserId(SecurityUtil.getLoginUserId(), postId)
+				.map(PostDetailResDTO::of)
+				.orElseThrow(PostNotFoundException::new);
+		}
+
 		// 이미지 메타데이터
 		return postMapper.selectPostDetails(postId)
 			.map(PostDetailResDTO::of)

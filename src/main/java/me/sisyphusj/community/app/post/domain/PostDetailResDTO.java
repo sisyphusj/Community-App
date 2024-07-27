@@ -27,17 +27,20 @@ public class PostDetailResDTO {
 
 	private int likes; // 게시글 좋아요 수
 
-	public static PostDetailResDTO of(PostVO postDetailVO) {
+	private boolean hasLike; // 현재 사용자의 게시글 좋아요 여부
+
+	public static PostDetailResDTO of(PostVO postVO) {
 		return PostDetailResDTO.builder()
-			.userId(postDetailVO.getUserId())
-			.postId(postDetailVO.getPostId())
-			.name(postDetailVO.getName())
-			.title(postDetailVO.getTitle())
-			.content(postDetailVO.getContent())
-			.views(postDetailVO.getViews())
-			.createdAt(postDetailVO.getCreatedAt())
-			.updatedAt(postDetailVO.getUpdatedAt())
-			.likes(postDetailVO.getLikes())
+			.userId(postVO.getUserId())
+			.postId(postVO.getPostId())
+			.name(postVO.getName())
+			.title(postVO.getTitle())
+			.content(postVO.getContent())
+			.views(postVO.getViews())
+			.createdAt(postVO.getCreatedAt())
+			.updatedAt(postVO.getUpdatedAt())
+			.likes(postVO.getLikes())
+			.hasLike(postVO.getHasLike() == 1)
 			.build();
 	}
 }

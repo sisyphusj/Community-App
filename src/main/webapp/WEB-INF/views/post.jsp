@@ -44,12 +44,16 @@
 
             const handlePostLikeButton = () => {
                 const liked = $('#postLikeButton').data('liked');
+                const csrfToken = $('input[name="_csrf"]').val();
 
                 if (liked) {
                     $.ajax({
-                        url: '/likes/post/dislike',
-                        type: 'GET',
+                        url: '/post/likes/dislike',
+                        type: 'DELETE',
                         data: {postId: ${post.postId}},
+                        beforeSend: (xhr) => {
+                            xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+                        },
                         success: (response) => {
                             $('#postLikes').text("좋아요 수 : " + response);
                             $('#postLikeButton').text('좋아요').data('liked', false);
@@ -61,9 +65,12 @@
                     });
                 } else {
                     $.ajax({
-                        url: '/likes/post',
-                        type: 'GET',
+                        url: '/post/likes',
+                        type: 'POST',
                         data: {postId: ${post.postId}},
+                        beforeSend: (xhr) => {
+                            xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+                        },
                         success: (response) => {
                             $('#postLikes').text("좋아요 수 : " + response);
                             $('#postLikeButton').text('좋아요 취소').data('liked', true);
@@ -79,13 +86,17 @@
             const handleCommentLikeButton = (commentId) => {
                 const commentLikeButton = $(`#comment-like-button-${'${commentId}'}`);
                 const liked = commentLikeButton.data('liked');
+                const csrfToken = $('input[name="_csrf"]').val();
 
 
                 if (liked) {
                     $.ajax({
-                        url: '/likes/comment/dislike',
-                        type: 'GET',
+                        url: '/comment/likes/dislike',
+                        type: 'DELETE',
                         data: {commentId: commentId},
+                        beforeSend: (xhr) => {
+                            xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+                        },
                         success: (response) => {
                             $(`#comment-likes-${'${commentId}'}`).text("좋아요 개수 : " + response);
                             $(`#comment-like-button-${'${commentId}'}`).text('좋아요').data('liked', false);
@@ -97,9 +108,12 @@
                     });
                 } else {
                     $.ajax({
-                        url: '/likes/comment',
-                        type: 'GET',
+                        url: '/comment/likes',
+                        type: 'POST',
                         data: {commentId: commentId},
+                        beforeSend: (xhr) => {
+                            xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+                        },
                         success: (response) => {
                             $(`#comment-likes-${'${commentId}'}`).text("좋아요 개수 : " + response);
                             $(`#comment-like-button-${'${commentId}'}`).text('좋아요 취소').data('liked', true);
@@ -219,7 +233,7 @@
 
                 $('#commentForm').on('submit', (event) => {
                     const imageFiles = $('#imageFiles')[0].files;
-                    
+
                     try {
                         checkValidImages(imageFiles);
                     } catch (error) {
@@ -253,24 +267,24 @@
                     }
                 }
 
-                if (userId) {
-                    $.ajax({
-                        url: '/likes/post/check',
-                        type: 'GET',
-                        data: {postId: ${post.postId}},
-                        success: (response) => {
-                            if (response) {
-                                $('#postLikeButton').text('좋아요 취소').data('liked', true);
-                            } else {
-                                $('#postLikeButton').text('좋아요').data('liked', false);
-                            }
-                        },
-                        error: (error) => {
-                            alert("페이지를 불러오던 도중 문제가 생겼습니다.");
-                            window.location.href = "/"
-                        }
-                    });
-                }
+                <%--if (userId) {--%>
+                <%--    $.ajax({--%>
+                <%--        url: '/likes/post/check',--%>
+                <%--        type: 'GET',--%>
+                <%--        data: {postId: ${post.postId}},--%>
+                <%--        success: (response) => {--%>
+                <%--            if (response) {--%>
+                <%--                $('#postLikeButton').text('좋아요 취소').data('liked', true);--%>
+                <%--            } else {--%>
+                <%--                $('#postLikeButton').text('좋아요').data('liked', false);--%>
+                <%--            }--%>
+                <%--        },--%>
+                <%--        error: (error) => {--%>
+                <%--            alert("페이지를 불러오던 도중 문제가 생겼습니다.");--%>
+                <%--            window.location.href = "/"--%>
+                <%--        }--%>
+                <%--    });--%>
+                <%--}--%>
             });
 
         </script>
@@ -309,7 +323,13 @@
                 <button id="commentForm" type="submit">등록</button>
             </form>
 
-            <button id="postLikeButton" type="button" data-liked="false" onclick="handlePostLikeButton()">좋아요</button>
+            <c:if test="${post.hasLike}">
+                <button id="postLikeButton" type="button" data-liked="true" onclick="handlePostLikeButton()">좋아요 취소</button>
+            </c:if>
+            <c:if test="${!post.hasLike}">
+                <button id="postLikeButton" type="button" data-liked="false" onclick="handlePostLikeButton()">좋아요</button>
+            </c:if>
+
         </c:if>
 
         <c:forEach var="comment" items="${commentDetailResDTOList}">

@@ -32,6 +32,8 @@ public class PostVO {
 
 	private int likes; // 게시글 좋아요 수
 
+	private int hasLike; // 현재 사용자의 게시글 좋아요 여부
+
 	public static PostVO of(PostCreateReqDTO postCreateReqDTO) {
 		return PostVO.builder()
 			.userId(SecurityUtil.getLoginUserId())

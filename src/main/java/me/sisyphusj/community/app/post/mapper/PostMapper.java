@@ -19,6 +19,8 @@ public interface PostMapper {
 
 	Optional<PostVO> selectPostDetails(long postId);
 
+	Optional<PostVO> selectPostDetailsByUserId(long userId, long postId);
+
 	int updateViewsAndGet(long postId);
 
 	int selectCountPostByUserId(long postId, long userId);
