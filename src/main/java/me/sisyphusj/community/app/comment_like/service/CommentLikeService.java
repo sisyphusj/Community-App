@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.comment.mapper.CommentMapper;
 import me.sisyphusj.community.app.comment_like.mapper.CommentLikeMapper;
-import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
+import me.sisyphusj.community.app.commons.exception.CommentNotFoundException;
 import me.sisyphusj.community.app.utils.SecurityUtil;
 
 @Service
@@ -24,11 +24,14 @@ public class CommentLikeService {
 	public int addLikeComment(long commentId) {
 		// 댓글에 대한 유효성 확인
 		if (commentMapper.selectCountCommentByCommentId(commentId) != 1) {
-			throw new PostNotFoundException();
+			throw new CommentNotFoundException();
 		}
 
-		// 댓글에 좋아요 추가 요청
-		commentLikeMapper.insertLikeComment(SecurityUtil.getLoginUserId(), commentId);
+		// 사용자가 댓글에 좋아요를 남겼는지 확인
+		if (commentLikeMapper.selectLikeCommentByUserId(SecurityUtil.getLoginUserId(), commentId) == 0) {
+			// 댓글에 좋아요 추가 요청
+			commentLikeMapper.insertLikeComment(SecurityUtil.getLoginUserId(), commentId);
+		}
 
 		// 댓글의 좋아요 최신화
 		return commentLikeMapper.selectLikeComment(commentId);
@@ -39,6 +42,11 @@ public class CommentLikeService {
 	 */
 	@Transactional
 	public int disLikeComment(long commentId) {
+		// 댓글에 대한 유효성 확인
+		if (commentMapper.selectCountCommentByCommentId(commentId) != 1) {
+			throw new CommentNotFoundException();
+		}
+
 		// 사용자가 댓글에 좋아요를 남겼는지 확인
 		if (commentLikeMapper.selectLikeCommentByUserId(SecurityUtil.getLoginUserId(), commentId) == 1) {
 			// 댓글에 좋아요 취소 요청

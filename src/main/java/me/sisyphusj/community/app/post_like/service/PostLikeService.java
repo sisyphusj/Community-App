@@ -27,8 +27,11 @@ public class PostLikeService {
 			throw new PostNotFoundException();
 		}
 
-		// 게시글에 좋아요 추가 요청
-		postLikeMapper.insertLikePost(SecurityUtil.getLoginUserId(), postId);
+		// 사용자가 게시글에 좋아요를 남겼는지 확인
+		if (postMapper.selectCountPostByUserId(SecurityUtil.getLoginUserId(), postId) == 0) {
+			// 게시글에 좋아요 추가 요청
+			postLikeMapper.insertLikePost(SecurityUtil.getLoginUserId(), postId);
+		}
 
 		// 게시글의 좋아요 최신화
 		return postLikeMapper.selectLikePost(postId);
@@ -39,6 +42,11 @@ public class PostLikeService {
 	 */
 	@Transactional
 	public int disLikePost(long postId) {
+		// 게시글에 대한 유효성 확인
+		if (postMapper.selectCountPost(postId) != 1) {
+			throw new PostNotFoundException();
+		}
+
 		// 사용자가 게시글에 좋아요를 남겼는지 확인
 		if (postLikeMapper.selectLikePostByUserId(SecurityUtil.getLoginUserId(), postId) == 1) {
 			// 게시글에 좋아요 취소 요청
