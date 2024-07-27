@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybaits.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.sisyphusj.community.app.post_like.mapper.PostLikeMapper">
+
+    <insert id="insertLikePost" parameterType="long">
+        insert post_likes (user_id, post_id)
+        values (#{userId}, #{postId})
+    </insert>
+
+    <select id="selectLikePost" parameterType="long">
+        select count(*)
+        from post_likes
+        where post_id = #{postId}
+    </select>
+
+    <select id="selectLikePostByUserId" parameterType="long">
+        select count(*)
+        from post_likes
+        where user_id = #{userId}
+          and post_id = #{postId}
+    </select>
+
+    <delete id="deleteLikePost" parameterType="long">
+        delete
+        from post_likes
+        where user_id = #{userId}
+          and post_id = #{postId}
+    </delete>
+
+    <delete id="deleteAllLikePost" parameterType="long">
+        delete
+        from post_likes
+        where post_id = #{postId}
+    </delete>
+
+</mapper>

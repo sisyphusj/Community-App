@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.commons.exception.KeywordTypeException;
 import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 import me.sisyphusj.community.app.image.service.ImageService;
-import me.sisyphusj.community.app.like.mapper.LikeMapper;
 import me.sisyphusj.community.app.post.domain.PageReqDTO;
 import me.sisyphusj.community.app.post.domain.PageResDTO;
 import me.sisyphusj.community.app.post.domain.PageVO;
@@ -20,6 +19,7 @@ import me.sisyphusj.community.app.post.domain.PostEditReqDTO;
 import me.sisyphusj.community.app.post.domain.PostSummaryResDTO;
 import me.sisyphusj.community.app.post.domain.PostVO;
 import me.sisyphusj.community.app.post.mapper.PostMapper;
+import me.sisyphusj.community.app.post_like.mapper.PostLikeMapper;
 import me.sisyphusj.community.app.utils.ListValidationUtil;
 import me.sisyphusj.community.app.utils.SecurityUtil;
 
@@ -31,7 +31,7 @@ public class PostService {
 
 	private final ImageService imageService;
 
-	private final LikeMapper likeMapper;
+	private final PostLikeMapper postLikeMapper;
 
 	/**
 	 * 게시글 생성
@@ -119,7 +119,7 @@ public class PostService {
 		postMapper.deletePostImage(postId);
 
 		// 게시글 좋아요 테이블 정보 삭제
-		likeMapper.deleteAllLikePost(postId);
+		postLikeMapper.deleteAllLikePost(postId);
 	}
 
 	/**

@@ -17,10 +17,10 @@ import me.sisyphusj.community.app.comment.domain.CommentEditReqDTO;
 import me.sisyphusj.community.app.comment.domain.CommentReqDTO;
 import me.sisyphusj.community.app.comment.domain.CommentVO;
 import me.sisyphusj.community.app.comment.mapper.CommentMapper;
+import me.sisyphusj.community.app.comment_like.mapper.CommentLikeMapper;
 import me.sisyphusj.community.app.commons.exception.CommentNotFoundException;
 import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 import me.sisyphusj.community.app.image.service.ImageService;
-import me.sisyphusj.community.app.like.mapper.LikeMapper;
 import me.sisyphusj.community.app.post.mapper.PostMapper;
 import me.sisyphusj.community.app.utils.ListValidationUtil;
 import me.sisyphusj.community.app.utils.SecurityUtil;
@@ -35,7 +35,7 @@ public class CommentService {
 
 	private final PostMapper postMapper;
 
-	private final LikeMapper likeMapper;
+	private final CommentLikeMapper commentLikeMapper;
 
 	/**
 	 * 댓글 등록
@@ -142,7 +142,7 @@ public class CommentService {
 		commentMapper.deleteCommentImage(deleteCommentIdList);
 
 		// 삭제 대상 댓글 id 리스트를 통해 댓글 좋아요 테이블에서 정보 삭제
-		likeMapper.deleteAllLikeComment(deleteCommentIdList);
+		commentLikeMapper.deleteAllLikeComment(deleteCommentIdList);
 	}
 
 	/**
