@@ -1,7 +1,6 @@
 package me.sisyphusj.community.app.comment.mapper;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -16,11 +15,11 @@ public interface CommentMapper {
 
 	int selectCountCommentByCommentId(long commentId);
 
+	int selectCountCommentByUserId(long userId, long commentId);
+
 	List<CommentVO> selectCommentList(long postId, boolean isAscending);
 
 	List<CommentVO> selectCommentListByUserId(long userId, long postId, boolean isAscending);
-
-	Optional<CommentVO> selectComment(long userId, long commentId);
 
 	void editComment(CommentVO commentEditVO);
 

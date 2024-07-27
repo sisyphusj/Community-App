@@ -43,9 +43,7 @@ public class CommentService {
 	@Transactional
 	public void createComment(CommentReqDTO commentReqDTO) {
 		// DTO로 받은 postId를 통해 게시글이 존재하는지 확인
-		if (postMapper.selectCountPost(commentReqDTO.getPostId()) != 1) {
-			throw new PostNotFoundException();
-		}
+		validatePostExists(commentReqDTO.getPostId());
 
 		CommentVO commentVO = CommentVO.of(commentReqDTO);
 		commentMapper.insertComment(commentVO);
@@ -101,9 +99,7 @@ public class CommentService {
 	@Transactional
 	public void editComment(CommentEditReqDTO commentEditReqDTO) {
 		// 작성자와 수정하려는 댓글이 존재하는지 확인
-		if (commentMapper.selectComment(SecurityUtil.getLoginUserId(), commentEditReqDTO.getCommentId()).isEmpty()) {
-			throw new CommentNotFoundException();
-		}
+		validateCommentExists(SecurityUtil.getLoginUserId(), commentEditReqDTO.getCommentId());
 
 		commentMapper.editComment(CommentVO.of(commentEditReqDTO));
 
@@ -188,6 +184,24 @@ public class CommentService {
 		return newComments.stream()
 			.map(CommentDetailResDTO::of)
 			.toList();
+	}
+
+	/**
+	 * 댓글을 등록하기 전에 게시글이 존재하는지 확인
+	 */
+	private void validatePostExists(long postId) {
+		if (postMapper.selectCountPost(postId) != 1) {
+			throw new PostNotFoundException();
+		}
+	}
+
+	/**
+	 * 댓글을 수정하기 전에 댓글이 존재하는지 확인
+	 */
+	private void validateCommentExists(long userId, long commentId) {
+		if (commentMapper.selectCountCommentByUserId(userId, commentId) != 1) {
+			throw new CommentNotFoundException();
+		}
 	}
 
 	/**

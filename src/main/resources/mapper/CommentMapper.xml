@@ -22,7 +22,14 @@
           and is_deleted = 'N'
     </select>
 
-    <!-- @formatter:off -->
+    <select id="selectCountCommentByUserId" parameterType="long" resultType="int">
+        select count(*)
+        from comments
+        where comment_id = #{commentId}
+          and user_id = #{userId}
+          and is_deleted = 'N'
+    </select>
+
     <select id="selectCommentList" resultMap="CommentWithImageList">
         select c.comment_id,
                c.parent_id,
@@ -38,14 +45,11 @@
                i.size,
                i.image_path,
                i.created_at          as image_created_at,
-               coalesce(lc.likes, 0) as likes
+               (select count(*) from comment_likes a where a.comment_id = c.comment_id) as likes
         from comments c
                  inner join user u on c.user_id = u.user_id
                  left join comment_image ci on c.comment_id = ci.comment_id
                  left join image i on ci.image_id = i.image_id
-                 left join (select cl.comment_id, count(cl.like_id) as likes
-                            from comment_likes cl
-                            group by cl.comment_id) lc on c.comment_id = lc.comment_id
         where c.is_deleted = 'N'
           and c.post_id = #{postId}
         <choose>
@@ -73,15 +77,12 @@
                i.size,
                i.image_path,
                i.created_at              as image_created_at,
-               coalesce(lc.likes, 0)     as likes,
-               coalesce(lc.has_like, 0) as has_like
+               (select count(*) from comment_likes a where a.comment_id = c.comment_id)                           as likes,
+               exists (select 1 from comment_likes b where b.comment_id = c.comment_id and b.user_id = #{userId}) as has_like
         from comments c
                  inner join user u on c.user_id = u.user_id
                  left join comment_image ci on c.comment_id = ci.comment_id
                  left join image i on ci.image_id = i.image_id
-                 left join (select cl.comment_id, count(cl.like_id) as likes, max(if(cl.user_id = #{userId}, 1, 0)) as has_like
-                            from comment_likes cl
-                            group by cl.comment_id) lc on c.comment_id = lc.comment_id
         where c.is_deleted = 'N'
           and c.post_id = #{postId}
         <choose>
@@ -92,23 +93,6 @@
                 order by c.created_at desc
             </otherwise>
         </choose>
-    </select>
-    <!-- @formatter:on -->
-
-    <select id="selectComment" parameterType="long" resultType="me.sisyphusj.community.app.comment.domain.CommentVO">
-        select comment_id,
-               parent_id,
-               u.user_id,
-               c.post_id,
-               u.name,
-               content,
-               created_at,
-               updated_at
-        from comments c
-                 inner join user u on c.user_id = u.user_id
-        where is_deleted = 'N'
-          and u.user_id = #{userId}
-          and comment_id = #{commentId}
     </select>
 
     <update id="editComment" parameterType="me.sisyphusj.community.app.comment.domain.CommentVO">
