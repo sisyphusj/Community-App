@@ -23,4 +23,6 @@ public class PostCreateReqDTO {
 
 	private List<MultipartFile> images; // 추가된 이미지 리스트
 
+	private MultipartFile thumbnail; // 썸네일 이미지
+
 }

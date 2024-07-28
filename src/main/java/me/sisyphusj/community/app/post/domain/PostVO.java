@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.sisyphusj.community.app.image.domain.ImageVO;
 import me.sisyphusj.community.app.utils.SecurityUtil;
 
 @Builder
@@ -34,6 +35,10 @@ public class PostVO {
 
 	private int hasLike; // 현재 사용자의 게시글 좋아요 여부
 
+	private Long thumbnailId; // 이미지 게시글 섬네일 이미지 고유 ID
+
+	private ImageVO thumbnail; // 섬네일 이미지 정보
+
 	public static PostVO of(PostCreateReqDTO postCreateReqDTO) {
 		return PostVO.builder()
 			.userId(SecurityUtil.getLoginUserId())
@@ -49,5 +54,9 @@ public class PostVO {
 			.title(postEditReqDTO.getTitle())
 			.content(postEditReqDTO.getContent())
 			.build();
+	}
+
+	public void updateThumbnailId(long thumbnailId) {
+		this.thumbnailId = thumbnailId;
 	}
 }

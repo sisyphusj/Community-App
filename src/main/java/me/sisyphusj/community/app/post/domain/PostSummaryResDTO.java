@@ -4,6 +4,7 @@ import java.util.Date;
 
 import lombok.Builder;
 import lombok.Getter;
+import me.sisyphusj.community.app.image.domain.ThumbnailImageResDTO;
 
 @Builder
 @Getter
@@ -23,6 +24,8 @@ public class PostSummaryResDTO {
 
 	private int likes; // 게시글 좋아요 수
 
+	private ThumbnailImageResDTO thumbnail; // 썸네일 이미지 정보
+
 	public static PostSummaryResDTO of(PostVO postVO) {
 		return PostSummaryResDTO.builder()
 			.postId(postVO.getPostId())
@@ -32,6 +35,7 @@ public class PostSummaryResDTO {
 			.createdAt(postVO.getCreatedAt())
 			.updatedAt(postVO.getUpdatedAt())
 			.likes(postVO.getLikes())
+			.thumbnail(postVO.getThumbnail() == null ? null : ThumbnailImageResDTO.of(postVO.getThumbnail()))
 			.build();
 	}
 }

@@ -18,11 +18,18 @@ public class ListValidationUtil {
 		}
 
 		for (MultipartFile file : list) {
-			if (file.getSize() == 0 || file.getOriginalFilename() == null) {
+			if (!isValidMultipartFile(file)) {
 				return false;
 			}
 		}
 
 		return true;
+	}
+
+	/**
+	 * 이미지 파일이 비어있는지 검증
+	 */
+	public static boolean isValidMultipartFile(MultipartFile file) {
+		return file != null && file.getSize() != 0 && file.getOriginalFilename() != null;
 	}
 }

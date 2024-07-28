@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.commons.exception.KeywordTypeException;
 import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 import me.sisyphusj.community.app.image.service.ImageService;
+import me.sisyphusj.community.app.post.domain.KeywordType;
 import me.sisyphusj.community.app.post.domain.PageReqDTO;
 import me.sisyphusj.community.app.post.domain.PageResDTO;
 import me.sisyphusj.community.app.post.domain.PageVO;
@@ -39,7 +40,14 @@ public class PostService {
 	@Transactional
 	public void createPost(PostCreateReqDTO postCreateReqDTO) {
 		PostVO postVO = PostVO.of(postCreateReqDTO);
-		postMapper.insertPost(postVO); // 게시글 삽입
+
+		// 썸네일 이미지가 존재하면 이미지 저장
+		if (ListValidationUtil.isValidMultipartFile(postCreateReqDTO.getThumbnail())) {
+			// 섬네일 이미지를 이미지 테이블에 추가 후 반환되는 imageId를 postVO에 저장
+			postVO.updateThumbnailId(imageService.saveThumbnailImage(postCreateReqDTO.getThumbnail()));
+		}
+
+		postMapper.insertPost(postVO);
 
 		// 게시글이 이미지를 첨부, 이미지 리스트가 NULL이 아니면 이미지 저장 요청
 		if (ListValidationUtil.isValidMultiPartFileList(postCreateReqDTO.getImages())) {
@@ -54,15 +62,34 @@ public class PostService {
 	public PageResDTO getPostPage(PageReqDTO pageReqDTO) {
 
 		// 검색 keyword가 존재한다면 keywordType 확인
-		if (StringUtils.isNotBlank(pageReqDTO.getKeyword()) && pageReqDTO.getKeywordType() == null) {
-			throw new KeywordTypeException();
-		}
+		validateKeywordType(pageReqDTO.getKeyword(), pageReqDTO.getKeywordType());
 
 		// 전체 게시글 개수
-		int totalRowCount = postMapper.selectTotalCount(PageVO.of(pageReqDTO));
+		int totalRowCount = postMapper.selectPostTotalCount(PageVO.of(pageReqDTO));
 
 		// amount 만큼 게시글 리스트 조회
 		List<PostSummaryResDTO> postListDTO = postMapper.selectPostSummaryList(PageVO.of(pageReqDTO)).stream()
+			.map(PostSummaryResDTO::of)
+			.toList();
+
+		// 현재 페이지 페이지네이션 메타데이터, 게시글 섬네일 리스트 반환
+		return new PageResDTO(pageReqDTO, totalRowCount, postListDTO);
+	}
+
+	/**
+	 * 한 페이지 당 조회될 이미지 게시글 리스트 및 페이지 정보 반환
+	 */
+	@Transactional(readOnly = true)
+	public PageResDTO getImageBoardPage(PageReqDTO pageReqDTO) {
+
+		// 검색 keyword가 존재한다면 keywordType 확인
+		validateKeywordType(pageReqDTO.getKeyword(), pageReqDTO.getKeywordType());
+
+		// 전체 게시글 개수
+		int totalRowCount = postMapper.selectImagePostTotalCount(PageVO.of(pageReqDTO));
+
+		// amount 만큼 게시글 리스트 조회
+		List<PostSummaryResDTO> postListDTO = postMapper.selectImagePostSummaryList(PageVO.of(pageReqDTO)).stream()
 			.map(PostSummaryResDTO::of)
 			.toList();
 
@@ -127,6 +154,16 @@ public class PostService {
 
 		// 게시글 좋아요 테이블 정보 삭제
 		postLikeMapper.deleteAllLikePost(postId);
+	}
+
+	/**
+	 * KeywordType 유효성 체크
+	 */
+	private void validateKeywordType(String keyword, KeywordType keywordType) {
+		// 검색어는 존재하지만 keywordType은 null일 경우 예외 발생
+		if (StringUtils.isNotBlank(keyword) && keywordType == null) {
+			throw new KeywordTypeException();
+		}
 	}
 
 	/**

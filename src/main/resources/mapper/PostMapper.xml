@@ -4,70 +4,104 @@
 
 <mapper namespace="me.sisyphusj.community.app.post.mapper.PostMapper">
 
+    <sql id="commonKeywordFilter">
+        <if test="keyword != null and keyword != ''">
+            <choose>
+                <when test="keywordType.toString() == 'TITLE'">
+                    and p.title like CONCAT('%', #{keyword}, '%')
+                </when>
+                <when test="keywordType.toString() == 'CONTENT'">
+                    and p.content like CONCAT('%', #{keyword}, '%')
+                </when>
+                <when test="keywordType.toString() == 'AUTHOR'">
+                    and u.name like CONCAT('%', #{keyword}, '%')
+                </when>
+                <when test="keywordType.toString() == 'ALL'">
+                    and (p.title like CONCAT('%', #{keyword}, '%') or p.content like CONCAT('%', #{keyword}, '%') or u.name like CONCAT('%', #{keyword}, '%'))
+                </when>
+            </choose>
+        </if>
+    </sql>
+
     <insert id="insertPost" parameterType="me.sisyphusj.community.app.post.domain.PostVO" useGeneratedKeys="true" keyProperty="postId">
-        insert into posts (user_id, title, content)
-        values (#{userId}, #{title}, #{content})
+        insert into posts (user_id, title, content <if test="thumbnailId != null">, thumbnail_image_id </if>)
+        values (#{userId}, #{title}, #{content} <if test="thumbnailId != null">, #{thumbnailId} </if>)
     </insert>
 
     <select id="selectPostSummaryList" parameterType="me.sisyphusj.community.app.post.domain.PageVO" resultType="me.sisyphusj.community.app.post.domain.PostVO">
-        select p.post_id, u.name, title, views, created_at, updated_at, (select count(*) from post_likes pl where pl.post_id = p.post_id) as likes
+        select p.post_id, u.name, p.title, p.views, p.created_at, p.updated_at, (select count(*) from post_likes pl where pl.post_id = p.post_id) as likes
         from posts p
         inner join user u on p.user_id = u.user_id
         <where>
-            is_deleted = 'N'
-            <if test="keyword != null and keyword != ''">
-                <choose>
-                    <when test="keywordType.toString() == 'TITLE'">
-                        and p.title like CONCAT('%', #{keyword}, '%')
-                    </when>
-                    <when test="keywordType.toString() == 'CONTENT'">
-                        and p.content like CONCAT('%', #{keyword}, '%')
-                    </when>
-                    <when test="keywordType.toString() == 'AUTHOR'">
-                        and u.name like CONCAT('%', #{keyword}, '%')
-                    </when>
-                    <when test="keywordType.toString() == 'ALL'">
-                        and (p.title like CONCAT('%', #{keyword}, '%') or p.content like CONCAT('%', #{keyword}, '%') or u.name like CONCAT('%', #{keyword}, '%'))
-                    </when>
-                </choose>
-            </if>
+            p.is_deleted = 'N'
+            <include refid="commonKeywordFilter"/>
         </where>
         <choose>
             <when test="sortType.toString() == 'DATE'">
-                order by created_at desc
+                order by p.created_at desc
             </when>
             <when test="sortType.toString() == 'VIEWS'">
-                order by views desc, created_at desc
+                order by p.views desc, p.created_at desc
             </when>
             <otherwise>
-                order by created_at desc
+                order by p.created_at desc
             </otherwise>
         </choose>
         limit #{amount} offset #{offset}
     </select>
 
-    <select id="selectTotalCount" parameterType="me.sisyphusj.community.app.post.domain.PageVO" resultType="int">
+    <select id="selectImagePostSummaryList" parameterType="me.sisyphusj.community.app.post.domain.PageVO" resultMap="PostWithThumbnail">
+        select p.post_id,
+               u.name,
+               p.title,
+               p.views,
+               p.created_at,
+               p.updated_at,
+               (select count(*) from post_likes pl where pl.post_id = p.post_id) as likes,
+                i.image_id          as thumbnail_image_id,
+                i.origin_name       as thumbnail_origin_name,
+                i.stored_name       as thumbnail_stored_name,
+                i.size              as thumbnail_size,
+                i.image_path        as thumbnail_image_path,
+                i.created_at        as thumbnail_created_at
+        from posts p
+        inner join user u on p.user_id = u.user_id
+        inner join image i on p.thumbnail_image_id = i.image_id
+        <where>
+            p.is_deleted = 'N' and p.thumbnail_image_id is not null
+            <include refid="commonKeywordFilter"/>
+        </where>
+        <choose>
+            <when test="sortType.toString() == 'DATE'">
+                order by p.created_at desc
+            </when>
+            <when test="sortType.toString() == 'VIEWS'">
+                order by p.views desc, p.created_at desc
+            </when>
+            <otherwise>
+                order by p.created_at desc
+            </otherwise>
+        </choose>
+        limit #{amount} offset #{offset}
+    </select>
+
+    <select id="selectPostTotalCount" parameterType="me.sisyphusj.community.app.post.domain.PageVO" resultType="int">
         select count(*)
         from posts p
         inner join user u on p.user_id = u.user_id
         <where>
-            is_deleted = 'N'
-            <if test="keyword != null and keyword != ''">
-                <choose>
-                    <when test="keywordType.toString() == 'TITLE'">
-                        and p.title like CONCAT('%', #{keyword}, '%')
-                    </when>
-                    <when test="keywordType.toString() == 'CONTENT'">
-                        and p.content like CONCAT('%', #{keyword}, '%')
-                    </when>
-                    <when test="keywordType.toString() == 'AUTHOR'">
-                        and u.name like CONCAT('%', #{keyword}, '%')
-                    </when>
-                    <when test="keywordType.toString() == 'ALL'">
-                        and (p.title like CONCAT('%', #{keyword}, '%') or p.content like CONCAT('%', #{keyword}, '%') or u.name like CONCAT('%', #{keyword}, '%'))
-                    </when>
-                </choose>
-            </if>
+            p.is_deleted = 'N'
+            <include refid="commonKeywordFilter"/>
+        </where>
+    </select>
+
+    <select id="selectImagePostTotalCount" parameterType="me.sisyphusj.community.app.post.domain.PageVO" resultType="int">
+        select count(*)
+        from posts p
+        inner join user u on p.user_id = u.user_id
+        <where>
+            p.is_deleted = 'N' and p.thumbnail_image_id is not null
+            <include refid="commonKeywordFilter"/>
         </where>
     </select>
 
@@ -144,5 +178,25 @@
         from post_image
         where post_id = #{postId};
     </delete>
+
+    <resultMap id="PostWithThumbnail" type="me.sisyphusj.community.app.post.domain.PostVO">
+        <id property="postId" column="post_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="name" column="name"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="views" column="views"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="likes" column="likes"/>
+        <result property="hasLike" column="has_like"/>
+        <association property="thumbnail" javaType="me.sisyphusj.community.app.image.domain.ImageVO">
+            <id property="imageId" column="thumbnail_image_id"/>
+            <result property="originName" column="thumbnail_origin_name"/>
+            <result property="storedName" column="thumbnail_stored_name"/>
+            <result property="size" column="thumbnail_size"/>
+            <result property="imagePath" column="thumbnail_image_path"/>
+        </association>
+    </resultMap>
 
 </mapper>

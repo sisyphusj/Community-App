@@ -22,6 +22,7 @@ import me.sisyphusj.community.app.post.domain.PostCreateReqDTO;
 import me.sisyphusj.community.app.post.domain.PostDetailResDTO;
 import me.sisyphusj.community.app.post.domain.PostEditReqDTO;
 import me.sisyphusj.community.app.post.service.PostService;
+import me.sisyphusj.community.app.utils.ListValidationUtil;
 
 @Controller
 @RequestMapping("/community")
@@ -47,11 +48,31 @@ public class PostController {
 	}
 
 	/**
+	 * 이미지 게시판 페이지, 현재 페이지에 맞는 게시글 리스트 반환
+	 */
+	@GetMapping("/image-board")
+	public String showImageCommunityPage(@Valid @ModelAttribute PageReqDTO pageReqDTO, Model model) {
+		PageResDTO pageResDTO = postService.getImageBoardPage(pageReqDTO);
+
+		model.addAttribute("pageResDTO", pageResDTO);
+		model.addAttribute("pageReqDTO", pageReqDTO);
+		return "imageBoard";
+	}
+
+	/**
 	 * 새로운 게시글 작성 폼 페이지
 	 */
 	@GetMapping("/new")
 	public String showPostPage() {
 		return "newPost";
+	}
+
+	/**
+	 * 새로운 이미지 게시글 작성 폼 페이지
+	 */
+	@GetMapping("image-board/new")
+	public String showImageBoardPage() {
+		return "newImageBoard";
 	}
 
 	/**
@@ -62,7 +83,14 @@ public class PostController {
 		postService.createPost(postCreateReqDTO);
 
 		model.addAttribute(MESSAGE, "게시글이 생성되었습니다.");
-		model.addAttribute(LOCATION_URL, LocationUrl.COMMUNITY);
+
+		// 이미지 게시글 추가 요청이면 이미지 게시판으로 일반 게시글 추가 요청이면 일반 게시판으로 url 설정
+		if (ListValidationUtil.isValidMultipartFile(postCreateReqDTO.getThumbnail())) {
+			model.addAttribute(LOCATION_URL, LocationUrl.IMAGE_BOARD);
+		} else {
+			model.addAttribute(LOCATION_URL, LocationUrl.COMMUNITY);
+		}
+
 		return MAV_ALERT;
 	}
 
