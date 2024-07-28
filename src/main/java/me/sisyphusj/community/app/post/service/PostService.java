@@ -59,7 +59,7 @@ public class PostService {
 		}
 
 		// 전체 게시글 개수
-		int totalRowCount = postMapper.selectTotalCount();
+		int totalRowCount = postMapper.selectTotalCount(PageVO.of(pageReqDTO));
 
 		// amount 만큼 게시글 리스트 조회
 		List<PostSummaryResDTO> postListDTO = postMapper.selectPostSummaryList(PageVO.of(pageReqDTO)).stream()
@@ -87,7 +87,7 @@ public class PostService {
 				.orElseThrow(PostNotFoundException::new);
 		}
 
-		// 사용자가 미 로그인 사용자면 좋아요 여부는 조회하지 않고 게시글 조회 
+		// 사용자가 미 로그인 사용자면 좋아요 여부는 조회하지 않고 게시글 조회
 		return postMapper.selectPostDetails(postId)
 			.map(PostDetailResDTO::of)
 			.orElseThrow(PostNotFoundException::new);

@@ -13,7 +13,7 @@ public class PageResDTO {
 
 	private final int rowSizePerPage; // 페이지 당 게시글 수
 
-	private final int pageSize; // 페이지 버튼 개수
+	private int pageSize; // 페이지 버튼 개수
 
 	private final int totalRowCount; // 전체 게시글 개수
 
@@ -27,28 +27,27 @@ public class PageResDTO {
 
 	private int lastPage; // 페이지 리스트에서 마지막 페이지 번호
 
-	private List<PostSummaryResDTO> postSummaryResDTO;
+	private List<PostSummaryResDTO> postSummaryResDTO; // 게시글 요약 정보 리스트
 
 	private void pageSetting() {
 
+		// 총 페이지 수 계산
 		totalPageCount = (totalRowCount - 1) / rowSizePerPage + 1;
 
+		// 페이지 버튼 개수 설정
+		pageSize = Math.min(PAGE_SIZE, totalPageCount);
+
+		// 시작 레코드 번호 계산
 		firstRow = (currentPage - 1) * rowSizePerPage + 1;
 
-		lastRow = firstRow + rowSizePerPage - 1;
+		// 마지막 레코드 번호 계산
+		lastRow = Math.min(firstRow + rowSizePerPage - 1, totalRowCount);
 
-		// rowSizePerPage 만큼 리스트를 보여줄 수 없는 경우
-		if (lastRow > totalRowCount)
-			lastRow = totalRowCount;
+		// 페이지 리스트에서 시작 번호 계산
+		firstPage = ((currentPage - 1) / pageSize) * pageSize + 1;
 
-		firstPage = (currentPage - 1) / pageSize * pageSize + 1;
-
-		lastPage = firstPage + pageSize - 1;
-
-		// pageSize 만큼의 페이지 버튼을 보여줄 수 없는 경우
-		if (lastPage > totalPageCount) {
-			lastPage = totalPageCount;
-		}
+		// 페이지 리스트에서 마지막 번호 계산
+		lastPage = Math.min(firstPage + pageSize - 1, totalPageCount);
 	}
 
 	public PageResDTO(PageReqDTO pageReqDTO, int totalRowCount, List<PostSummaryResDTO> postSummaryResDTO) {

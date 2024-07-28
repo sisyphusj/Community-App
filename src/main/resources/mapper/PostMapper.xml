@@ -46,10 +46,29 @@
         limit #{amount} offset #{offset}
     </select>
 
-    <select id="selectTotalCount" resultType="int">
+    <select id="selectTotalCount" parameterType="me.sisyphusj.community.app.post.domain.PageVO" resultType="int">
         select count(*)
-        from posts
-        where is_deleted = 'N'
+        from posts p
+        inner join user u on p.user_id = u.user_id
+        <where>
+            is_deleted = 'N'
+            <if test="keyword != null and keyword != ''">
+                <choose>
+                    <when test="keywordType.toString() == 'TITLE'">
+                        and p.title like CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <when test="keywordType.toString() == 'CONTENT'">
+                        and p.content like CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <when test="keywordType.toString() == 'AUTHOR'">
+                        and u.name like CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <when test="keywordType.toString() == 'ALL'">
+                        and (p.title like CONCAT('%', #{keyword}, '%') or p.content like CONCAT('%', #{keyword}, '%') or u.name like CONCAT('%', #{keyword}, '%'))
+                    </when>
+                </choose>
+            </if>
+        </where>
     </select>
 
     <select id="selectPostDetails" parameterType="long" resultType="me.sisyphusj.community.app.post.domain.PostVO">
