@@ -70,7 +70,7 @@ public class PostController {
 	 * 게시글 조회
 	 */
 	@GetMapping("/posts/{postId}")
-	public String showPostPage(@PathVariable long postId, @ModelAttribute PageReqDTO pageReqDTO, Model model) {
+	public String showPostPage(@PathVariable long postId, @Valid @ModelAttribute PageReqDTO pageReqDTO, Model model) {
 		PostDetailResDTO postDetailResDTO = postService.getPostDetails(postId);
 
 		model.addAttribute("postDetailResDTO", postDetailResDTO);
