@@ -80,13 +80,14 @@ public class PostService {
 			throw new PostNotFoundException();
 		}
 
+		// 사용자가 로그인 사용자면 게시글 좋아요 여부를 포함하여 게시글 조회
 		if (SecurityUtil.isLoginUser()) {
 			return postMapper.selectPostDetailsByUserId(SecurityUtil.getLoginUserId(), postId)
 				.map(PostDetailResDTO::of)
 				.orElseThrow(PostNotFoundException::new);
 		}
 
-		// 이미지 메타데이터
+		// 사용자가 미 로그인 사용자면 좋아요 여부는 조회하지 않고 게시글 조회 
 		return postMapper.selectPostDetails(postId)
 			.map(PostDetailResDTO::of)
 			.orElseThrow(PostNotFoundException::new);

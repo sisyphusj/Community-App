@@ -18,13 +18,16 @@
             <if test="keyword != null and keyword != ''">
                 <choose>
                     <when test="keywordType.toString() == 'TITLE'">
-                        and title like CONCAT('%', #{keyword}, '%')
+                        and p.title like CONCAT('%', #{keyword}, '%')
                     </when>
                     <when test="keywordType.toString() == 'CONTENT'">
-                        and content like CONCAT('%', #{keyword}, '%')
+                        and p.content like CONCAT('%', #{keyword}, '%')
                     </when>
                     <when test="keywordType.toString() == 'AUTHOR'">
-                        and name like CONCAT('%', #{keyword}, '%')
+                        and u.name like CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <when test="keywordType.toString() == 'ALL'">
+                        and (p.title like CONCAT('%', #{keyword}, '%') or p.content like CONCAT('%', #{keyword}, '%') or u.name like CONCAT('%', #{keyword}, '%'))
                     </when>
                 </choose>
             </if>

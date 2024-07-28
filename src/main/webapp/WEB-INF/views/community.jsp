@@ -65,6 +65,7 @@
                     <option value=TITLE <c:if test="${param.keywordType eq 'TITLE'}">selected</c:if>>제목</option>
                     <option value=CONTENT <c:if test="${param.keywordType eq 'CONTENT'}">selected</c:if>>본문</option>
                     <option value=AUTHOR <c:if test="${param.keywordType eq 'AUTHOR'}">selected</c:if>>작성자</option>
+                    <option value=ALL <c:if test="${param.keywordType eq 'ALL'}">selected</c:if>>전체</option>
                 </select>
                 <input type="text" id="keyword" name="keyword" value="${param.keyword}" aria-label="Keyword"/>
 
