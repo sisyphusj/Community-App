@@ -20,9 +20,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws ServletException, IOException {
 		log.error("[인증 에러] : ", authException);
-
+		
 		request.setAttribute("message", "로그인이 필요합니다.");
-		request.setAttribute("redirectUrl", LocationUrl.HOME);
+		request.setAttribute("locationUrl", LocationUrl.HOME);
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/error/alert.jsp");
 		dispatcher.forward(request, response);

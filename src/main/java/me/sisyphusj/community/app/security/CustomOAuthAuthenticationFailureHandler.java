@@ -22,7 +22,7 @@ public class CustomOAuthAuthenticationFailureHandler implements AuthenticationFa
 		log.error("[OAuth 로그인 중 에러] : ", exception);
 
 		request.setAttribute("message", "로그인에 실패했습니다. 다시 시도 해주세요.");
-		request.setAttribute("redirectUrl", LocationUrl.HOME);
+		request.setAttribute("locationUrl", LocationUrl.HOME);
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/error/alert.jsp");
 		dispatcher.forward(request, response);

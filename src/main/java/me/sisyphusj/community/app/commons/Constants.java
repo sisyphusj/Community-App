@@ -23,10 +23,10 @@ public class Constants {
 	public static final String MAV_ALERT = "error/alert";
 
 	// 500 예외 페이지
-	public static final String MAV_500 = "error/500code.jsp";
+	public static final String MAV_500 = "error/500code";
 
 	// 400 예외 페이지
-	public static final String MAV_400 = "error/400code.jsp";
+	public static final String MAV_400 = "error/400code";
 
 	// Authorization default roll
 	public static final String USER = "USER";
