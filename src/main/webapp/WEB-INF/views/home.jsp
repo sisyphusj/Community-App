@@ -51,6 +51,6 @@
             <button onclick="location.href='<c:url value='/auth/my-page'/>'">마이 페이지</button>
         </c:if>
         <button id="logoutBtn">로그아웃</button>
-        <button onclick="location.href='<c:url value='/community?page=1&sort=DATE&row=10'/>'">게시판</button>
+        <button onclick="location.href='<c:url value='/community'/>'">게시판</button>
     </body>
 </html>

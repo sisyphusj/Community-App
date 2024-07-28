@@ -42,6 +42,7 @@ public class PostController {
 		PageResDTO pageResDTO = postService.getPostPage(pageReqDTO);
 
 		model.addAttribute("pageResDTO", pageResDTO);
+		model.addAttribute("pageReqDTO", pageReqDTO);
 		return "community";
 	}
 
@@ -69,10 +70,13 @@ public class PostController {
 	 * 게시글 조회
 	 */
 	@GetMapping("/posts/{postId}")
-	public String showPostPage(@PathVariable long postId, Model model) {
+	public String showPostPage(@PathVariable long postId, @ModelAttribute PageReqDTO pageReqDTO, Model model) {
 		PostDetailResDTO postDetailResDTO = postService.getPostDetails(postId);
 
 		model.addAttribute("postDetailResDTO", postDetailResDTO);
+
+		// 기존 목록 페이지에 대한 정보 유지
+		model.addAttribute("pageReqDTO", pageReqDTO);
 
 		// 조회하는 게시글의 첨부 이미지가 존재한다면 이미지 리스트 추가
 		if (imageService.hasPostImage(postId)) {

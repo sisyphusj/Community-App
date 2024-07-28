@@ -13,6 +13,7 @@
     </head>
     <body>
         <c:set var="post" value="${postDetailResDTO}"/>
+        <c:set var="currentPage" value="${pageReqDTO}"/>
 
         <%
             Long currentUserId = null;
@@ -267,24 +268,11 @@
                     }
                 }
 
-                <%--if (userId) {--%>
-                <%--    $.ajax({--%>
-                <%--        url: '/likes/post/check',--%>
-                <%--        type: 'GET',--%>
-                <%--        data: {postId: ${post.postId}},--%>
-                <%--        success: (response) => {--%>
-                <%--            if (response) {--%>
-                <%--                $('#postLikeButton').text('좋아요 취소').data('liked', true);--%>
-                <%--            } else {--%>
-                <%--                $('#postLikeButton').text('좋아요').data('liked', false);--%>
-                <%--            }--%>
-                <%--        },--%>
-                <%--        error: (error) => {--%>
-                <%--            alert("페이지를 불러오던 도중 문제가 생겼습니다.");--%>
-                <%--            window.location.href = "/"--%>
-                <%--        }--%>
-                <%--    });--%>
-                <%--}--%>
+                $(document).ready(() => {
+                    $('#back-to-list').on('click', function () {
+                        location.href = '/community?page=${currentPage.page}&sort=${currentPage.sort}&keywordType=${currentPage.keywordType}&keyword=${currentPage.keyword}&row=${currentPage.row}'
+                    });
+                });
             });
 
         </script>
@@ -299,7 +287,8 @@
         생성일 : <fmt:formatDate value="${post.createdAt}" pattern="yyyy-MM-dd HH:mm:ss"/> <br>
         최종 수정일 : <fmt:formatDate value="${post.updatedAt}" pattern="yyyy-MM-dd HH:mm:ss"/>
 
-        <button onclick=window.location.href="/community?page=1&sort=DATE&row=10">목록으로 돌아가기</button>
+        <button id="back-to-list">목록으로 돌아가기</button>
+
         <button onclick=window.location.href="/">홈으로 돌아가기</button>
 
         <c:if test="${ImageDetailsResDTOList != null && fn:length(ImageDetailsResDTOList) > 0}">

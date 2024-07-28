@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html lang="ko">
     <head>
@@ -44,12 +45,15 @@
             boolean isLoginUser = SecurityUtil.isLoginUser();
             pageContext.setAttribute("isLoginUser", isLoginUser);
         %>
+        <c:set var="current" value="${pageReqDTO}"/>
         <div>
             <c:if test="${isLoginUser}">
                 <button onclick="location.href='/community/new'">게시글 쓰기</button>
             </c:if>
 
             <form id="textSearch" action="/community" method="get">
+                <input type="hidden" name="page" value="1"/>
+
                 <label for="sort">정렬</label>
                 <select name="sort" id="sort">
                     <option value="DATE" <c:if test="${param.sort eq 'DATE'}">selected</c:if>>최신순</option>
@@ -63,8 +67,6 @@
                     <option value=AUTHOR <c:if test="${param.keywordType eq 'AUTHOR'}">selected</c:if>>작성자</option>
                 </select>
                 <input type="text" id="keyword" name="keyword" value="${param.keyword}" aria-label="Keyword"/>
-
-                <input type="hidden" name="page" value="1"/>
 
                 <label for="row">게시글 개수</label>
                 <select name="row" id="row">
@@ -93,7 +95,19 @@
                     <c:forEach var="post" items="${pageResDTO.postSummaryResDTO}">
                         <tr>
                             <td>${post.postId}</td>
-                            <td><a href="/community/posts/${post.postId}">${post.title}</a></td>
+                            <td>
+                                <form action="/community/posts/${post.postId}" method="get" style="display:inline;">
+                                    <sec:csrfInput/>
+                                    <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0;">
+                                            ${post.title}
+                                    </button>
+                                    <input type="hidden" name="page" value="${current.page}"/>
+                                    <input type="hidden" name="sort" value="${current.sort}"/>
+                                    <input type="hidden" name="keywordType" value="${current.keywordType}"/>
+                                    <input type="hidden" name="keyword" value="${current.keyword}"/>
+                                    <input type="hidden" name="row" value="${current.row}"/>
+                                </form>
+                            </td>
                             <td>${post.name}</td>
                             <td>${post.views}</td>
                             <td><fmt:formatDate value="${post.createdAt}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
@@ -109,33 +123,33 @@
                 <ul class="pagination">
                     <%-- 첫 페이지 링크 --%>
                     <li>
-                        <a href="/community?page=1&sort=${param.sort}&keyword=${param.keyword}&row=${param.row}">&laquo;</a>
+                        <a href="/community?page=1&sort=${current.sort}&keywordType=${current.keywordType}&keyword=${current.keyword}&row=${current.row}">&laquo;</a>
                     </li>
 
                     <%-- 이전 페이지 링크 : 현재 페이지가 2페이지 이상일 때 --%>
                     <c:if test="${page > 1}">
                         <li>
-                            <a href="/community?page=${page - 1}&sort=${param.sort}&keyword=${param.keyword}&row=${param.row}">&lt;</a>
+                            <a href="/community?page=${page - 1}&sort=${current.sort}&keywordType=${current.keywordType}&keyword=${current.keyword}&row=${current.row}">&lt;</a>
                         </li>
                     </c:if>
 
                     <%-- 페이지 번호 링크 : 현재 페이지 기준 렌더링되는 첫 페이지 번호, 마지막 페이지 번호 --%>
                     <c:forEach begin="${pageResDTO.firstPage}" end="${pageResDTO.lastPage}" var="i">
                         <li>
-                            <a href="/community?page=${i}&sort=${param.sort}&keyword=${param.keyword}&row=${param.row}">${i}</a>
+                            <a href="/community?page=${i}&sort=${current.sort}&keywordType=${current.keywordType}&keyword=${current.keyword}&row=${current.row}">${i}</a>
                         </li>
                     </c:forEach>
 
                     <%-- 다음 페이지 링크 : 현재 페이지가 끝 페이지가 아닐 때 --%>
                     <c:if test="${page < pageResDTO.totalPageCount}">
                         <li>
-                            <a href="/community?page=${page + 1}&sort=${param.sort}&keyword=${param.keyword}&row=${param.row}">&gt;</a>
+                            <a href="/community?page=${page + 1}&sort=${current.sort}&keywordType=${current.keywordType}&keyword=${current.keyword}&row=${current.row}">&gt;</a>
                         </li>
                     </c:if>
 
                     <%-- 끝 페이지 링크 --%>
                     <li>
-                        <a href="/community?page=${pageResDTO.totalPageCount}&sort=${param.sort}&keyword=${param.keyword}&row=${param.row}">&raquo;</a>
+                        <a href="/community?page=${pageResDTO.totalPageCount}&sort=${current.sort}&keywordType=${current.keywordType}&keyword=${current.keyword}&row=${current.row}">&raquo;</a>
                     </li>
                 </ul>
             </nav>
