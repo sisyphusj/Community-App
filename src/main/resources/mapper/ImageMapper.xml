@@ -12,6 +12,11 @@
         </foreach>
     </insert>
 
+    <insert id="insertThumbnailImage" parameterType="me.sisyphusj.community.app.image.domain.ImageVO" useGeneratedKeys="true" keyProperty="imageId">
+        insert into image (user_id, origin_name, stored_name, size, image_path)
+        values (#{userId}, #{originName}, #{storedName}, #{size}, #{imagePath})
+    </insert>
+
     <insert id="insertPostImageList" parameterType="java.util.List">
         insert into post_image (post_id, image_id)
         values

@@ -12,6 +12,8 @@ public interface ImageMapper {
 
 	void insertImageList(List<ImageVO> images);
 
+	void insertThumbnailImage(ImageVO imageVO);
+
 	void insertPostImageList(List<ImageVO> images);
 
 	void insertCommentImageList(List<ImageVO> images);

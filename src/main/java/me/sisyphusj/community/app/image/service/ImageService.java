@@ -42,6 +42,18 @@ public class ImageService {
 	}
 
 	/**
+	 * 썸네일 이미지를 디렉토리에 저장 및 메타 데이터 DB 저장 후 imageId 반환
+	 */
+	@Transactional
+	public long saveThumbnailImage(MultipartFile thumbnail) {
+		// imageUploadProvider 에서 반환된 썸네일 이미지 메타데이터를 DB에 저장
+		ImageVO imageVO = ImageVO.of(imageUploadProvider.uploadFile(thumbnail));
+		imageMapper.insertThumbnailImage(imageVO);
+
+		return imageVO.getImageId();
+	}
+
+	/**
 	 * 댓글 첨부 이미지를 디렉토리에 이미지 저장 및 이미지 메타 데이터 DB 저장
 	 */
 	@Transactional

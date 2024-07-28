@@ -57,7 +57,7 @@ public class ImageUploadProvider {
 	/**
 	 * 이미지 파일 업로드
 	 */
-	private ImageMetadata uploadFile(MultipartFile multipartFile) {
+	public ImageMetadata uploadFile(MultipartFile multipartFile) {
 		if (multipartFile.isEmpty()) {
 			throw new IllegalArgumentException("파일이 비어있습니다.");
 		}
