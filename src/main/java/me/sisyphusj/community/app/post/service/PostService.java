@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.commons.exception.KeywordTypeException;
 import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 import me.sisyphusj.community.app.image.service.ImageService;
+import me.sisyphusj.community.app.post.domain.BoardType;
 import me.sisyphusj.community.app.post.domain.KeywordType;
 import me.sisyphusj.community.app.post.domain.PageReqDTO;
 import me.sisyphusj.community.app.post.domain.PageResDTO;
@@ -42,7 +43,7 @@ public class PostService {
 		PostVO postVO = PostVO.of(postCreateReqDTO);
 
 		// 썸네일 이미지가 존재하면 이미지 저장
-		if (ListValidationUtil.isValidMultipartFile(postCreateReqDTO.getThumbnail())) {
+		if (postCreateReqDTO.getBoardType() == BoardType.GALLERY && ListValidationUtil.isValidMultipartFile(postCreateReqDTO.getThumbnail())) {
 			// 섬네일 이미지를 이미지 테이블에 추가 후 반환되는 imageId를 postVO에 저장
 			postVO.updateThumbnailId(imageService.saveThumbnailImage(postCreateReqDTO.getThumbnail()));
 		}
@@ -86,7 +87,7 @@ public class PostService {
 		validateKeywordType(pageReqDTO.getKeyword(), pageReqDTO.getKeywordType());
 
 		// 전체 게시글 개수
-		int totalRowCount = postMapper.selectImagePostTotalCount(PageVO.of(pageReqDTO));
+		int totalRowCount = postMapper.selectGalleryPostTotalCount(PageVO.of(pageReqDTO));
 
 		// amount 만큼 게시글 리스트 조회
 		List<PostSummaryResDTO> postListDTO = postMapper.selectImagePostSummaryList(PageVO.of(pageReqDTO)).stream()
@@ -101,42 +102,16 @@ public class PostService {
 	 * postId를 통한 게시글 조회
 	 */
 	@Transactional
-	public PostDetailResDTO getPostDetails(long postId) {
+	public PostDetailResDTO getPostDetails(long postId, BoardType boardType) {
 		// 게시글 유효 체크 및 조회 수 갱신
 		updateViews(postId);
 
-		// 사용자가 로그인 사용자면 게시글 좋아요 여부를 포함하여 게시글 조회
-		if (SecurityUtil.isLoginUser()) {
-			return postMapper.selectPostDetailsByUserId(SecurityUtil.getLoginUserId(), postId)
-				.map(PostDetailResDTO::of)
-				.orElseThrow(PostNotFoundException::new);
+		// 게시판 타입에 따라서 게시글 요청
+		if (boardType == BoardType.GALLERY) {
+			return getGalleryPostDetails(postId);
+		} else {
+			return getPostDetails(postId);
 		}
-
-		// 사용자가 미 로그인 사용자면 좋아요 여부는 조회하지 않고 게시글 조회
-		return postMapper.selectPostDetails(postId)
-			.map(PostDetailResDTO::of)
-			.orElseThrow(PostNotFoundException::new);
-	}
-
-	/**
-	 * postId를 통한 이미지 게시글 조회
-	 */
-	@Transactional
-	public PostDetailResDTO getImagePostDetails(long postId) {
-		// 게시글 유효 체크 및 조회 수 갱신
-		updateViews(postId);
-
-		// 사용자가 로그인 사용자면 이미지 게시글 좋아요 여부를 포함하여 게시글 조회
-		if (SecurityUtil.isLoginUser()) {
-			return postMapper.selectImagePostDetailsByUserId(SecurityUtil.getLoginUserId(), postId)
-				.map(PostDetailResDTO::of)
-				.orElseThrow(PostNotFoundException::new);
-		}
-
-		// 사용자가 미 로그인 사용자면 좋아요 여부는 조회하지 않고 이미지 게시글 조회
-		return postMapper.selectImagePostDetails(postId)
-			.map(PostDetailResDTO::of)
-			.orElseThrow(PostNotFoundException::new);
 	}
 
 	/**
@@ -147,8 +122,15 @@ public class PostService {
 		// 게시글의 존재 여부 확인
 		validatePostExists(postEditReqDTO.getPostId());
 
-		// 게시글 갱신
 		PostVO postVO = PostVO.of(postEditReqDTO);
+
+		// 썸네일 이미지가 존재하면 이미지 저장
+		if (postEditReqDTO.getBoardType() == BoardType.GALLERY && ListValidationUtil.isValidMultipartFile(postEditReqDTO.getThumbnail())) {
+			// 섬네일 이미지를 이미지 테이블에 추가 후 반환되는 imageId를 postVO에 저장
+			postVO.updateThumbnailId(imageService.saveThumbnailImage(postEditReqDTO.getThumbnail()));
+		}
+
+		// 게시글 갱신
 		postMapper.updatePost(postVO);
 
 		// 게시글이 이미지를 첨부, 이미지 리스트가 NULL이 아니면 이미지 저장 요청
@@ -202,5 +184,39 @@ public class PostService {
 		if (postMapper.selectCountPostByUserId(postId, SecurityUtil.getLoginUserId()) != 1) {
 			throw new PostNotFoundException();
 		}
+	}
+
+	/**
+	 * 갤러리 게시판 게시글 조회
+	 */
+	private PostDetailResDTO getGalleryPostDetails(long postId) {
+		// 사용자가 로그인 사용자면 이미지 게시글 좋아요 여부를 포함하여 게시글 조회
+		if (SecurityUtil.isLoginUser()) {
+			return postMapper.selectGalleryPostDetailsByUserId(SecurityUtil.getLoginUserId(), postId)
+				.map(PostDetailResDTO::of)
+				.orElseThrow(PostNotFoundException::new);
+		}
+
+		// 사용자가 미 로그인 사용자면 좋아요 여부는 조회하지 않고 이미지 게시글 조회
+		return postMapper.selectGalleryPostDetails(postId)
+			.map(PostDetailResDTO::of)
+			.orElseThrow(PostNotFoundException::new);
+	}
+
+	/**
+	 * 일반 게시판 게시글 조회
+	 */
+	private PostDetailResDTO getPostDetails(long postId) {
+		// 사용자가 로그인 사용자면 게시글 좋아요 여부를 포함하여 게시글 조회
+		if (SecurityUtil.isLoginUser()) {
+			return postMapper.selectPostDetailsByUserId(SecurityUtil.getLoginUserId(), postId)
+				.map(PostDetailResDTO::of)
+				.orElseThrow(PostNotFoundException::new);
+		}
+
+		// 사용자가 미 로그인 사용자면 좋아요 여부는 조회하지 않고 게시글 조회
+		return postMapper.selectPostDetails(postId)
+			.map(PostDetailResDTO::of)
+			.orElseThrow(PostNotFoundException::new);
 	}
 }

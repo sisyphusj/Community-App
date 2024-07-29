@@ -27,4 +27,9 @@ public class PostEditReqDTO {
 
 	private List<MultipartFile> images; // 추가된 이미지 리스트
 
+	private MultipartFile thumbnail; // 썸네일 이미지
+
+	@NotNull
+	private BoardType boardType; // 게시판 타입
+
 }

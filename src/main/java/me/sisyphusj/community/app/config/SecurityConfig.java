@@ -23,7 +23,9 @@ import me.sisyphusj.community.app.security.CustomOAuthAuthenticationFailureHandl
 @Configuration
 public class SecurityConfig {
 
-	private final String[] permittedUrls = {"/", "/auth/**", "/uploads/**", "/WEB-INF/views/**", "/js/**", "/auth/oauth2/code/**", "/community", "/community/posts/**", "favicon.ico", "/error"};
+	private final String[] permittedUrls = {"/", "/static/**", "/auth/**", "/uploads/**", "/WEB-INF/views/**", "/js/**", "/auth/oauth2/code/**", "/community", "/community/NORMAL/posts/**", "/community/GALLERY/posts/**",
+		"/community/gallery/**",
+		"favicon.ico", "/error"};
 
 	private final CustomAuthenticationEntryPoint authEntryPoint;
 

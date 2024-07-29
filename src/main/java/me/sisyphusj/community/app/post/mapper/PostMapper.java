@@ -19,15 +19,15 @@ public interface PostMapper {
 
 	int selectPostTotalCount(PageVO pageVO);
 
-	int selectImagePostTotalCount(PageVO pageVO);
+	int selectGalleryPostTotalCount(PageVO pageVO);
 
 	Optional<PostVO> selectPostDetails(long postId);
 
 	Optional<PostVO> selectPostDetailsByUserId(long userId, long postId);
 
-	Optional<PostVO> selectImagePostDetails(long postId);
+	Optional<PostVO> selectGalleryPostDetails(long postId);
 
-	Optional<PostVO> selectImagePostDetailsByUserId(long userId, long postId);
+	Optional<PostVO> selectGalleryPostDetailsByUserId(long userId, long postId);
 
 	int updateViewsAndGet(long postId);
 

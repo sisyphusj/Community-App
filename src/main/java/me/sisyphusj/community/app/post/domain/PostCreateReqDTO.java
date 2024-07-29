@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,5 +25,8 @@ public class PostCreateReqDTO {
 	private List<MultipartFile> images; // 추가된 이미지 리스트
 
 	private MultipartFile thumbnail; // 썸네일 이미지
+
+	@NotNull
+	private BoardType boardType; // 게시판 타입
 
 }

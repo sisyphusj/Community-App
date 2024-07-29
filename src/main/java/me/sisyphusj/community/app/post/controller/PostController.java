@@ -16,13 +16,13 @@ import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.comment.service.CommentService;
 import me.sisyphusj.community.app.commons.LocationUrl;
 import me.sisyphusj.community.app.image.service.ImageService;
+import me.sisyphusj.community.app.post.domain.BoardType;
 import me.sisyphusj.community.app.post.domain.PageReqDTO;
 import me.sisyphusj.community.app.post.domain.PageResDTO;
 import me.sisyphusj.community.app.post.domain.PostCreateReqDTO;
 import me.sisyphusj.community.app.post.domain.PostDetailResDTO;
 import me.sisyphusj.community.app.post.domain.PostEditReqDTO;
 import me.sisyphusj.community.app.post.service.PostService;
-import me.sisyphusj.community.app.utils.ListValidationUtil;
 
 @Controller
 @RequestMapping("/community")
@@ -48,15 +48,15 @@ public class PostController {
 	}
 
 	/**
-	 * 이미지 게시판 페이지, 현재 페이지에 맞는 게시글 리스트 반환
+	 * 갤러리 게시판 페이지, 현재 페이지에 맞는 게시글 리스트 반환
 	 */
-	@GetMapping("/image-board")
-	public String showImageCommunityPage(@Valid @ModelAttribute PageReqDTO pageReqDTO, Model model) {
+	@GetMapping("/gallery")
+	public String showGalleryCommunityPage(@Valid @ModelAttribute PageReqDTO pageReqDTO, Model model) {
 		PageResDTO pageResDTO = postService.getImageBoardPage(pageReqDTO);
 
 		model.addAttribute("pageResDTO", pageResDTO);
 		model.addAttribute("pageReqDTO", pageReqDTO);
-		return "imageBoard";
+		return "galleryCommunity";
 	}
 
 	/**
@@ -70,9 +70,9 @@ public class PostController {
 	/**
 	 * 새로운 이미지 게시글 작성 폼 페이지
 	 */
-	@GetMapping("image-board/new")
+	@GetMapping("gallery/new")
 	public String showImageBoardPage() {
-		return "newImageBoard";
+		return "newGalleryPost";
 	}
 
 	/**
@@ -85,11 +85,7 @@ public class PostController {
 		model.addAttribute(MESSAGE, "게시글이 생성되었습니다.");
 
 		// 이미지 게시글 추가 요청이면 이미지 게시판으로 일반 게시글 추가 요청이면 일반 게시판으로 url 설정
-		if (ListValidationUtil.isValidMultipartFile(postCreateReqDTO.getThumbnail())) {
-			model.addAttribute(LOCATION_URL, LocationUrl.IMAGE_BOARD);
-		} else {
-			model.addAttribute(LOCATION_URL, LocationUrl.COMMUNITY);
-		}
+		model.addAttribute(LOCATION_URL, postCreateReqDTO.getBoardType() == BoardType.GALLERY ? LocationUrl.GALLERY : LocationUrl.COMMUNITY);
 
 		return MAV_ALERT;
 	}
@@ -97,39 +93,25 @@ public class PostController {
 	/**
 	 * 게시글 조회
 	 */
-	@GetMapping("/posts/{postId}")
-	public String showPostPage(@PathVariable long postId, @Valid @ModelAttribute PageReqDTO pageReqDTO, Model model) {
-		PostDetailResDTO postDetailResDTO = postService.getPostDetails(postId);
+	@GetMapping("/{boardType}/posts/{postId}")
+	public String showPostPage(@PathVariable BoardType boardType, @PathVariable long postId, @Valid @ModelAttribute PageReqDTO pageReqDTO, Model model) {
+		PostDetailResDTO postDetailResDTO = postService.getPostDetails(postId, boardType);
 
 		model.addAttribute("postDetailResDTO", postDetailResDTO);
 
 		// 게시글 첨부 이미지, 댓글, 목록 정보 추가
 		addPostDetails(postId, pageReqDTO, model);
 
-		return "post";
-	}
-
-	/**
-	 * 이미지 게시글 조회
-	 */
-	@GetMapping("/image-posts/{postId}")
-	public String showImagePostPage(@PathVariable long postId, @Valid @ModelAttribute PageReqDTO pageReqDTO, Model model) {
-		PostDetailResDTO postDetailResDTO = postService.getImagePostDetails(postId);
-
-		model.addAttribute("imagePostDetailResDTO", postDetailResDTO);
-
-		// 게시글 첨부 이미지, 댓글, 목록 정보 추가
-		addPostDetails(postId, pageReqDTO, model);
-
-		return "imagePost";
+		// 게시판 타입에 따라 포워딩 페이지 변경
+		return boardType == BoardType.GALLERY ? "galleryPost" : "post";
 	}
 
 	/**
 	 * 게시글 수정 페이지
 	 */
-	@GetMapping("/posts/{postId}/edit")
-	public String showPostEditPage(@PathVariable long postId, Model model) {
-		PostDetailResDTO postDetailResDTO = postService.getPostDetails(postId);
+	@GetMapping("/{boardType}/posts/{postId}/edit")
+	public String showPostEditPage(@PathVariable BoardType boardType, @PathVariable long postId, Model model) {
+		PostDetailResDTO postDetailResDTO = postService.getPostDetails(postId, boardType);
 
 		model.addAttribute("postDetailResDTO", postDetailResDTO);
 
@@ -138,7 +120,8 @@ public class PostController {
 			model.addAttribute("ImageDetailsResDTOList", imageService.getPostImages(postId));
 		}
 
-		return "editPost";
+		// 게시판 타입에 따라 포워딩 페이지 변경
+		return boardType == BoardType.GALLERY ? "editGalleryPost" : "editPost";
 	}
 
 	/**
@@ -149,19 +132,19 @@ public class PostController {
 		postService.editPost(postEditReqDTO);
 
 		model.addAttribute(MESSAGE, "게시글이 수정되었습니다.");
-		model.addAttribute(LOCATION_URL, LocationUrl.COMMUNITY);
+		model.addAttribute(LOCATION_URL, postEditReqDTO.getBoardType() == BoardType.GALLERY ? LocationUrl.GALLERY : LocationUrl.COMMUNITY);
 		return MAV_ALERT;
 	}
 
 	/**
 	 * 게시글 삭제
 	 */
-	@GetMapping("/posts/remove")
-	public String removePost(@RequestParam long postId, Model model) {
+	@GetMapping("/{boardType}/posts/remove")
+	public String removePost(@PathVariable BoardType boardType, @RequestParam long postId, Model model) {
 		postService.removePost(postId);
 
 		model.addAttribute(MESSAGE, "게시글이 삭제되었습니다.");
-		model.addAttribute(LOCATION_URL, LocationUrl.COMMUNITY);
+		model.addAttribute(LOCATION_URL, boardType == BoardType.GALLERY ? LocationUrl.GALLERY : LocationUrl.COMMUNITY);
 		return MAV_ALERT;
 	}
 
