@@ -20,8 +20,6 @@ public interface ImageMapper {
 
 	List<ImageVO> selectPostImageList(long postId);
 
-	List<ImageVO> selectCommentImageList(long commentId);
-
 	int selectCountPostImage(long userId, long postId, long imageId);
 
 	int selectCountCommentImage(long userId, long commentId, long imageId);

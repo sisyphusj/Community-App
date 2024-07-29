@@ -46,19 +46,6 @@
         where pi.post_id = #{postId}
     </select>
 
-    <select id="selectCommentImageList" parameterType="long" resultType="me.sisyphusj.community.app.image.domain.ImageVO">
-        select i.image_id,
-               ci.comment_id,
-               origin_name,
-               stored_name,
-               size,
-               image_path,
-               created_at
-        from image i
-                 inner join comment_image ci on i.image_id = ci.image_id
-        where ci.comment_id = #{commentId}
-    </select>
-
     <select id="selectCountPostImage" parameterType="long" resultType="int">
         select count(*)
         from image i

@@ -9,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.commons.component.ImageUploadProvider;
 import me.sisyphusj.community.app.commons.exception.ImageNotFoundException;
-import me.sisyphusj.community.app.image.domain.CommentImageResDTO;
 import me.sisyphusj.community.app.image.domain.ImageVO;
 import me.sisyphusj.community.app.image.domain.PostImageResDTO;
 import me.sisyphusj.community.app.image.mapper.ImageMapper;
@@ -80,30 +79,12 @@ public class ImageService {
 	}
 
 	/**
-	 * 댓글에 이미지 첨부 여부
-	 */
-	@Transactional(readOnly = true)
-	public boolean hasCommentImage(long commentId) {
-		return !(imageMapper.selectCommentImageList(commentId).isEmpty());
-	}
-
-	/**
 	 * 게시글 이미지 메타 데이터 리스트 조회
 	 */
 	@Transactional(readOnly = true)
 	public List<PostImageResDTO> getPostImages(long postId) {
 		return imageMapper.selectPostImageList(postId).stream()
 			.map(PostImageResDTO::of)
-			.toList();
-	}
-
-	/**
-	 * 댓글 이미지 메타 데이터 리스트 조회
-	 */
-	@Transactional(readOnly = true)
-	public List<CommentImageResDTO> getCommentImages(long commentId) {
-		return imageMapper.selectCommentImageList(commentId).stream()
-			.map(CommentImageResDTO::of)
 			.toList();
 	}
 
