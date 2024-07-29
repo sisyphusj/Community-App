@@ -102,10 +102,8 @@ public class PostService {
 	 */
 	@Transactional
 	public PostDetailResDTO getPostDetails(long postId) {
-		// 조회 수 갱신 후 반환 값에 따라 예외 처리
-		if (postMapper.updateViewsAndGet(postId) == 0) {
-			throw new PostNotFoundException();
-		}
+		// 게시글 유효 체크 및 조회 수 갱신
+		updateViews(postId);
 
 		// 사용자가 로그인 사용자면 게시글 좋아요 여부를 포함하여 게시글 조회
 		if (SecurityUtil.isLoginUser()) {
@@ -116,6 +114,27 @@ public class PostService {
 
 		// 사용자가 미 로그인 사용자면 좋아요 여부는 조회하지 않고 게시글 조회
 		return postMapper.selectPostDetails(postId)
+			.map(PostDetailResDTO::of)
+			.orElseThrow(PostNotFoundException::new);
+	}
+
+	/**
+	 * postId를 통한 이미지 게시글 조회
+	 */
+	@Transactional
+	public PostDetailResDTO getImagePostDetails(long postId) {
+		// 게시글 유효 체크 및 조회 수 갱신
+		updateViews(postId);
+
+		// 사용자가 로그인 사용자면 이미지 게시글 좋아요 여부를 포함하여 게시글 조회
+		if (SecurityUtil.isLoginUser()) {
+			return postMapper.selectImagePostDetailsByUserId(SecurityUtil.getLoginUserId(), postId)
+				.map(PostDetailResDTO::of)
+				.orElseThrow(PostNotFoundException::new);
+		}
+
+		// 사용자가 미 로그인 사용자면 좋아요 여부는 조회하지 않고 이미지 게시글 조회
+		return postMapper.selectImagePostDetails(postId)
 			.map(PostDetailResDTO::of)
 			.orElseThrow(PostNotFoundException::new);
 	}
@@ -154,6 +173,15 @@ public class PostService {
 
 		// 게시글 좋아요 테이블 정보 삭제
 		postLikeMapper.deleteAllLikePost(postId);
+	}
+
+	/**
+	 * 게시글 유효 체크 및 조회 수 갱신
+	 */
+	private void updateViews(long postId) {
+		if (postMapper.updateViewsAndGet(postId) == 0) {
+			throw new PostNotFoundException();
+		}
 	}
 
 	/**

@@ -103,20 +103,25 @@ public class PostController {
 
 		model.addAttribute("postDetailResDTO", postDetailResDTO);
 
-		// 기존 목록 페이지에 대한 정보 유지
-		model.addAttribute("pageReqDTO", pageReqDTO);
-
-		// 조회하는 게시글의 첨부 이미지가 존재한다면 이미지 리스트 추가
-		if (imageService.hasPostImage(postId)) {
-			model.addAttribute("ImageDetailsResDTOList", imageService.getPostImages(postId));
-		}
-
-		// 조회하는 게시글의 댓글이 존재한다면 댓글 리스트 추가
-		if (commentService.hasComment(postId)) {
-			model.addAttribute("commentDetailResDTOList", commentService.getCommentListUseRecursion(postId));
-		}
+		// 게시글 첨부 이미지, 댓글, 목록 정보 추가
+		addPostDetails(postId, pageReqDTO, model);
 
 		return "post";
+	}
+
+	/**
+	 * 이미지 게시글 조회
+	 */
+	@GetMapping("/image-posts/{postId}")
+	public String showImagePostPage(@PathVariable long postId, @Valid @ModelAttribute PageReqDTO pageReqDTO, Model model) {
+		PostDetailResDTO postDetailResDTO = postService.getImagePostDetails(postId);
+
+		model.addAttribute("imagePostDetailResDTO", postDetailResDTO);
+
+		// 게시글 첨부 이미지, 댓글, 목록 정보 추가
+		addPostDetails(postId, pageReqDTO, model);
+
+		return "imagePost";
 	}
 
 	/**
@@ -158,5 +163,27 @@ public class PostController {
 		model.addAttribute(MESSAGE, "게시글이 삭제되었습니다.");
 		model.addAttribute(LOCATION_URL, LocationUrl.COMMUNITY);
 		return MAV_ALERT;
+	}
+
+	/**
+	 * 게시글 첨부 이미지, 댓글, 목록 정보 추가
+	 *
+	 * @param postId 게시글 고유 ID
+	 * @param pageReqDTO 기존 게시글 목록 페이지 정보
+	 * @param model Model
+	 */
+	private void addPostDetails(long postId, PageReqDTO pageReqDTO, Model model) {
+		// 기존 목록 페이지에 대한 정보 유지
+		model.addAttribute("pageReqDTO", pageReqDTO);
+
+		// 조회하는 게시글의 첨부 이미지가 존재한다면 이미지 리스트 추가
+		if (imageService.hasPostImage(postId)) {
+			model.addAttribute("ImageDetailsResDTOList", imageService.getPostImages(postId));
+		}
+
+		// 조회하는 게시글의 댓글이 존재한다면 댓글 리스트 추가
+		if (commentService.hasComment(postId)) {
+			model.addAttribute("commentDetailResDTOList", commentService.getCommentListUseRecursion(postId));
+		}
 	}
 }

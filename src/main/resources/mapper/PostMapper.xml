@@ -33,7 +33,7 @@
         from posts p
         inner join user u on p.user_id = u.user_id
         <where>
-            p.is_deleted = 'N'
+            p.is_deleted = 'N' and p.thumbnail_image_id is null
             <include refid="commonKeywordFilter"/>
         </where>
         <choose>
@@ -62,13 +62,12 @@
                 i.origin_name       as thumbnail_origin_name,
                 i.stored_name       as thumbnail_stored_name,
                 i.size              as thumbnail_size,
-                i.image_path        as thumbnail_image_path,
-                i.created_at        as thumbnail_created_at
+                i.image_path        as thumbnail_image_path
         from posts p
         inner join user u on p.user_id = u.user_id
         inner join image i on p.thumbnail_image_id = i.image_id
         <where>
-            p.is_deleted = 'N' and p.thumbnail_image_id is not null
+            p.is_deleted = 'N'
             <include refid="commonKeywordFilter"/>
         </where>
         <choose>
@@ -134,6 +133,51 @@
                exists (select 1 from post_likes a where a.post_id = p.post_id and a.user_id = #{userId}) as hasLike
         from posts p
                  inner join user u on p.user_id = u.user_id
+        where p.post_id = #{postId}
+          and is_deleted = 'N'
+    </select>
+
+    <select id="selectImagePostDetails" parameterType="long" resultMap="PostWithThumbnail">
+        select p.post_id,
+               u.user_id,
+               u.name,
+               p.title,
+               p.content,
+               p.views,
+               p.created_at,
+               p.updated_at,
+               (select count(*) from post_likes pl where pl.post_id = p.post_id)                         as likes,
+               i.image_id          as thumbnail_image_id,
+               i.origin_name       as thumbnail_origin_name,
+               i.stored_name       as thumbnail_stored_name,
+               i.size              as thumbnail_size,
+               i.image_path        as thumbnail_image_path
+        from posts p
+                 inner join user u on p.user_id = u.user_id
+                 inner join image i on p.thumbnail_image_id = i.image_id
+        where p.post_id = #{postId}
+          and is_deleted = 'N'
+    </select>
+
+    <select id="selectImagePostDetailsByUserId" parameterType="long" resultMap="PostWithThumbnail">
+        select p.post_id,
+               u.user_id,
+               u.name,
+               p.title,
+               p.content,
+               p.views,
+               p.created_at,
+               p.updated_at,
+               (select count(*) from post_likes pl where pl.post_id = p.post_id)                         as likes,
+               exists (select 1 from post_likes a where a.post_id = p.post_id and a.user_id = #{userId}) as hasLike,
+               i.image_id          as thumbnail_image_id,
+               i.origin_name       as thumbnail_origin_name,
+               i.stored_name       as thumbnail_stored_name,
+               i.size              as thumbnail_size,
+               i.image_path        as thumbnail_image_path
+        from posts p
+                 inner join user u on p.user_id = u.user_id
+                 inner join image i on p.thumbnail_image_id = i.image_id
         where p.post_id = #{postId}
           and is_deleted = 'N'
     </select>
