@@ -39,11 +39,14 @@ public class PostVO {
 
 	private ImageVO thumbnail; // 섬네일 이미지 정보
 
+	private BoardType boardType; // 게시판 타입
+
 	public static PostVO of(PostCreateReqDTO postCreateReqDTO) {
 		return PostVO.builder()
 			.userId(SecurityUtil.getLoginUserId())
 			.title(postCreateReqDTO.getTitle())
 			.content(postCreateReqDTO.getContent())
+			.boardType(postCreateReqDTO.getBoardType())
 			.build();
 	}
 
