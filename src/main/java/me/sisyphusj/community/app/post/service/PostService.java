@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.commons.exception.KeywordTypeException;
@@ -42,11 +43,8 @@ public class PostService {
 	public void createPost(PostCreateReqDTO postCreateReqDTO) {
 		PostVO postVO = PostVO.of(postCreateReqDTO);
 
-		// 썸네일 이미지가 존재하면 이미지 저장
-		if (postCreateReqDTO.getBoardType() == BoardType.GALLERY && ListValidationUtil.isValidMultipartFile(postCreateReqDTO.getThumbnail())) {
-			// 섬네일 이미지를 이미지 테이블에 추가 후 반환되는 imageId를 postVO에 저장
-			postVO.updateThumbnailId(imageService.saveThumbnailImage(postCreateReqDTO.getThumbnail()));
-		}
+		// 썸네일 이미지가 존재하면 이미지 저장 후 썸네일 이미지 ID을 VO에 저장
+		handleThumbnailImage(postCreateReqDTO.getBoardType(), postCreateReqDTO.getThumbnail(), postVO);
 
 		postMapper.insertPost(postVO);
 
@@ -78,7 +76,7 @@ public class PostService {
 	}
 
 	/**
-	 * 한 페이지 당 조회될 이미지 게시글 리스트 및 페이지 정보 반환
+	 * 한 페이지 당 조회될 갤러리 게시글 리스트 및 페이지 정보 반환
 	 */
 	@Transactional(readOnly = true)
 	public PageResDTO getImageBoardPage(PageReqDTO pageReqDTO) {
@@ -86,15 +84,15 @@ public class PostService {
 		// 검색 keyword가 존재한다면 keywordType 확인
 		validateKeywordType(pageReqDTO.getKeyword(), pageReqDTO.getKeywordType());
 
-		// 전체 게시글 개수
+		// 전체 갤러리 게시글 개수
 		int totalRowCount = postMapper.selectGalleryPostTotalCount(PageVO.of(pageReqDTO));
 
-		// amount 만큼 게시글 리스트 조회
+		// amount 만큼 갤러리 게시글 리스트 조회
 		List<PostSummaryResDTO> postListDTO = postMapper.selectImagePostSummaryList(PageVO.of(pageReqDTO)).stream()
 			.map(PostSummaryResDTO::of)
 			.toList();
 
-		// 현재 페이지 페이지네이션 메타데이터, 게시글 섬네일 리스트 반환
+		// 현재 페이지 페이지네이션 메타데이터, 갤러리 게시글 섬네일 리스트 반환
 		return new PageResDTO(pageReqDTO, totalRowCount, postListDTO);
 	}
 
@@ -124,11 +122,8 @@ public class PostService {
 
 		PostVO postVO = PostVO.of(postEditReqDTO);
 
-		// 썸네일 이미지가 존재하면 이미지 저장
-		if (postEditReqDTO.getBoardType() == BoardType.GALLERY && ListValidationUtil.isValidMultipartFile(postEditReqDTO.getThumbnail())) {
-			// 섬네일 이미지를 이미지 테이블에 추가 후 반환되는 imageId를 postVO에 저장
-			postVO.updateThumbnailId(imageService.saveThumbnailImage(postEditReqDTO.getThumbnail()));
-		}
+		// 썸네일 이미지가 존재하면 이미지 저장 후 썸네일 이미지 ID을 VO에 저장
+		handleThumbnailImage(postEditReqDTO.getBoardType(), postEditReqDTO.getThumbnail(), postVO);
 
 		// 게시글 갱신
 		postMapper.updatePost(postVO);
@@ -183,6 +178,15 @@ public class PostService {
 		// 게시글 존재 여부, 해당 게시글의 작성자가 사용자인지 확인
 		if (postMapper.selectCountPostByUserId(postId, SecurityUtil.getLoginUserId()) != 1) {
 			throw new PostNotFoundException();
+		}
+	}
+
+	/**
+	 * 게시글 수정 시 썸네일 이미지 저장 및 이미지 ID VO에 추가
+	 */
+	private void handleThumbnailImage(BoardType boardType, MultipartFile thumbnail, PostVO postVO) {
+		if (boardType == BoardType.GALLERY && ListValidationUtil.isValidMultipartFile(thumbnail)) {
+			postVO.updateThumbnailId(imageService.saveThumbnailImage(thumbnail));
 		}
 	}
 

@@ -24,8 +24,8 @@
     </sql>
 
     <insert id="insertPost" parameterType="me.sisyphusj.community.app.post.domain.PostVO" useGeneratedKeys="true" keyProperty="postId">
-        insert into posts (user_id, title, content <if test="thumbnailId != null">, type, thumbnail_image_id </if>)
-        values (#{userId}, #{title}, #{content} <if test="thumbnailId != null">, #{boardType}, #{thumbnailId} </if>)
+        insert into posts (user_id, title, content, type <if test="thumbnailId != null">, thumbnail_image_id </if>)
+        values (#{userId}, #{title}, #{content}, #{boardType} <if test="thumbnailId != null">, #{thumbnailId} </if>)
     </insert>
 
     <select id="selectPostSummaryList" parameterType="me.sisyphusj.community.app.post.domain.PageVO" resultType="me.sisyphusj.community.app.post.domain.PostVO">
