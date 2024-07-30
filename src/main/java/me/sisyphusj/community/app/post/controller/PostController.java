@@ -2,6 +2,8 @@ package me.sisyphusj.community.app.post.controller;
 
 import static me.sisyphusj.community.app.commons.Constants.*;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import me.sisyphusj.community.app.comment.domain.CommentDetailResDTO;
 import me.sisyphusj.community.app.comment.service.CommentService;
 import me.sisyphusj.community.app.commons.LocationUrl;
+import me.sisyphusj.community.app.image.domain.PostImageResDTO;
 import me.sisyphusj.community.app.image.service.ImageService;
 import me.sisyphusj.community.app.post.domain.BoardType;
 import me.sisyphusj.community.app.post.domain.PageReqDTO;
@@ -39,11 +43,10 @@ public class PostController {
 	 * 게시판 페이지, 현재 페이지에 맞는 게시글 리스트 반환
 	 */
 	@GetMapping
-	public String showCommunityPage(@Valid @ModelAttribute PageReqDTO pageReqDTO, Model model) {
+	public String showCommunityPage(@Valid @ModelAttribute("pageReqDTO") PageReqDTO pageReqDTO, Model model) {
 		PageResDTO pageResDTO = postService.getPostPage(pageReqDTO);
 
 		model.addAttribute("pageResDTO", pageResDTO);
-		model.addAttribute("pageReqDTO", pageReqDTO);
 		return "community";
 	}
 
@@ -51,11 +54,10 @@ public class PostController {
 	 * 갤러리 게시판 페이지, 현재 페이지에 맞는 게시글 리스트 반환
 	 */
 	@GetMapping("/gallery")
-	public String showGalleryCommunityPage(@Valid @ModelAttribute PageReqDTO pageReqDTO, Model model) {
+	public String showGalleryCommunityPage(@Valid @ModelAttribute("pageReqDTO") PageReqDTO pageReqDTO, Model model) {
 		PageResDTO pageResDTO = postService.getImageBoardPage(pageReqDTO);
 
 		model.addAttribute("pageResDTO", pageResDTO);
-		model.addAttribute("pageReqDTO", pageReqDTO);
 		return "galleryCommunity";
 	}
 
@@ -94,13 +96,13 @@ public class PostController {
 	 * 게시글 조회
 	 */
 	@GetMapping("/{boardType}/posts/{postId}")
-	public String showPostPage(@PathVariable BoardType boardType, @PathVariable long postId, @Valid @ModelAttribute PageReqDTO pageReqDTO, Model model) {
+	public String showPostPage(@PathVariable BoardType boardType, @PathVariable long postId, @Valid @ModelAttribute("pageReqDTO") PageReqDTO pageReqDTO, Model model) {
 		PostDetailResDTO postDetailResDTO = postService.getPostDetails(postId, boardType);
 
 		model.addAttribute("postDetailResDTO", postDetailResDTO);
 
-		// 게시글 첨부 이미지, 댓글, 목록 정보 추가
-		addPostDetails(postId, pageReqDTO, model);
+		// 게시글 첨부 이미지, 댓글 추가
+		addPostDetails(postId, model);
 
 		// 게시판 타입에 따라 포워딩 페이지 변경
 		return boardType == BoardType.GALLERY ? "galleryPost" : "post";
@@ -111,13 +113,14 @@ public class PostController {
 	 */
 	@GetMapping("/{boardType}/posts/{postId}/edit")
 	public String showPostEditPage(@PathVariable BoardType boardType, @PathVariable long postId, Model model) {
-		PostDetailResDTO postDetailResDTO = postService.getPostDetails(postId, boardType);
+		PostDetailResDTO postDetailResDTO = postService.getPostDetails(postId, boardType); // 게시글 상세 정보 리스트
+		List<PostImageResDTO> imageDetailsResDTOList = imageService.getPostImages(postId); // 이미지 상세 정보 리스트
 
 		model.addAttribute("postDetailResDTO", postDetailResDTO);
 
 		// 조회하는 게시글의 첨부 이미지가 존재한다면 이미지 리스트 추가
-		if (imageService.hasPostImage(postId)) {
-			model.addAttribute("ImageDetailsResDTOList", imageService.getPostImages(postId));
+		if (!imageDetailsResDTOList.isEmpty()) {
+			model.addAttribute("ImageDetailsResDTOList", imageDetailsResDTOList);
 		}
 
 		// 게시판 타입에 따라 포워딩 페이지 변경
@@ -131,9 +134,8 @@ public class PostController {
 	public String editPost(@Valid @ModelAttribute PostEditReqDTO postEditReqDTO, Model model) {
 		postService.editPost(postEditReqDTO);
 
-		model.addAttribute(MESSAGE, "게시글이 수정되었습니다.");
-		model.addAttribute(LOCATION_URL, postEditReqDTO.getBoardType() == BoardType.GALLERY ? LocationUrl.GALLERY : LocationUrl.COMMUNITY);
-		return MAV_ALERT;
+		// 알림 메시지 설정, 게시판 타입에 따른 포워딩 페이지 설정
+		return setModelAndView(postEditReqDTO.getBoardType(), "게시글이 수정되었습니다.", model);
 	}
 
 	/**
@@ -143,30 +145,38 @@ public class PostController {
 	public String removePost(@PathVariable BoardType boardType, @RequestParam long postId, Model model) {
 		postService.removePost(postId);
 
-		model.addAttribute(MESSAGE, "게시글이 삭제되었습니다.");
-		model.addAttribute(LOCATION_URL, boardType == BoardType.GALLERY ? LocationUrl.GALLERY : LocationUrl.COMMUNITY);
-		return MAV_ALERT;
+		// 알림 메시지 설정, 게시판 타입에 따른 포워딩 페이지 설정
+		return setModelAndView(boardType, "게시글이 삭제되었습니다.", model);
 	}
 
 	/**
-	 * 게시글 첨부 이미지, 댓글, 목록 정보 추가
-	 *
-	 * @param postId 게시글 고유 ID
-	 * @param pageReqDTO 기존 게시글 목록 페이지 정보
-	 * @param model Model
+	 * 게시글 첨부 이미지, 댓글 추가
 	 */
-	private void addPostDetails(long postId, PageReqDTO pageReqDTO, Model model) {
-		// 기존 목록 페이지에 대한 정보 유지
-		model.addAttribute("pageReqDTO", pageReqDTO);
+	private void addPostDetails(long postId, Model model) {
+		List<PostImageResDTO> imageDetailsResDTOList = imageService.getPostImages(postId);
+		List<CommentDetailResDTO> commentDetailResDTOList = commentService.getCommentListUseRecursion(postId);
 
 		// 조회하는 게시글의 첨부 이미지가 존재한다면 이미지 리스트 추가
-		if (imageService.hasPostImage(postId)) {
-			model.addAttribute("ImageDetailsResDTOList", imageService.getPostImages(postId));
+		if (!imageDetailsResDTOList.isEmpty()) {
+			model.addAttribute("ImageDetailsResDTOList", imageDetailsResDTOList);
 		}
 
 		// 조회하는 게시글의 댓글이 존재한다면 댓글 리스트 추가
-		if (commentService.hasComment(postId)) {
-			model.addAttribute("commentDetailResDTOList", commentService.getCommentListUseRecursion(postId));
+		if (!commentDetailResDTOList.isEmpty()) {
+			model.addAttribute("commentDetailResDTOList", commentDetailResDTOList);
 		}
+	}
+
+	/**
+	 * model 에 알림 메시지 설정, 게시판 타입에 따른 포워딩 페이지 설정
+	 *
+	 * @param boardType 게시판 타입
+	 * @param message 사용자 알림 메시지
+	 * @return 사용자 알림 페이지
+	 */
+	private String setModelAndView(BoardType boardType, String message, Model model) {
+		model.addAttribute(MESSAGE, message);
+		model.addAttribute(LOCATION_URL, boardType == BoardType.GALLERY ? LocationUrl.GALLERY : LocationUrl.COMMUNITY);
+		return MAV_ALERT;
 	}
 }
