@@ -28,7 +28,7 @@ public class PostLikeService {
 		}
 
 		// 사용자가 게시글에 좋아요를 남겼는지 확인
-		if (postMapper.selectCountPostByUserId(SecurityUtil.getLoginUserId(), postId) == 0) {
+		if (postLikeMapper.selectLikePostByUserId(SecurityUtil.getLoginUserId(), postId) == 0) {
 			// 게시글에 좋아요 추가 요청
 			postLikeMapper.insertLikePost(SecurityUtil.getLoginUserId(), postId);
 		}

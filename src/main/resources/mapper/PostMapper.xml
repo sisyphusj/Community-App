@@ -127,7 +127,7 @@
                     i.image_path as thumbnail_image_path,
                 </if>
                 (select count(*) from post_likes pl where pl.post_id = p.post_id) as likes,
-                exists (select 1 from post_likes a where a.post_id = p.post_id and a.user_id = #{userId}) as hasLike
+                exists (select 1 from post_likes a where a.post_id = p.post_id and a.user_id = #{userId}) as has_like
         from posts p
                 inner join user u on p.user_id = u.user_id
                 <if test="boardType.toString() == 'GALLERY'">

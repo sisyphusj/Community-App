@@ -24,7 +24,7 @@ public interface PostMapper {
 
 	int updateViewsAndGet(long postId);
 
-	int selectCountPostByUserId(long postId, long userId);
+	int selectCountPostByUserId(long userId, long postId);
 
 	int selectCountPost(long postId);
 
