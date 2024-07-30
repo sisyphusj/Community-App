@@ -16,6 +16,8 @@
             location.href = "/";
         } else if (locationUrl === "COMMUNITY") {
             location.href = "/community";
+        } else if (locationUrl === "GALLERY") {
+            location.href = "/community/gallery";
         } else if (locationUrl === "CUSTOM") {
             location.href = customUrl;
         }

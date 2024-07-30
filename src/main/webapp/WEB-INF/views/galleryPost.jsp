@@ -25,12 +25,11 @@
         <%-- 이전 페이지 목록 정보 --%>
         <c:set var="currentPage" value="${pageReqDTO}"/>
 
-        <%-- 게시판 타입 (일반 게시판) --%>
-        <c:set var="boardType" value="NORMAL"/>
+        <%-- 게시판 타입 (갤러리 게시판) --%>
+        <c:set var="boardType" value="GALLERY"/>
 
         <%-- 댓글 리스트 --%>
         <c:set var="comments" value="${commentDetailResDTOList}"/>
-
 
         <h1>게시판 작성</h1>
         <h2>제목 : ${post.title}</h2>
@@ -39,14 +38,17 @@
         <h4 id="postLikes">좋아요 수 : ${post.likes}</h4>
         <h3>본문</h3>
         <p>${post.content}</p>
-        생성일 :
-        <fmt:formatDate value="${post.createdAt}" pattern="yyyy-MM-dd HH:mm:ss"/> <br>
-        최종 수정일 :
-        <fmt:formatDate value="${post.updatedAt}" pattern="yyyy-MM-dd HH:mm:ss"/>
+        생성일 : <fmt:formatDate value="${post.createdAt}" pattern="yyyy-MM-dd HH:mm:ss"/> <br>
+        최종 수정일 : <fmt:formatDate value="${post.updatedAt}" pattern="yyyy-MM-dd HH:mm:ss"/>
 
         <button id="back-to-list">목록으로 돌아가기</button>
 
         <button onclick=location.href="/">홈으로 돌아가기</button>
+
+        <%-- 썸네일 이미지 --%>
+        <c:if test="${post.thumbnail != null}">
+            <img src="${post.thumbnail.imagePath}" alt="${post.thumbnail.storedName}"/>
+        </c:if>
 
         <%-- 게시글 첨부 이미지 --%>
         <c:if test="${ImageDetailsResDTOList != null && fn:length(ImageDetailsResDTOList) > 0}">
@@ -131,7 +133,7 @@
 
         <%-- 게시글 작성자 게시글 수정 허용 --%>
         <c:if test="${post.userId eq currentUserId}">
-            <button onclick=location.href=`/community/NORMAL/posts/${post.postId}/edit`>수정</button>
+            <button onclick=location.href=`/community/GALLERY/posts/${post.postId}/edit`>수정</button>
         </c:if>
 
         <script>
@@ -269,6 +271,8 @@
                     const commentId = commentDiv.data('comment-id');
                     const content = commentDiv.data('comment-content');
 
+                    console.log("fdfd");
+
                     // 모든 editInputContainer 비우기
                     $('.editInputContainer').empty();
 
@@ -334,7 +338,7 @@
                 });
 
                 $('#back-to-list').click(function () {
-                    location.href = '/community?page=${currentPage.page}&sort=${currentPage.sort}&keywordType=${currentPage.keywordType}&keyword=${currentPage.keyword}&row=${currentPage.row}'
+                    location.href = '/community/gallery?page=${currentPage.page}&sort=${currentPage.sort}&keywordType=${currentPage.keywordType}&keyword=${currentPage.keyword}&row=${currentPage.row}'
                 });
 
                 const removeFile = (index) => {

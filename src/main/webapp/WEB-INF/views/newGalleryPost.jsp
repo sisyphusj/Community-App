@@ -1,8 +1,6 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
 <!DOCTYPE html>
 <html lang="ko">
     <head>
@@ -10,53 +8,37 @@
         <%@ include file="include/head.jsp" %>
     </head>
     <body>
-        <%-- 게시글 정보 --%>
-        <c:set var="post" value="${postDetailResDTO}"/>
-
-        <h1>게시글 수정</h1>
-
-        <form id="postForm" action="/community/posts/edit" method="post" enctype="multipart/form-data">
+        <h1>갤러리 게시판 작성</h1>
+        <form id="postForm" action="/community/posts" method="post" enctype="multipart/form-data">
             <sec:csrfInput/>
-
-            <%-- postId 추가 --%>
-            <input type="hidden" id="postId" name="postId" value="${post.postId}">
-
-            <%-- 제목 --%>
             <label for="title">제목</label><br>
-            <input type="text" id="title" name="title" value="${post.title}" required><br><br>
+            <input type="text" id="title" name="title" required><br><br>
 
-            <%-- 본문 --%>
             <label for="content">본문</label><br>
-            <textarea id="content" name="content" rows="10" required>${post.content}</textarea><br><br>
+            <textarea id="content" name="content" rows="10" required></textarea><br><br>
 
-            <%-- 기존 첨부 이미지 불러오기 --%>
-            <c:if test="${ImageDetailsResDTOList != null && fn:length(ImageDetailsResDTOList) > 0}">
-                <h3>기존 이미지</h3><br>
-                <c:forEach var="file" items="${ImageDetailsResDTOList}">
-                    <div class="image-container">
-                        <img src="${file.imagePath}" alt="${file.storedName}"/>
-                        <button type="button" onclick="removeImage('${file.imageId}', this)">삭제</button>
-                    </div>
-                </c:forEach>
-            </c:if>
+            <label for="thumbnail">썸네일 지정하기</label><br>
+            <input type="file" id="thumbnail" name="thumbnail">
 
-            <%-- 새로운 첨부 이미지 불러오기 --%>
-            <label for="imageFiles">새로운 이미지 첨부파일</label><br>
+            <label for="imageFiles">이미지 첨부파일</label><br>
             <input type="file" id="imageFiles" name="images" multiple>
             <ul id="imageList" class="imageList"></ul>
 
-            <%-- 게시판 타입(일반 게시판) --%>
-            <input type="hidden" name="boardType" value="NORMAL"/>
+            <input type="hidden" name="boardType" value="GALLERY"/>
 
             <button type="submit" id="postSubmitBtn">등록</button>
         </form>
 
-        <%-- 게시글 삭제 --%>
-        <button type="button" onclick="location.href= `/community/NORMAL/posts/${post.postId}/remove`">게시글 삭제</button>
-
         <script>
-            $(function () {
+            $(document).ready(function () {
                 let fileList = [];
+
+                $('#thumbnail').on('change', (event) => {
+                    if (event.target.files.length > 1) {
+                        alert('썸네일은 하나만 지정할 수 있습니다.');
+                        event.target.value = '';
+                    }
+                });
 
                 $('#imageFiles').on('change', (event) => {
                     const imageList = $('#imageList');
@@ -76,10 +58,40 @@
                     });
                 });
 
+                const removeFile = (index) => {
+                    fileList.splice(index, 1);
+                    const dataTransfer = new DataTransfer();
+                    fileList.forEach(file => dataTransfer.items.add(file));
+                    $('#imageFiles')[0].files = dataTransfer.files;
+
+                    updateFileList();
+                }
+
+                const updateFileList = () => {
+                    const imageList = $('#imageList');
+                    imageList.empty();
+
+                    fileList.forEach((file, index) => {
+                        const li = $('<li>').addClass('image').text(file.name);
+                        const button = $('<button>').text("삭제").on('click', () => {
+                            removeFile(index);
+                            li.remove();
+                        });
+
+                        li.append(button);
+                        imageList.append(li);
+                    });
+                }
+
                 $('#postForm').on('submit', (event) => {
                     const title = $('#title').val();
                     const content = $('#content').val();
                     const imageFiles = $('#imageFiles')[0].files;
+
+                    if ($('#thumbnail').get(0).files.length === 0) {
+                        alert('썸네일을 지정해야 합니다.');
+                        event.preventDefault(); // 폼 제출을 막음
+                    }
 
                     try {
                         if (imageFiles.length > 0) {
@@ -134,53 +146,7 @@
                         throw new Error("본문의 최대 글자 수는 500글자입니다.");
                     }
                 }
-
-                const removeFile = (index) => {
-                    fileList.splice(index, 1);
-                    const dataTransfer = new DataTransfer();
-                    fileList.forEach(file => dataTransfer.items.add(file));
-                    $('#imageFiles')[0].files = dataTransfer.files;
-
-                    updateFileList();
-                }
-
-                const updateFileList = () => {
-                    const imageList = $('#imageList');
-                    imageList.empty();
-
-                    fileList.forEach((file, index) => {
-                        const li = $('<li>').addClass('image').text(file.name);
-                        const button = $('<button>').text("삭제").on('click', () => {
-                            removeFile(index);
-                            li.remove();
-                        });
-
-                        li.append(button);
-                        imageList.append(li);
-                    });
-                }
-
             });
-
-            const removeImage = (imageId, element) => {
-                const csrfToken = $('input[name="_csrf"]').val();
-                $.ajax({
-                    url: `/images/post/remove?postId=${post.postId}&imageId=${'${imageId}'}`,
-                    type: "GET",
-                    beforeSend: (xhr) => {
-                        xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
-                    },
-                    success: function () {
-                        alert("이미지가 제거되었습니다.");
-                        $(element).closest('div.image-container').remove();
-                    },
-                    error: function (error) {
-                        console.error(error);
-                        alert("이미지 삭제 중 오류가 발생하였습니다.");
-                    }
-                });
-            }
-
         </script>
     </body>
 </html>

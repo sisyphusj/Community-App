@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
 <!DOCTYPE html>
 <html lang="ko">
     <head>
@@ -29,6 +28,19 @@
             <label for="content">본문</label><br>
             <textarea id="content" name="content" rows="10" required>${post.content}</textarea><br><br>
 
+            <%-- 기존 썸네일 이미지 불러오기 --%>
+            <c:if test="${post.thumbnail != null}">
+                <h3>기존 썸네일 이미지</h3><br>
+                <div class="image-container" id="currentThumbnail">
+                    <img src="${post.thumbnail.imagePath}" alt="${post.thumbnail.storedName}" width="150"/>
+                </div>
+            </c:if>
+
+            <%-- 새로운 썸네일 이미지 불러오기 --%>
+            <h3>새로운 썸네일 이미지</h3><br>
+            <input type="file" id="thumbnail" name="thumbnail" accept="image/*"><br><br>
+            <img id="newThumbnailPreview" src="#" alt="새 썸네일 이미지" style="display:none;" width="150"><br><br>
+
             <%-- 기존 첨부 이미지 불러오기 --%>
             <c:if test="${ImageDetailsResDTOList != null && fn:length(ImageDetailsResDTOList) > 0}">
                 <h3>기존 이미지</h3><br>
@@ -45,17 +57,18 @@
             <input type="file" id="imageFiles" name="images" multiple>
             <ul id="imageList" class="imageList"></ul>
 
-            <%-- 게시판 타입(일반 게시판) --%>
-            <input type="hidden" name="boardType" value="NORMAL"/>
+            <%-- 게시판 타입(갤러리 게시판) --%>
+            <input type="hidden" name="boardType" value="GALLERY"/>
 
             <button type="submit" id="postSubmitBtn">등록</button>
         </form>
 
         <%-- 게시글 삭제 --%>
-        <button type="button" onclick="location.href= `/community/NORMAL/posts/${post.postId}/remove`">게시글 삭제</button>
+        <button type="button" onclick="location.href= `/community/GALLERY/posts/${post.postId}/remove`">게시글 삭제</button>
 
         <script>
             $(function () {
+                // 첨부 이미지 임시 저장 리스트
                 let fileList = [];
 
                 $('#imageFiles').on('change', (event) => {
@@ -80,6 +93,13 @@
                     const title = $('#title').val();
                     const content = $('#content').val();
                     const imageFiles = $('#imageFiles')[0].files;
+                    const thumbnail = $('#thumbnail')[0].files;
+
+                    if (thumbnail.length === 0 && !$('#currentThumbnail').is(':visible')) {
+                        event.preventDefault();
+                        alert("썸네일 이미지를 지정해주세요.");
+                        return false;
+                    }
 
                     try {
                         if (imageFiles.length > 0) {
@@ -91,6 +111,18 @@
                         event.preventDefault(); // 폼 제출 중지
                         alert("게시글 등록을 실패하였습니다.");
                         return false;
+                    }
+                });
+
+                $('#thumbnail').on('change', () => {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            $('#currentThumbnail').hide();
+                            $('#newThumbnailPreview').attr('src', e.target.result).show();
+                        };
+                        reader.readAsDataURL(file);
                     }
                 });
 
@@ -180,7 +212,7 @@
                     }
                 });
             }
-
+            
         </script>
     </body>
 </html>

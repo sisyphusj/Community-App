@@ -1,13 +1,31 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
     <head>
-        <meta charset="UTF-8">
-        <link rel="icon" href="data:,">
-        <script src="<c:url value='https://code.jquery.com/jquery-3.7.1.min.js'/>"></script>
-        <title>게시판 작성</title>
+        <title>여행지 게시판</title>
+        <%@ include file="include/head.jsp" %>
+    </head>
+    <body>
+        <h1>게시판 작성</h1>
+        <form id="postForm" action="/community/posts" method="post" enctype="multipart/form-data">
+            <sec:csrfInput/>
+            <label for="title">제목</label><br>
+            <input type="text" id="title" name="title" required><br><br>
+
+            <label for="content">본문</label><br>
+            <textarea id="content" name="content" rows="10" required></textarea><br><br>
+
+            <label for="imageFiles">이미지 첨부파일</label><br>
+            <input type="file" id="imageFiles" name="images" multiple>
+            <ul id="imageList" class="imageList"></ul>
+
+            <input type="hidden" name="boardType" value="NORMAL"/>
+
+            <button type="submit" id="postSubmitBtn">등록</button>
+        </form>
+
         <script>
             $(() => {
                 let fileList = [];
@@ -115,22 +133,5 @@
                 }
             });
         </script>
-    </head>
-    <body>
-        <h1>게시판 작성</h1>
-        <form id="postForm" action="/community/posts" method="post" enctype="multipart/form-data">
-            <sec:csrfInput/>
-            <label for="title">제목</label><br>
-            <input type="text" id="title" name="title" required><br><br>
-
-            <label for="content">본문</label><br>
-            <textarea id="content" name="content" rows="10" required></textarea><br><br>
-
-            <label for="imageFiles">이미지 첨부파일</label><br>
-            <input type="file" id="imageFiles" name="images" multiple>
-            <ul id="imageList" class="imageList"></ul>
-
-            <button type="submit" id="postSubmitBtn">등록</button>
-        </form>
     </body>
 </html>
