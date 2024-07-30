@@ -15,6 +15,8 @@ public class PageVO {
 
 	String keyword; // 검색 키워드
 
+	BoardType boardType; // 게시판 타입
+
 	public static PageVO of(PageReqDTO pageReqDTO) {
 		return PageVO.builder()
 			.amount(pageReqDTO.getRow())
@@ -23,5 +25,9 @@ public class PageVO {
 			.keywordType(pageReqDTO.getKeywordType())
 			.keyword(pageReqDTO.getKeyword())
 			.build();
+	}
+
+	public void updateBoardType(BoardType boardType) {
+		this.boardType = boardType;
 	}
 }

@@ -58,41 +58,25 @@ public class PostService {
 	 * 한 페이지 당 조회될 게시글 리스트 및 페이지 정보 반환
 	 */
 	@Transactional(readOnly = true)
-	public PageResDTO getPostPage(PageReqDTO pageReqDTO) {
+	public PageResDTO getBoardPage(BoardType boardType, PageReqDTO pageReqDTO) {
 
 		// 검색 keyword가 존재한다면 keywordType 확인
 		validateKeywordType(pageReqDTO.getKeyword(), pageReqDTO.getKeywordType());
 
+		PageVO pageVO = PageVO.of(pageReqDTO);
+
+		// 게시판 타입 지정
+		pageVO.updateBoardType(boardType);
+
 		// 전체 게시글 개수
-		int totalRowCount = postMapper.selectPostTotalCount(PageVO.of(pageReqDTO));
+		int totalRowCount = postMapper.selectPostTotalCount(pageVO);
 
 		// amount 만큼 게시글 리스트 조회
-		List<PostSummaryResDTO> postListDTO = postMapper.selectPostSummaryList(PageVO.of(pageReqDTO)).stream()
+		List<PostSummaryResDTO> postListDTO = postMapper.selectPostSummaryList(pageVO).stream()
 			.map(PostSummaryResDTO::of)
 			.toList();
 
 		// 현재 페이지 페이지네이션 메타데이터, 게시글 섬네일 리스트 반환
-		return new PageResDTO(pageReqDTO, totalRowCount, postListDTO);
-	}
-
-	/**
-	 * 한 페이지 당 조회될 갤러리 게시글 리스트 및 페이지 정보 반환
-	 */
-	@Transactional(readOnly = true)
-	public PageResDTO getImageBoardPage(PageReqDTO pageReqDTO) {
-
-		// 검색 keyword가 존재한다면 keywordType 확인
-		validateKeywordType(pageReqDTO.getKeyword(), pageReqDTO.getKeywordType());
-
-		// 전체 갤러리 게시글 개수
-		int totalRowCount = postMapper.selectGalleryPostTotalCount(PageVO.of(pageReqDTO));
-
-		// amount 만큼 갤러리 게시글 리스트 조회
-		List<PostSummaryResDTO> postListDTO = postMapper.selectImagePostSummaryList(PageVO.of(pageReqDTO)).stream()
-			.map(PostSummaryResDTO::of)
-			.toList();
-
-		// 현재 페이지 페이지네이션 메타데이터, 갤러리 게시글 섬네일 리스트 반환
 		return new PageResDTO(pageReqDTO, totalRowCount, postListDTO);
 	}
 

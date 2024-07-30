@@ -15,11 +15,7 @@ public interface PostMapper {
 
 	List<PostVO> selectPostSummaryList(PageVO pageVO);
 
-	List<PostVO> selectImagePostSummaryList(PageVO pageVO);
-
 	int selectPostTotalCount(PageVO pageVO);
-
-	int selectGalleryPostTotalCount(PageVO pageVO);
 
 	Optional<PostVO> selectPostDetails(long postId);
 

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -43,8 +42,8 @@ public class PostController {
 	 * 게시판 페이지, 현재 페이지에 맞는 게시글 리스트 반환
 	 */
 	@GetMapping
-	public String showCommunityPage(@Valid @ModelAttribute("pageReqDTO") PageReqDTO pageReqDTO, Model model) {
-		PageResDTO pageResDTO = postService.getPostPage(pageReqDTO);
+	public String showBoardPage(@Valid @ModelAttribute("pageReqDTO") PageReqDTO pageReqDTO, Model model) {
+		PageResDTO pageResDTO = postService.getBoardPage(BoardType.NORMAL, pageReqDTO);
 
 		model.addAttribute("pageResDTO", pageResDTO);
 		return "community";
@@ -54,8 +53,8 @@ public class PostController {
 	 * 갤러리 게시판 페이지, 현재 페이지에 맞는 게시글 리스트 반환
 	 */
 	@GetMapping("/gallery")
-	public String showGalleryCommunityPage(@Valid @ModelAttribute("pageReqDTO") PageReqDTO pageReqDTO, Model model) {
-		PageResDTO pageResDTO = postService.getImageBoardPage(pageReqDTO);
+	public String showGalleryBoardPage(@Valid @ModelAttribute("pageReqDTO") PageReqDTO pageReqDTO, Model model) {
+		PageResDTO pageResDTO = postService.getBoardPage(BoardType.GALLERY, pageReqDTO);
 
 		model.addAttribute("pageResDTO", pageResDTO);
 		return "galleryCommunity";
@@ -141,8 +140,8 @@ public class PostController {
 	/**
 	 * 게시글 삭제
 	 */
-	@GetMapping("/{boardType}/posts/remove")
-	public String removePost(@PathVariable BoardType boardType, @RequestParam long postId, Model model) {
+	@GetMapping("/{boardType}/posts/{postId}/remove")
+	public String removePost(@PathVariable BoardType boardType, @PathVariable long postId, Model model) {
 		postService.removePost(postId);
 
 		// 알림 메시지 설정, 게시판 타입에 따른 포워딩 페이지 설정
