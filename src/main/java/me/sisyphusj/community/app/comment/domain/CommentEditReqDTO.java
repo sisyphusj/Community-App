@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import me.sisyphusj.community.app.post.domain.BoardType;
 
 @Getter
 @AllArgsConstructor
@@ -23,5 +24,8 @@ public class CommentEditReqDTO {
 	private String content; // 댓글 내용
 
 	private List<MultipartFile> images; // 추가된 이미지 리스트
+
+	@NotNull
+	BoardType boardType; // 게시판 타입
 
 }

@@ -16,9 +16,6 @@ public class Constants {
 	// 커스텀 지정 Url
 	public static final String CUSTOM_URL = "customUrl";
 
-	// 게시글 조회 Base Url
-	public static final String BASE_POST_URL = "/community/posts/";
-
 	// 사용자 알람 jsp Url
 	public static final String MAV_ALERT = "error/alert";
 
@@ -33,9 +30,6 @@ public class Constants {
 
 	// 페이지 버튼 개수
 	public static final int PAGE_SIZE = 5;
-
-	// 페이지 당 게시글 개수
-	public static final int ROW_SIZE_PER_PAGE = 10;
 
 	// 허용된 이미지 파일 확장자
 	public static final List<String> ALLOWED_EXTENSIONS = List.of("jpg", "jpeg", "png");

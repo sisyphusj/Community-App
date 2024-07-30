@@ -134,7 +134,7 @@ public class PostController {
 		postService.editPost(postEditReqDTO);
 
 		// 알림 메시지 설정, 게시판 타입에 따른 포워딩 페이지 설정
-		return setModelAndView(postEditReqDTO.getBoardType(), "게시글이 수정되었습니다.", model);
+		return setCommonAttributes(postEditReqDTO.getBoardType(), "게시글이 수정되었습니다.", model);
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class PostController {
 		postService.removePost(postId);
 
 		// 알림 메시지 설정, 게시판 타입에 따른 포워딩 페이지 설정
-		return setModelAndView(boardType, "게시글이 삭제되었습니다.", model);
+		return setCommonAttributes(boardType, "게시글이 삭제되었습니다.", model);
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class PostController {
 	 * @param message 사용자 알림 메시지
 	 * @return 사용자 알림 페이지
 	 */
-	private String setModelAndView(BoardType boardType, String message, Model model) {
+	private String setCommonAttributes(BoardType boardType, String message, Model model) {
 		model.addAttribute(MESSAGE, message);
 		model.addAttribute(LOCATION_URL, boardType == BoardType.GALLERY ? LocationUrl.GALLERY : LocationUrl.COMMUNITY);
 		return MAV_ALERT;
