@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import me.sisyphusj.community.app.post.domain.BoardType;
 import me.sisyphusj.community.app.post.domain.PageVO;
 import me.sisyphusj.community.app.post.domain.PostVO;
 
@@ -17,13 +18,9 @@ public interface PostMapper {
 
 	int selectPostTotalCount(PageVO pageVO);
 
-	Optional<PostVO> selectPostDetails(long postId);
+	Optional<PostVO> selectPostDetails(long postId, BoardType boardType);
 
-	Optional<PostVO> selectPostDetailsByUserId(long userId, long postId);
-
-	Optional<PostVO> selectGalleryPostDetails(long postId);
-
-	Optional<PostVO> selectGalleryPostDetailsByUserId(long userId, long postId);
+	Optional<PostVO> selectPostDetailsByUserId(long userId, long postId, BoardType boardType);
 
 	int updateViewsAndGet(long postId);
 

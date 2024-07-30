@@ -4,8 +4,10 @@
 <mapper namespace="me.sisyphusj.community.app.comment_like.mapper.CommentLikeMapper">
     
     <insert id="insertLikeComment" parameterType="long">
-        insert comment_likes (user_id, comment_id)
-        values (#{userId}, #{commentId})
+        insert into
+            comment_likes (user_id, comment_id)
+        values
+            (#{userId}, #{commentId})
     </insert>
 
     <select id="selectLikeComment" parameterType="long">

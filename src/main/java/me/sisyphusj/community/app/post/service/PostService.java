@@ -89,11 +89,7 @@ public class PostService {
 		updateViews(postId);
 
 		// 게시판 타입에 따라서 게시글 요청
-		if (boardType == BoardType.GALLERY) {
-			return getGalleryPostDetails(postId);
-		} else {
-			return getPostDetails(postId);
-		}
+		return handlePostDetails(postId, boardType);
 	}
 
 	/**
@@ -175,35 +171,18 @@ public class PostService {
 	}
 
 	/**
-	 * 갤러리 게시판 게시글 조회
+	 * 일반/갤러리 게시판 게시글 조회
 	 */
-	private PostDetailResDTO getGalleryPostDetails(long postId) {
+	private PostDetailResDTO handlePostDetails(long postId, BoardType boardType) {
 		// 사용자가 로그인 사용자면 이미지 게시글 좋아요 여부를 포함하여 게시글 조회
 		if (SecurityUtil.isLoginUser()) {
-			return postMapper.selectGalleryPostDetailsByUserId(SecurityUtil.getLoginUserId(), postId)
+			return postMapper.selectPostDetailsByUserId(SecurityUtil.getLoginUserId(), postId, boardType)
 				.map(PostDetailResDTO::of)
 				.orElseThrow(PostNotFoundException::new);
 		}
 
 		// 사용자가 미 로그인 사용자면 좋아요 여부는 조회하지 않고 이미지 게시글 조회
-		return postMapper.selectGalleryPostDetails(postId)
-			.map(PostDetailResDTO::of)
-			.orElseThrow(PostNotFoundException::new);
-	}
-
-	/**
-	 * 일반 게시판 게시글 조회
-	 */
-	private PostDetailResDTO getPostDetails(long postId) {
-		// 사용자가 로그인 사용자면 게시글 좋아요 여부를 포함하여 게시글 조회
-		if (SecurityUtil.isLoginUser()) {
-			return postMapper.selectPostDetailsByUserId(SecurityUtil.getLoginUserId(), postId)
-				.map(PostDetailResDTO::of)
-				.orElseThrow(PostNotFoundException::new);
-		}
-
-		// 사용자가 미 로그인 사용자면 좋아요 여부는 조회하지 않고 게시글 조회
-		return postMapper.selectPostDetails(postId)
+		return postMapper.selectPostDetails(postId, boardType)
 			.map(PostDetailResDTO::of)
 			.orElseThrow(PostNotFoundException::new);
 	}

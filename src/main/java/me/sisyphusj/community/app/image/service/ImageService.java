@@ -71,14 +71,6 @@ public class ImageService {
 	}
 
 	/**
-	 * 게시글에 이미지 첨부 여부
-	 */
-	@Transactional(readOnly = true)
-	public boolean hasPostImage(long postId) {
-		return !(imageMapper.selectPostImageList(postId).isEmpty());
-	}
-
-	/**
 	 * 게시글 이미지 메타 데이터 리스트 조회
 	 */
 	@Transactional(readOnly = true)
@@ -100,8 +92,7 @@ public class ImageService {
 		}
 
 		// 이미지 경로를 반환
-		String imagePath = imageMapper.selectImagePath(imageId)
-			.orElseThrow(ImageNotFoundException::new);
+		String imagePath = imageMapper.selectImagePath(imageId);
 
 		// 이미지 삭제 후 반환 값에 따라 예외 처리
 		if (imageMapper.deletePostImage(imageId) != 1) {
@@ -122,8 +113,7 @@ public class ImageService {
 		}
 
 		// 이미지 경로를 반환
-		String imagePath = imageMapper.selectImagePath(imageId)
-			.orElseThrow(ImageNotFoundException::new);
+		String imagePath = imageMapper.selectImagePath(imageId);
 
 		// 이미지 삭제 후 반환 값에 따라 예외 처리
 		if (imageMapper.deleteCommentImage(imageId) != 1) {

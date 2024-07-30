@@ -5,7 +5,8 @@
 <mapper namespace="me.sisyphusj.community.app.image.mapper.ImageMapper">
 
     <insert id="insertImageList" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="imageId">
-        insert into image (user_id, origin_name, stored_name, size, image_path)
+        insert into
+            image (user_id, origin_name, stored_name, size, image_path)
         values
         <foreach collection="list" item="image" separator=",">
             (#{image.userId}, #{image.originName}, #{image.storedName}, #{image.size}, #{image.imagePath})
@@ -13,12 +14,15 @@
     </insert>
 
     <insert id="insertThumbnailImage" parameterType="me.sisyphusj.community.app.image.domain.ImageVO" useGeneratedKeys="true" keyProperty="imageId">
-        insert into image (user_id, origin_name, stored_name, size, image_path)
-        values (#{userId}, #{originName}, #{storedName}, #{size}, #{imagePath})
+        insert into
+            image (user_id, origin_name, stored_name, size, image_path)
+        values
+            (#{userId}, #{originName}, #{storedName}, #{size}, #{imagePath})
     </insert>
 
     <insert id="insertPostImageList" parameterType="java.util.List">
-        insert into post_image (post_id, image_id)
+        insert into
+            post_image (post_id, image_id)
         values
         <foreach collection="list" item="image" separator=",">
             (#{image.postId}, #{image.imageId})
@@ -26,7 +30,8 @@
     </insert>
 
     <insert id="insertCommentImageList" parameterType="java.util.List">
-        insert into comment_image (comment_id, image_id)
+        insert into
+            comment_image (comment_id, image_id)
         values
         <foreach collection="list" item="image" separator=",">
             (#{image.commentId}, #{image.imageId})
@@ -34,15 +39,15 @@
     </insert>
 
     <select id="selectPostImageList" parameterType="long" resultType="me.sisyphusj.community.app.image.domain.ImageVO">
-        select i.image_id,
-               pi.post_id,
-               origin_name,
-               stored_name,
-               size,
-               image_path,
-               created_at
+        select  i.image_id,
+                pi.post_id,
+                origin_name,
+                stored_name,
+                size,
+                image_path,
+                created_at
         from image i
-                 inner join post_image pi on i.image_id = pi.image_id
+                inner join post_image pi on i.image_id = pi.image_id
         where pi.post_id = #{postId}
     </select>
 

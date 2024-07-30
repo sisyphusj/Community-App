@@ -1,7 +1,6 @@
 package me.sisyphusj.community.app.image.mapper;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -24,7 +23,7 @@ public interface ImageMapper {
 
 	int selectCountCommentImage(long userId, long commentId, long imageId);
 
-	Optional<String> selectImagePath(long imageId);
+	String selectImagePath(long imageId);
 
 	int deletePostImage(long imageId);
 

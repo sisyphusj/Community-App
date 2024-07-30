@@ -4,16 +4,11 @@
 <mapper namespace="me.sisyphusj.community.app.comment.mapper.CommentMapper">
 
     <insert id="insertComment" parameterType="me.sisyphusj.community.app.comment.domain.CommentVO" useGeneratedKeys="true" keyProperty="commentId">
-        insert into comments (parent_id, user_id, post_id, content)
-        values (#{parentId}, #{userId}, #{postId}, #{content})
+        insert into
+            comments (parent_id, user_id, post_id, content)
+        values
+            (#{parentId}, #{userId}, #{postId}, #{content})
     </insert>
-
-    <select id="selectCountCommentByPostId" parameterType="long" resultType="int">
-        select count(*)
-        from comments
-        where post_id = #{postId}
-          and is_deleted = 'N'
-    </select>
 
     <select id="selectCountCommentByCommentId" parameterType="long" resultType="int">
         select count(*)
@@ -31,25 +26,25 @@
     </select>
 
     <select id="selectCommentList" resultMap="CommentWithImageList">
-        select c.comment_id,
-               c.parent_id,
-               u.user_id,
-               c.post_id,
-               u.name,
-               c.content,
-               c.created_at          as comment_created_at,
-               c.updated_at,
-               i.image_id,
-               i.origin_name,
-               i.stored_name,
-               i.size,
-               i.image_path,
-               i.created_at          as image_created_at,
-               (select count(*) from comment_likes a where a.comment_id = c.comment_id) as likes
+        select  c.comment_id,
+                c.parent_id,
+                u.user_id,
+                c.post_id,
+                u.name,
+                c.content,
+                c.created_at as comment_created_at,
+                c.updated_at,
+                i.image_id,
+                i.origin_name,
+                i.stored_name,
+                i.size,
+                i.image_path,
+                i.created_at as image_created_at,
+                (select count(*) from comment_likes a where a.comment_id = c.comment_id) as likes
         from comments c
-                 inner join user u on c.user_id = u.user_id
-                 left join comment_image ci on c.comment_id = ci.comment_id
-                 left join image i on ci.image_id = i.image_id
+                inner join user u on c.user_id = u.user_id
+                left join comment_image ci on c.comment_id = ci.comment_id
+                left join image i on ci.image_id = i.image_id
         where c.is_deleted = 'N'
           and c.post_id = #{postId}
         <choose>
@@ -63,26 +58,26 @@
     </select>
 
     <select id="selectCommentListByUserId" resultMap="CommentWithImageList">
-        select c.comment_id,
-               c.parent_id,
-               u.user_id,
-               c.post_id,
-               u.name,
-               c.content,
-               c.created_at              as comment_created_at,
-               c.updated_at,
-               i.image_id,
-               i.origin_name,
-               i.stored_name,
-               i.size,
-               i.image_path,
-               i.created_at              as image_created_at,
-               (select count(*) from comment_likes a where a.comment_id = c.comment_id)                           as likes,
-               exists (select 1 from comment_likes b where b.comment_id = c.comment_id and b.user_id = #{userId}) as has_like
+        select  c.comment_id,
+                c.parent_id,
+                u.user_id,
+                c.post_id,
+                u.name,
+                c.content,
+                c.created_at as comment_created_at,
+                c.updated_at,
+                i.image_id,
+                i.origin_name,
+                i.stored_name,
+                i.size,
+                i.image_path,
+                i.created_at as image_created_at,
+                (select count(*) from comment_likes a where a.comment_id = c.comment_id) as likes,
+                exists (select 1 from comment_likes b where b.comment_id = c.comment_id and b.user_id = #{userId}) as has_like
         from comments c
-                 inner join user u on c.user_id = u.user_id
-                 left join comment_image ci on c.comment_id = ci.comment_id
-                 left join image i on ci.image_id = i.image_id
+                inner join user u on c.user_id = u.user_id
+                left join comment_image ci on c.comment_id = ci.comment_id
+                left join image i on ci.image_id = i.image_id
         where c.is_deleted = 'N'
           and c.post_id = #{postId}
         <choose>

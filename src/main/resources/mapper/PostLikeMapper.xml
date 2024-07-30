@@ -4,8 +4,10 @@
 <mapper namespace="me.sisyphusj.community.app.post_like.mapper.PostLikeMapper">
 
     <insert id="insertLikePost" parameterType="long">
-        insert post_likes (user_id, post_id)
-        values (#{userId}, #{postId})
+        insert into
+            post_likes (user_id, post_id)
+        values
+            (#{userId}, #{postId})
     </insert>
 
     <select id="selectLikePost" parameterType="long">

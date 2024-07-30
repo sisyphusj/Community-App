@@ -11,8 +11,6 @@ public interface CommentMapper {
 
 	void insertComment(CommentVO commentVO);
 
-	int selectCountCommentByPostId(long postId);
-
 	int selectCountCommentByCommentId(long commentId);
 
 	int selectCountCommentByUserId(long userId, long commentId);

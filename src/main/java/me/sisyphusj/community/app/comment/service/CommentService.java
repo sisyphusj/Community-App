@@ -55,14 +55,6 @@ public class CommentService {
 	}
 
 	/**
-	 * 댓글 존재 유무 확인
-	 */
-	@Transactional(readOnly = true)
-	public boolean hasComment(long postId) {
-		return commentMapper.selectCountCommentByPostId(postId) > 0;
-	}
-
-	/**
 	 * 댓글 리스트 조회 (재귀)
 	 */
 	@Transactional(readOnly = true)
