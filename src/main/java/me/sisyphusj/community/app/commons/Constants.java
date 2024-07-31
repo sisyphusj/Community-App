@@ -34,4 +34,10 @@ public class Constants {
 	// 허용된 이미지 파일 확장자
 	public static final List<String> ALLOWED_EXTENSIONS = List.of("jpg", "jpeg", "png");
 
+	// 썸네일 이미지 리사이징 너비
+	public static final int THUMBNAIL_WIDTH = 150;
+
+	// 썸네일 이미지 리사이징 폭
+	public static final int THUMBNAIL_HEIGHT = 150;
+
 }

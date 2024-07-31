@@ -67,6 +67,9 @@ dependencies {
     // commons lang3
     implementation 'org.apache.commons:commons-lang3:3.12.0'
 
+    // thumbnailator
+    implementation 'net.coobird:thumbnailator:0.4.20'
+
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'

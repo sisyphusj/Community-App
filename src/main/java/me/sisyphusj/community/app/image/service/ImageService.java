@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import me.sisyphusj.community.app.commons.component.ImageUploadProvider;
 import me.sisyphusj.community.app.commons.exception.ImageNotFoundException;
+import me.sisyphusj.community.app.image.domain.ImageType;
 import me.sisyphusj.community.app.image.domain.ImageVO;
 import me.sisyphusj.community.app.image.domain.PostImageResDTO;
 import me.sisyphusj.community.app.image.mapper.ImageMapper;
@@ -28,7 +29,7 @@ public class ImageService {
 	@Transactional
 	public void savePostImages(long postId, List<MultipartFile> images) {
 		// imageUploadProvider 에서 반환된 이미지 메타데이터 리스트를 DB에 저장
-		List<ImageVO> imageVOList = imageUploadProvider.uploadFiles(images).stream()
+		List<ImageVO> imageVOList = imageUploadProvider.uploadFiles(images, ImageType.NORMAL).stream()
 			.map(ImageVO::of)
 			.map(imageVO -> imageVO.updatePostId(postId))
 			.toList();
@@ -46,7 +47,7 @@ public class ImageService {
 	@Transactional
 	public long saveThumbnailImage(MultipartFile thumbnail) {
 		// imageUploadProvider 에서 반환된 썸네일 이미지 메타데이터를 DB에 저장
-		ImageVO imageVO = ImageVO.of(imageUploadProvider.uploadFile(thumbnail));
+		ImageVO imageVO = ImageVO.of(imageUploadProvider.uploadFile(thumbnail, ImageType.THUMBNAIL));
 		imageMapper.insertThumbnailImage(imageVO);
 
 		return imageVO.getImageId();
@@ -58,7 +59,7 @@ public class ImageService {
 	@Transactional
 	public void saveCommentImages(long commentId, List<MultipartFile> images) {
 		// imageUploadProvider 에서 반환된 이미지 메타데이터 리스트를 DB에 저장
-		List<ImageVO> imageVOList = imageUploadProvider.uploadFiles(images).stream()
+		List<ImageVO> imageVOList = imageUploadProvider.uploadFiles(images, ImageType.NORMAL).stream()
 			.map(ImageVO::of)
 			.map(imageVO -> imageVO.updateCommentId(commentId))
 			.toList();

@@ -17,9 +17,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import net.coobird.thumbnailator.Thumbnails;
+
 import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.commons.exception.FileUploadException;
 import me.sisyphusj.community.app.image.domain.ImageMetadata;
+import me.sisyphusj.community.app.image.domain.ImageType;
 
 @Slf4j
 @Component
@@ -31,14 +34,14 @@ public class ImageUploadProvider {
 	/**
 	 * 이미지 리스트를 반복을 통해 로컬 디렉토리에 업로드 <br> 이미지 메타데이터 리스트 반환
 	 */
-	public List<ImageMetadata> uploadFiles(List<MultipartFile> multipartFiles) {
+	public List<ImageMetadata> uploadFiles(List<MultipartFile> multipartFiles, ImageType imageType) {
 		List<ImageMetadata> files = new ArrayList<>(); // 이미지 메타데이터 응답 리스트
 
 		for (MultipartFile multipartFile : multipartFiles) {
 			if (multipartFile.isEmpty()) {
 				continue;
 			}
-			files.add(uploadFile(multipartFile));
+			files.add(uploadFile(multipartFile, imageType));
 		}
 		return files;
 	}
@@ -62,21 +65,22 @@ public class ImageUploadProvider {
 	/**
 	 * 이미지 파일 업로드
 	 */
-	public ImageMetadata uploadFile(MultipartFile multipartFile) {
+	public ImageMetadata uploadFile(MultipartFile multipartFile, ImageType imageType) {
+		// 파일이 비어있으면 예외
 		if (multipartFile.isEmpty()) {
 			throw new IllegalArgumentException("파일이 비어있습니다.");
 		}
 
 		String storedName = generateStoredFileName(multipartFile.getOriginalFilename()); // 실제 디렉토리에 저장되는 이름
-		String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd")); // 당일 날짜를 디렉토리 명으로 선언 
-		String newUploadPath = Paths.get(getUploadPath(today), storedName).toString(); // 최종 경로
-		File uploadFile = new File(newUploadPath); // 파일 객체 생성
+		String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd")); // 당일 날짜를 디렉토리 명으로 선언
+		File uploadFile = new File(Paths.get(getUploadPath(today), storedName).toString()); // 파일 객체 생성
 
-		try {
-			multipartFile.transferTo(uploadFile); // 지정된 경로에 파일 저장
-		} catch (IOException e) {
-			log.error("[파일 경로 업로드 에러] : {} ", multipartFile.getOriginalFilename(), e);
-			throw new FileUploadException();
+		if (imageType == ImageType.THUMBNAIL) {
+			// 썸네일 이미지면 리사이징 후 업로드
+			resizeAndUploadThumbnail(multipartFile, uploadFile);
+		} else {
+			// 일반 이미지 업로드
+			uploadNormalImage(multipartFile, uploadFile);
 		}
 
 		// 메타데이터 반환
@@ -86,6 +90,40 @@ public class ImageUploadProvider {
 			.imagePath("/uploads/" + today + "/" + storedName)
 			.size(multipartFile.getSize())
 			.build();
+	}
+
+	/**
+	 * 일반 첨부 이미지 업로드
+	 *
+	 * @param multipartFile 이미지 파일
+	 * @param uploadFile 저장 경로가 지정된 대상 파일 객체
+	 */
+	private void uploadNormalImage(MultipartFile multipartFile, File uploadFile) {
+		try {
+			multipartFile.transferTo(uploadFile); // 지정된 경로에 파일 저장
+		} catch (IOException e) {
+			log.error("[파일 경로 업로드 에러] : {} ", multipartFile.getOriginalFilename(), e);
+			throw new FileUploadException();
+		}
+	}
+
+	/**
+	 * 썸네일 이미지 리사이징 후 업로드
+	 *
+	 * @param multipartFile 이미지 파일
+	 * @param uploadFile 저장 경로가 지정된 대상 파일 객체
+	 */
+	private void resizeAndUploadThumbnail(MultipartFile multipartFile, File uploadFile) {
+		try {
+			Thumbnails.of(multipartFile.getInputStream())
+				.size(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT) // 150,150으로 리사이징 크기 지정
+				.outputFormat("png") // 파일 확장자 지정
+				.outputQuality(0.8) // 압축 품질 80%
+				.toFile(uploadFile);
+		} catch (IOException e) {
+			log.error("[파일 경로 업로드 에러] : {} ", multipartFile.getOriginalFilename(), e);
+			throw new FileUploadException();
+		}
 	}
 
 	/**
