@@ -4,6 +4,7 @@ import static me.sisyphusj.community.app.commons.Constants.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -51,7 +52,11 @@ public class ImageUploadProvider {
 		if (!file.exists()) {
 			throw new IllegalArgumentException("파일이 존재하지 않습니다.");
 		}
-		file.delete();
+		try {
+			Files.delete(file.toPath());
+		} catch (IOException e) {
+			throw new FileUploadException();
+		}
 	}
 
 	/**
