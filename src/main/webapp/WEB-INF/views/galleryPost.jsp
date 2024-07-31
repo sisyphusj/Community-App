@@ -42,38 +42,32 @@
         최종 수정일 : <fmt:formatDate value="${post.updatedAt}" pattern="yyyy-MM-dd HH:mm:ss"/>
 
         <button id="back-to-list">목록으로 돌아가기</button>
-
-        <button onclick=location.href="/">홈으로 돌아가기</button>
+        <button onclick="location.href='/'">홈으로 돌아가기</button>
 
         <%-- 썸네일 이미지 --%>
         <c:if test="${post.thumbnail != null}">
-            <img src="${post.thumbnail.imagePath}" alt="${post.thumbnail.storedName}"/>
+            <img class="img-thumbnail" src="${post.thumbnail.imagePath}" alt="${post.thumbnail.storedName}"/>
         </c:if>
 
         <%-- 게시글 첨부 이미지 --%>
         <c:if test="${ImageDetailsResDTOList != null && fn:length(ImageDetailsResDTOList) > 0}">
-            <c:forEach var="file" items="${ImageDetailsResDTOList}">
-                <img src="${file.imagePath}" alt="${file.storedName}"/>
-            </c:forEach>
+            <div class="row">
+                <c:forEach var="file" items="${ImageDetailsResDTOList}">
+                    <div class="col-md-3">
+                        <img class="img-thumbnail" src="${file.imagePath}" alt="${file.storedName}"/>
+                    </div>
+                </c:forEach>
+            </div>
+        </c:if>
+
+        <%-- 게시글 작성자 게시글 수정 및 삭제 허용 --%>
+        <c:if test="${post.userId eq currentUserId}">
+            <button onclick="location.href='/community/GALLERY/posts/${post.postId}/edit'">수정</button>
+            <button onclick="location.href='/community/GALLERY/posts/${post.postId}/remove'">삭제</button>
         </c:if>
 
         <%-- 로그인 사용자인 경우 댓글 쓰기 가능 --%>
         <c:if test="${currentUserId != null}">
-            <form action="/comment" method="post" enctype="multipart/form-data">
-                <sec:csrfInput/>
-                <label for="content">댓글</label><br>
-                <input type="text" id="content" name="content" required><br><br>
-
-                <input type="hidden" id="postId" name="postId" value="${post.postId}">
-
-                <label for="imageFiles">이미지 첨부파일</label><br>
-                <input type="file" id="imageFiles" name="images" multiple>
-                <ul id="imageList" class="imageList"></ul>
-
-                <input type="hidden" name="boardType" value="${boardType}"/>
-
-                <button id="commentForm" type="submit">등록</button>
-            </form>
 
             <%-- 게시글 좋아요 --%>
             <c:if test="${post.hasLike}">
@@ -82,20 +76,29 @@
             <c:if test="${!post.hasLike}">
                 <button id="postLikeButton" type="button" data-liked="false" onclick="handlePostLikeButton()">좋아요</button>
             </c:if>
+
+            <form action="/comment" method="post" enctype="multipart/form-data">
+                <sec:csrfInput/>
+                <label for="content">댓글</label><br>
+                <input type="text" id="content" name="content" required><br><br>
+                <input type="hidden" id="postId" name="postId" value="${post.postId}">
+                <label for="imageFiles">이미지 첨부파일</label><br>
+                <input type="file" id="imageFiles" name="images" multiple>
+                <ul id="imageList" class="imageList"></ul>
+                <input type="hidden" name="boardType" value="${boardType}"/>
+                <button id="commentForm" type="submit">등록</button>
+            </form>
         </c:if>
 
         <c:forEach var="comment" items="${comments}">
-            <div class="commentDiv" data-comment-id="${comment.commentId}" data-comment-content="${comment.content}">
-
+            <div class="commentDiv ${comment.parentId != null ? 'ml-3' : ''}" data-comment-id="${comment.commentId}" data-comment-content="${comment.content}">
                     <%-- 댓글 기본 정보 --%>
                 <p class="${comment.parentId != null ? 'topLevelComment' : 'comment'}">
-                        ${comment.name} : ${comment.content}
-                        ${comment.createdAt}
+                        ${comment.name} : ${comment.content} <br>
+                    <fmt:formatDate value="${comment.createdAt}" pattern="yyyy-MM-dd HH:mm:ss"/>
                 </p>
-
                     <%-- 댓글 좋아요 --%>
                 <p id="comment-likes-${comment.commentId}">좋아요 개수 : ${comment.likes}</p>
-
                     <%-- 댓글 첨부 이미지 --%>
                 <c:if test="${comment.images != null && fn:length(comment.images) > 0}">
                     <c:forEach var="file" items="${comment.images}">
@@ -104,37 +107,30 @@
                         </div>
                     </c:forEach>
                 </c:if>
-
                     <%-- 로그인 사용자는 대댓글 쓰기 및 좋아요 허용 --%>
                 <c:if test="${currentUserId != null}">
                     <button type="button" class="replyButton">답글 쓰기</button>
                     <c:if test="${!comment.hasLike}">
                         <button id="comment-like-button-${comment.commentId}" type="button" data-comment-id="${comment.commentId}"
-                                data-liked=${comment.hasLike} onclick="handleCommentLikeButton(${comment.commentId})">좋아요
+                                data-liked="${comment.hasLike}" onclick="handleCommentLikeButton(${comment.commentId})">좋아요
                         </button>
                     </c:if>
                     <c:if test="${comment.hasLike}">
                         <button id="comment-like-button-${comment.commentId}" type="button" data-comment-id="${comment.commentId}"
-                                data-liked=${comment.hasLike} onclick="handleCommentLikeButton(${comment.commentId})">좋아요 취소
+                                data-liked="${comment.hasLike}" onclick="handleCommentLikeButton(${comment.commentId})">좋아요 취소
                         </button>
                     </c:if>
                 </c:if>
-
                     <%-- 댓글 작성자 댓글 수정, 삭제 허용 --%>
                 <c:if test="${currentUserId == comment.userId}">
                     <button type="button" class="editButton">수정</button>
                     <button type="button" class="cancelEditButton">수정 취소</button>
-                    <button onclick=location.href=`/comment/${boardType}/${comment.postId}/remove/${comment.commentId}`>삭제</button>
+                    <button onclick="location.href='/comment/${boardType}/${comment.postId}/remove/${comment.commentId}'">삭제</button>
                 </c:if>
                 <div class="replyInputContainer" id="replyInputContainer-${comment.commentId}"></div>
                 <div class="editInputContainer" id="editInputContainer-${comment.commentId}"></div>
             </div>
         </c:forEach>
-
-        <%-- 게시글 작성자 게시글 수정 허용 --%>
-        <c:if test="${post.userId eq currentUserId}">
-            <button onclick=location.href=`/community/GALLERY/posts/${post.postId}/edit`>수정</button>
-        </c:if>
 
         <script>
             const removeCommentImage = (commentId, imageId, element) => {
@@ -202,7 +198,6 @@
                 const liked = commentLikeButton.data('liked');
                 const csrfToken = $('input[name="_csrf"]').val();
 
-
                 if (liked) {
                     $.ajax({
                         url: '/comment/likes/dislike',
@@ -213,7 +208,7 @@
                         },
                         success: (response) => {
                             $(`#comment-likes-${'${commentId}'}`).text("좋아요 개수 : " + response);
-                            $(`#comment-like-button-${'${commentId}'}`).text('좋아요').data('liked', false);
+                            commentLikeButton.text('좋아요').data('liked', false);
                         },
                         error: (error) => {
                             alert("페이지를 불러오던 도중 문제가 생겼습니다.");
@@ -230,7 +225,7 @@
                         },
                         success: (response) => {
                             $(`#comment-likes-${'${commentId}'}`).text("좋아요 개수 : " + response);
-                            $(`#comment-like-button-${'${commentId}'}`).text('좋아요 취소').data('liked', true);
+                            commentLikeButton.text('좋아요 취소').data('liked', true);
                         },
                         error: (error) => {
                             alert("페이지를 불러오던 도중 문제가 생겼습니다.");
@@ -241,7 +236,6 @@
             }
 
             $(function () {
-                const userId = ${currentUserId == null ? 'null' : currentUserId};
                 let fileList = [];
 
                 $('.replyButton').click(function () {
@@ -271,8 +265,6 @@
                     const commentId = commentDiv.data('comment-id');
                     const content = commentDiv.data('comment-content');
 
-                    console.log("fdfd");
-
                     // 모든 editInputContainer 비우기
                     $('.editInputContainer').empty();
 
@@ -294,9 +286,8 @@
                     // 기존 이미지 삭제 버튼 포함
                     commentDiv.find('.image-container').each(function () {
                         const imageId = $(this).data('image-id');
-                        const commentId = $(this).closest('.commentDiv').data('comment-id')
                         $(this).append(`
-                            <button type="button" class="removeImage" onclick="removeCommentImage('${'${commentId}'}','${'${imageId}'}', this)">기존 이미지 삭제</button>
+                            <button type="button" class="removeImage" onclick="removeCommentImage('${'${commentId}'}','${'${imageId}'}, this)">기존 이미지 삭제</button>
                         `);
                     });
 
@@ -307,7 +298,7 @@
                     });
                 });
 
-                $('#imageFiles').change(function () {
+                $('#imageFiles').change(function (event) {
                     const imageList = $('#imageList');
                     imageList.empty();
 
@@ -325,7 +316,7 @@
                     });
                 });
 
-                $('#commentForm').submit(function () {
+                $('#commentForm').submit(function (event) {
                     const imageFiles = $('#imageFiles')[0].files;
 
                     try {

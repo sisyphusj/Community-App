@@ -7,47 +7,52 @@
         <%@ include file="include/head.jsp" %>
     </head>
     <body>
-        <h1>회원가입</h1>
-        <form action="/auth/register" method="post">
-            <sec:csrfInput/>
+        <div class="container mt-5">
+            <h1>회원가입</h1>
 
-            <label for="username">아이디 : </label>
-            <input type="text" id="username" name="username"> <br> <br>
+            <button class="btn btn-secondary mt-3" onclick="location.href='/'">메인으로 돌아가기</button>
 
-            <button id="isUsernameDuplicatedBtn">아이디 중복 체크</button>
+            <form action="/auth/register" method="post" class="needs-validation" novalidate>
+                <sec:csrfInput/>
 
-            <label for="password">비밀번호 : </label>
-            <input type="text" id="password" name="password"> <br> <br>
+                <div class="form-group">
+                    <label for="username">아이디</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                    <div class="invalid-feedback">
+                        아이디를 입력하세요.
+                    </div>
+                </div>
 
-            <label for="name">이름 : </label>
-            <input type="text" id="name" name="name"> <br> <br>
+                <button type="button" class="btn btn-info mb-3" id="isUsernameDuplicatedBtn">아이디 중복 체크</button>
 
-            <input type="submit" value="회원가입">
-        </form>
+                <div class="form-group">
+                    <label for="password">비밀번호</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                    <div class="invalid-feedback">
+                        비밀번호를 입력하세요.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">이름</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                    <div class="invalid-feedback">
+                        이름을 입력하세요.
+                    </div>
+                </div>
+
+                <input type="submit" class="btn btn-primary" value="회원가입">
+            </form>
+        </div>
 
         <script>
             $(() => {
-                $('form').on('submit', () => {
-                    const username = $("#username").val();
-                    const password = $("#password").val();
-                    const name = $("#name").val();
-
-                    if (!username) {
-                        alert("아이디를 입력하세요.");
-                        return false;
+                $('form').on('submit', (event) => {
+                    if (event.target.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
                     }
-
-                    if (!password) {
-                        alert("비밀번호를 입력하세요.");
-                        return false;
-                    }
-
-                    if (!name) {
-                        alert("이름을 입력하세요");
-                        return false;
-                    }
-
-                    return true;
+                    $(event.target).addClass('was-validated');
                 });
 
                 $('#isUsernameDuplicatedBtn').click((event) => {

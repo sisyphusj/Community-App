@@ -31,8 +31,7 @@
         <%-- 댓글 리스트 --%>
         <c:set var="comments" value="${commentDetailResDTOList}"/>
 
-
-        <h1>게시판 작성</h1>
+        <h1>게시글 상세</h1>
         <h2>제목 : ${post.title}</h2>
         <h4>작성자 : ${post.name}</h4>
         <h4>조회수 : ${post.views}</h4>
@@ -44,34 +43,27 @@
         최종 수정일 :
         <fmt:formatDate value="${post.updatedAt}" pattern="yyyy-MM-dd HH:mm:ss"/>
 
-        <button id="back-to-list">목록으로 돌아가기</button>
+        <%-- 게시글 작성자 게시글 수정 허용 --%>
+        <c:if test="${post.userId eq currentUserId}">
+            <button onclick="location.href='/community/NORMAL/posts/${post.postId}/edit'">수정</button>
+        </c:if>
 
-        <button onclick=location.href="/">홈으로 돌아가기</button>
+        <button id="back-to-list">목록으로 돌아가기</button>
+        <button onclick="location.href='/'">홈으로 돌아가기</button>
 
         <%-- 게시글 첨부 이미지 --%>
         <c:if test="${ImageDetailsResDTOList != null && fn:length(ImageDetailsResDTOList) > 0}">
-            <c:forEach var="file" items="${ImageDetailsResDTOList}">
-                <img src="${file.imagePath}" alt="${file.storedName}"/>
-            </c:forEach>
+            <div class="row">
+                <c:forEach var="file" items="${ImageDetailsResDTOList}">
+                    <div class="col-md-3">
+                        <img class="img-thumbnail" src="${file.imagePath}" alt="${file.storedName}"/>
+                    </div>
+                </c:forEach>
+            </div>
         </c:if>
 
         <%-- 로그인 사용자인 경우 댓글 쓰기 가능 --%>
         <c:if test="${currentUserId != null}">
-            <form action="/comment" method="post" enctype="multipart/form-data">
-                <sec:csrfInput/>
-                <label for="content">댓글</label><br>
-                <input type="text" id="content" name="content" required><br><br>
-
-                <input type="hidden" id="postId" name="postId" value="${post.postId}">
-
-                <label for="imageFiles">이미지 첨부파일</label><br>
-                <input type="file" id="imageFiles" name="images" multiple>
-                <ul id="imageList" class="imageList"></ul>
-
-                <input type="hidden" name="boardType" value="${boardType}"/>
-
-                <button id="commentForm" type="submit">등록</button>
-            </form>
 
             <%-- 게시글 좋아요 --%>
             <c:if test="${post.hasLike}">
@@ -80,18 +72,28 @@
             <c:if test="${!post.hasLike}">
                 <button id="postLikeButton" type="button" data-liked="false" onclick="handlePostLikeButton()">좋아요</button>
             </c:if>
+            
+            <form action="/comment" method="post" enctype="multipart/form-data">
+                <sec:csrfInput/>
+                <label for="content">댓글</label><br>
+                <input type="text" id="content" name="content" required><br><br>
+                <input type="hidden" id="postId" name="postId" value="${post.postId}">
+
+                <label for="imageFiles">이미지 첨부파일</label><br>
+                <input type="file" id="imageFiles" name="images" multiple>
+                <ul id="imageList" class="imageList"></ul>
+
+                <input type="hidden" name="boardType" value="${boardType}"/>
+                <button id="commentForm" type="submit">등록</button>
+            </form>
         </c:if>
 
         <c:forEach var="comment" items="${comments}">
-            <div class="commentDiv" data-comment-id="${comment.commentId}" data-comment-content="${comment.content}">
-
-                    <%-- 댓글 기본 정보 --%>
+            <div class="commentDiv ${comment.parentId != null ? 'ml-3' : ''}" data-comment-id="${comment.commentId}" data-comment-content="${comment.content}">
                 <p class="${comment.parentId != null ? 'topLevelComment' : 'comment'}">
                         ${comment.name} : ${comment.content}
                         ${comment.createdAt}
                 </p>
-
-                    <%-- 댓글 좋아요 --%>
                 <p id="comment-likes-${comment.commentId}">좋아요 개수 : ${comment.likes}</p>
 
                     <%-- 댓글 첨부 이미지 --%>
@@ -122,17 +124,12 @@
                 <c:if test="${currentUserId == comment.userId}">
                     <button type="button" class="editButton">수정</button>
                     <button type="button" class="cancelEditButton">수정 취소</button>
-                    <button onclick=location.href=`/comment/${boardType}/${comment.postId}/remove/${comment.commentId}`>삭제</button>
+                    <button onclick="location.href='/comment/${boardType}/${comment.postId}/remove/${comment.commentId}'">삭제</button>
                 </c:if>
                 <div class="replyInputContainer" id="replyInputContainer-${comment.commentId}"></div>
                 <div class="editInputContainer" id="editInputContainer-${comment.commentId}"></div>
             </div>
         </c:forEach>
-
-        <%-- 게시글 작성자 게시글 수정 허용 --%>
-        <c:if test="${post.userId eq currentUserId}">
-            <button onclick=location.href=`/community/NORMAL/posts/${post.postId}/edit`>수정</button>
-        </c:if>
 
         <script>
             const removeCommentImage = (commentId, imageId, element) => {
@@ -199,7 +196,6 @@
                 const commentLikeButton = $(`#comment-like-button-${'${commentId}'}`);
                 const liked = commentLikeButton.data('liked');
                 const csrfToken = $('input[name="_csrf"]').val();
-
 
                 if (liked) {
                     $.ajax({

@@ -8,29 +8,35 @@
         <%@ include file="include/head.jsp" %>
     </head>
     <body>
-        <h1>갤러리 게시판 작성</h1>
-        <form id="postForm" action="/community/posts" method="post" enctype="multipart/form-data">
-            <sec:csrfInput/>
-            <label for="title">제목</label><br>
-            <input type="text" id="title" name="title" required><br><br>
+        <div class="container mt-5">
+            <h1 class="mb-4">갤러리 게시판 작성</h1>
+            <form id="postForm" action="/community/posts" method="post" enctype="multipart/form-data">
+                <sec:csrfInput/>
+                <div class="form-group">
+                    <label for="title">제목</label>
+                    <input type="text" class="form-control" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="content">본문</label>
+                    <textarea class="form-control" id="content" name="content" rows="10" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="thumbnail">썸네일 지정하기</label>
+                    <input type="file" class="form-control-file" id="thumbnail" name="thumbnail">
+                </div>
+                <div class="form-group">
+                    <label for="imageFiles">이미지 첨부파일</label>
+                    <input type="file" class="form-control-file" id="imageFiles" name="images" multiple>
+                    <ul id="imageList" class="list-group mt-2"></ul>
+                </div>
+                <input type="hidden" name="boardType" value="GALLERY"/>
+                <button type="submit" class="btn btn-primary mt-3" id="postSubmitBtn">등록</button>
 
-            <label for="content">본문</label><br>
-            <textarea id="content" name="content" rows="10" required></textarea><br><br>
-
-            <label for="thumbnail">썸네일 지정하기</label><br>
-            <input type="file" id="thumbnail" name="thumbnail">
-
-            <label for="imageFiles">이미지 첨부파일</label><br>
-            <input type="file" id="imageFiles" name="images" multiple>
-            <ul id="imageList" class="imageList"></ul>
-
-            <input type="hidden" name="boardType" value="GALLERY"/>
-
-            <button type="submit" id="postSubmitBtn">등록</button>
-        </form>
-
+                <button type="button" class="btn btn-secondary mt-3" onclick="location.href='/'">메인으로 돌아가기</button>
+            </form>
+        </div>
         <script>
-            $(document).ready(function () {
+            $(function () {
                 let fileList = [];
 
                 $('#thumbnail').on('change', (event) => {
@@ -47,8 +53,8 @@
                     fileList = Array.from(event.target.files);
 
                     fileList.forEach((file, index) => {
-                        const li = $('<li>').addClass('image').text(file.name);
-                        const button = $('<button>').text("삭제").on('click', () => {
+                        const li = $('<li>').addClass('list-group-item d-flex justify-content-between align-items-center').text(file.name);
+                        const button = $('<button>').addClass('btn btn-danger btn-sm').text("삭제").on('click', () => {
                             removeFile(index);
                             li.remove();
                         });
@@ -72,8 +78,8 @@
                     imageList.empty();
 
                     fileList.forEach((file, index) => {
-                        const li = $('<li>').addClass('image').text(file.name);
-                        const button = $('<button>').text("삭제").on('click', () => {
+                        const li = $('<li>').addClass('list-group-item d-flex justify-content-between align-items-center').text(file.name);
+                        const button = $('<button>').addClass('btn btn-danger btn-sm').text("삭제").on('click', () => {
                             removeFile(index);
                             li.remove();
                         });

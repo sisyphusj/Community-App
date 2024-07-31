@@ -12,6 +12,8 @@
 
         <button id="logoutBtn">로그아웃</button>
 
+        <button type="button" class="btn btn-secondary" onclick="location.href='/'">메인으로 돌아가기</button>
+
         <script>
             $(function () {
                 $('#logoutBtn').click(function () {

@@ -8,51 +8,74 @@
     <head>
         <title>여행지 게시판</title>
         <%@ include file="include/head.jsp" %>
+        <link href="/static/css/material-kit.min.css" rel="stylesheet"/>
+        <script src="/static/js/material-kit.min.js"></script>
     </head>
     <body>
         <%-- 게시글 정보 --%>
         <c:set var="post" value="${postDetailResDTO}"/>
 
-        <h1>게시글 수정</h1>
+        <div class="container mt-5">
+            <h1>게시글 수정</h1>
 
-        <form id="postForm" action="/community/posts/edit" method="post" enctype="multipart/form-data">
-            <sec:csrfInput/>
+            <form id="postForm" action="/community/posts/edit" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                <sec:csrfInput/>
 
-            <%-- postId 추가 --%>
-            <input type="hidden" id="postId" name="postId" value="${post.postId}">
+                <%-- postId 추가 --%>
+                <input type="hidden" id="postId" name="postId" value="${post.postId}">
 
-            <%-- 제목 --%>
-            <label for="title">제목</label><br>
-            <input type="text" id="title" name="title" value="${post.title}" required><br><br>
-
-            <%-- 본문 --%>
-            <label for="content">본문</label><br>
-            <textarea id="content" name="content" rows="10" required>${post.content}</textarea><br><br>
-
-            <%-- 기존 첨부 이미지 불러오기 --%>
-            <c:if test="${ImageDetailsResDTOList != null && fn:length(ImageDetailsResDTOList) > 0}">
-                <h3>기존 이미지</h3><br>
-                <c:forEach var="file" items="${ImageDetailsResDTOList}">
-                    <div class="image-container">
-                        <img src="${file.imagePath}" alt="${file.storedName}"/>
-                        <button type="button" onclick="removeImage('${file.imageId}', this)">삭제</button>
+                <%-- 제목 --%>
+                <div class="form-group">
+                    <label for="title">제목</label>
+                    <input type="text" class="form-control" id="title" name="title" value="${post.title}" required>
+                    <div class="invalid-feedback">
+                        제목을 입력하세요.
                     </div>
-                </c:forEach>
-            </c:if>
+                </div>
 
-            <%-- 새로운 첨부 이미지 불러오기 --%>
-            <label for="imageFiles">새로운 이미지 첨부파일</label><br>
-            <input type="file" id="imageFiles" name="images" multiple>
-            <ul id="imageList" class="imageList"></ul>
+                <%-- 본문 --%>
+                <div class="form-group">
+                    <label for="content">본문</label>
+                    <textarea class="form-control" id="content" name="content" rows="10" required>${post.content}</textarea>
+                    <div class="invalid-feedback">
+                        본문을 입력하세요.
+                    </div>
+                </div>
 
-            <%-- 게시판 타입(일반 게시판) --%>
-            <input type="hidden" name="boardType" value="NORMAL"/>
+                <%-- 기존 첨부 이미지 불러오기 --%>
+                <c:if test="${ImageDetailsResDTOList != null && fn:length(ImageDetailsResDTOList) > 0}">
+                    <h3>기존 이미지</h3>
+                    <div class="row">
+                        <c:forEach var="file" items="${ImageDetailsResDTOList}">
+                            <div class="col-md-4 mb-3">
+                                <div class="card">
+                                    <img class="card-img-top" src="${file.imagePath}" alt="${file.storedName}" style="height: 200px; object-fit: cover;">
+                                    <div class="card-body">
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="removeImage('${file.imageId}', this)">삭제</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:forEach>
+                    </div>
+                </c:if>
 
-            <button type="submit" id="postSubmitBtn">등록</button>
-        </form>
+                <%-- 새로운 첨부 이미지 불러오기 --%>
+                <div class="form-group">
+                    <label for="imageFiles">새로운 이미지 첨부파일</label>
+                    <input type="file" class="form-control" id="imageFiles" name="images" multiple>
+                    <ul id="imageList" class="list-group mt-2"></ul>
+                </div>
 
-        <%-- 게시글 삭제 --%>
-        <button type="button" onclick="location.href= `/community/NORMAL/posts/${post.postId}/remove`">게시글 삭제</button>
+                <%-- 게시판 타입(일반 게시판) --%>
+                <input type="hidden" name="boardType" value="NORMAL"/>
+
+                <button type="submit" class="btn btn-primary">등록</button>
+
+                <button type="button" class="btn btn-danger" onclick="location.href='/community/NORMAL/posts/${post.postId}/remove'">게시글 삭제</button>
+                <button type="button" class="btn btn-secondary" onclick="location.href='/'">메인으로 돌아가기</button>
+            </form>
+
+        </div>
 
         <script>
             $(function () {
@@ -65,8 +88,8 @@
                     fileList = Array.from(event.target.files);
 
                     fileList.forEach((file, index) => {
-                        const li = $('<li>').addClass('image').text(file.name);
-                        const button = $('<button>').text("삭제").on('click', () => {
+                        const li = $('<li>').addClass('list-group-item d-flex justify-content-between align-items-center').text(file.name);
+                        const button = $('<button>').addClass('btn btn-danger btn-sm').text("삭제").on('click', () => {
                             removeFile(index);
                             li.remove();
                         });
@@ -89,7 +112,7 @@
                         checkValidTitleAndContent(title, content);
                     } catch (error) {
                         event.preventDefault(); // 폼 제출 중지
-                        alert("게시글 등록을 실패하였습니다.");
+                        alert(error.message);
                         return false;
                     }
                 });
@@ -149,8 +172,8 @@
                     imageList.empty();
 
                     fileList.forEach((file, index) => {
-                        const li = $('<li>').addClass('image').text(file.name);
-                        const button = $('<button>').text("삭제").on('click', () => {
+                        const li = $('<li>').addClass('list-group-item d-flex justify-content-between align-items-center').text(file.name);
+                        const button = $('<button>').addClass('btn btn-danger btn-sm').text("삭제").on('click', () => {
                             removeFile(index);
                             li.remove();
                         });
@@ -165,14 +188,14 @@
             const removeImage = (imageId, element) => {
                 const csrfToken = $('input[name="_csrf"]').val();
                 $.ajax({
-                    url: `/images/post/remove?postId=${post.postId}&imageId=${'${imageId}'}`,
+                    url: `/images/post/remove?postId=${post.postId}&imageId=${imageId}`,
                     type: "GET",
                     beforeSend: (xhr) => {
                         xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
                     },
                     success: function () {
                         alert("이미지가 제거되었습니다.");
-                        $(element).closest('div.image-container').remove();
+                        $(element).closest('div.card').remove();
                     },
                     error: function (error) {
                         console.error(error);
@@ -180,7 +203,6 @@
                     }
                 });
             }
-
         </script>
     </body>
 </html>

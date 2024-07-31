@@ -10,7 +10,7 @@
 <html lang="ko">
     <head>
         <title>여행지 게시판</title>
-        <%@ include file="include/head.jsp" %>
+        <%@ include file="head.jsp" %>
     </head>
     <body>
         <div class="container position-sticky z-index-sticky top-0">

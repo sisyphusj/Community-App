@@ -27,94 +27,64 @@
         <%-- 현재 페이지 게시글 목록 정보 --%>
         <c:set var="posts" value="${pageResDTO.postSummaryResDTO}"/>
 
-        <div>
+        <div class="container mt-5">
             <%-- 로그인 사용자만 게시글 쓰기 허용 --%>
             <c:if test="${isLoginUser}">
-                <button onclick="location.href='/community/new'">게시글 쓰기</button>
+                <button class="btn btn-primary mb-3" onclick="location.href='/community/new'">게시글 쓰기</button>
             </c:if>
 
             <%-- 페이지 정렬, 검색 --%>
-            <form id="textSearch" action="/community" method="get">
+            <form id="textSearch" action="/community" method="get" class="mb-3">
                 <%-- 정렬, 검색 공통 폼 내용 --%>
                 <%@ include file="include/searchFormContent.jsp" %>
             </form>
 
-            <h1>게시판</h1>
+            <h2>여행지 게시판</h2>
+
+            <button class="btn btn-secondary mt-3" onclick="location.href='/'">메인으로 돌아가기</button>
 
             <%-- 게시글 목록 --%>
-            <table id="postsTable" border="1">
-                <thead>
-                    <tr>
-                        <th>번호</th>
-                        <th>제목</th>
-                        <th>작성자</th>
-                        <th>조회수</th>
-                        <th>작성일</th>
-                        <th>좋아요</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <c:forEach var="post" items="${posts}">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead>
                         <tr>
-                            <td>${post.postId}</td>
-                            <td>
-                                <form action="/community/NORMAL/posts/${post.postId}" method="get" style="display:inline;">
-                                    <sec:csrfInput/>
-                                    <button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0;">
-                                            ${post.title}
-                                    </button>
-                                    <input type="hidden" name="page" value="${current.page}"/>
-                                    <input type="hidden" name="sort" value="${current.sort}"/>
-                                    <input type="hidden" name="keywordType" value="${current.keywordType}"/>
-                                    <input type="hidden" name="keyword" value="${current.keyword}"/>
-                                    <input type="hidden" name="row" value="${current.row}"/>
-                                </form>
-                            </td>
-                            <td>${post.name}</td>
-                            <td>${post.views}</td>
-                            <td><fmt:formatDate value="${post.createdAt}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-                            <td>${post.likes}</td>
+                            <th>번호</th>
+                            <th>제목</th>
+                            <th>작성자</th>
+                            <th>조회수</th>
+                            <th>작성일</th>
+                            <th>좋아요</th>
                         </tr>
-                    </c:forEach>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="post" items="${posts}">
+                            <tr>
+                                <td>${post.postId}</td>
+                                <td>
+                                    <form action="/community/NORMAL/posts/${post.postId}" method="get" style="display:inline;">
+                                        <sec:csrfInput/>
+                                        <button type="submit" class="btn btn-link p-0" style="text-decoration:underline; color:blue;">
+                                                ${post.title}
+                                        </button>
+                                        <input type="hidden" name="page" value="${current.page}"/>
+                                        <input type="hidden" name="sort" value="${current.sort}"/>
+                                        <input type="hidden" name="keywordType" value="${current.keywordType}"/>
+                                        <input type="hidden" name="keyword" value="${current.keyword}"/>
+                                        <input type="hidden" name="row" value="${current.row}"/>
+                                    </form>
+                                </td>
+                                <td>${post.name}</td>
+                                <td>${post.views}</td>
+                                <td><fmt:formatDate value="${post.createdAt}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                                <td>${post.likes}</td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
 
             <%-- 공통 페이지 네이션 --%>
             <%@ include file="include/pagination.jsp" %>
         </div>
-
-        <button onclick="location.href='/'">메인으로 돌아가기</button>
-
-        <style>
-            .pagination {
-                display: flex;
-                list-style: none;
-                padding: 0;
-            }
-
-            .pagination li {
-                margin: 0 5px;
-            }
-
-            .pagination li a {
-                text-decoration: none;
-                padding: 5px 10px;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                color: #333;
-            }
-
-            .pagination li a:hover {
-                background-color: #f0f0f0;
-            }
-
-            .pagination li span {
-                padding: 5px 10px;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                background-color: #e0e0e0;
-                color: #333;
-            }
-        </style>
     </body>
 </html>
