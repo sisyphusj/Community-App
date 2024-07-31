@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
+import me.sisyphusj.community.app.commons.exception.CategoryNotFoundException;
 import me.sisyphusj.community.app.commons.exception.KeywordTypeException;
 import me.sisyphusj.community.app.commons.exception.PostNotFoundException;
 import me.sisyphusj.community.app.image.service.ImageService;
@@ -42,6 +43,9 @@ public class PostService {
 	@Transactional
 	public void createPost(PostCreateReqDTO postCreateReqDTO) {
 		PostVO postVO = PostVO.of(postCreateReqDTO);
+
+		// (카테고리 : 게시판 타입) 유효성 체크 후 카테고리 ID를 VO에 저장
+		postVO.updateBoardCategoryId(getBoardCategoryId(postCreateReqDTO.getCategory(), postCreateReqDTO.getBoardType()));
 
 		// 썸네일 이미지가 존재하면 이미지 저장 후 썸네일 이미지 ID을 VO에 저장
 		handleThumbnailImage(postCreateReqDTO.getBoardType(), postCreateReqDTO.getThumbnail(), postVO);
@@ -156,9 +160,23 @@ public class PostService {
 	 */
 	private void validatePostExists(long postId) {
 		// 게시글 존재 여부, 해당 게시글의 작성자가 사용자인지 확인
-		if (postMapper.selectCountPostByUserId(postId, SecurityUtil.getLoginUserId()) != 1) {
+		if (postMapper.selectCountPostByUserId(SecurityUtil.getLoginUserId(), postId) != 1) {
 			throw new PostNotFoundException();
 		}
+	}
+
+	/**
+	 * 카테고리의 유효성 확인 후 카테고리 고유 ID 반환
+	 */
+	private long getBoardCategoryId(String category, BoardType boardType) {
+		Long boardCategoryId = postMapper.selectCategoryId(category, boardType);
+
+		// 게시판의 타입에 따른 카테고리를 조회하여 카테고리 ID가 NULL이면 예외
+		if (boardCategoryId == null) {
+			throw new CategoryNotFoundException();
+		}
+
+		return boardCategoryId;
 	}
 
 	/**

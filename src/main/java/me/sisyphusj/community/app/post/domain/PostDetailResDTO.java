@@ -32,6 +32,8 @@ public class PostDetailResDTO {
 
 	private ThumbnailImageResDTO thumbnail; // 썸네일 이미지 정보
 
+	private String category; // 게시판 카테고리
+
 	public static PostDetailResDTO of(PostVO postVO) {
 		return PostDetailResDTO.builder()
 			.userId(postVO.getUserId())
@@ -45,6 +47,7 @@ public class PostDetailResDTO {
 			.likes(postVO.getLikes())
 			.hasLike(postVO.getHasLike() == 1)
 			.thumbnail(postVO.getThumbnail() == null ? null : ThumbnailImageResDTO.of(postVO.getThumbnail()))
+			.category(postVO.getCategory())
 			.build();
 	}
 }

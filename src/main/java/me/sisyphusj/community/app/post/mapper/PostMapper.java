@@ -28,6 +28,8 @@ public interface PostMapper {
 
 	int selectCountPost(long postId);
 
+	Long selectCategoryId(String category, BoardType boardType);
+
 	void updatePost(PostVO postVO);
 
 	void deletePost(long postId);

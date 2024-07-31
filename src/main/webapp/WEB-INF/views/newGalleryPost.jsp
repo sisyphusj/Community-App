@@ -13,6 +13,13 @@
             <form id="postForm" action="/community/posts" method="post" enctype="multipart/form-data">
                 <sec:csrfInput/>
                 <div class="form-group">
+                    <label for="category">카테고리</label>
+                    <select name="category" id="category">
+                        <option value="Nature">자연 사진</option>
+                        <option value="City">도심 사진</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label for="title">제목</label>
                     <input type="text" class="form-control" id="title" name="title" required>
                 </div>
@@ -34,6 +41,7 @@
 
                 <button type="button" class="btn btn-secondary mt-3" onclick="location.href='/'">메인으로 돌아가기</button>
             </form>
+            <button id="back-to-list">목록으로 돌아가기</button>
         </div>
         <script>
             $(function () {
@@ -110,6 +118,10 @@
                         alert("게시글 등록을 실패하였습니다.");
                         return false;
                     }
+                });
+
+                $('#back-to-list').click(function () {
+                    location.href = '/community/gallery?page=1&sort=DATE&keywordType=&keyword=&row=10'
                 });
 
                 const checkValidImages = (imageFiles) => {

@@ -8,8 +8,6 @@
     <head>
         <title>여행지 게시판</title>
         <%@ include file="include/head.jsp" %>
-        <link href="/static/css/material-kit.min.css" rel="stylesheet"/>
-        <script src="/static/js/material-kit.min.js"></script>
     </head>
     <body>
         <%-- 게시글 정보 --%>
@@ -70,11 +68,9 @@
                 <input type="hidden" name="boardType" value="NORMAL"/>
 
                 <button type="submit" class="btn btn-primary">등록</button>
-
-                <button type="button" class="btn btn-danger" onclick="location.href='/community/NORMAL/posts/${post.postId}/remove'">게시글 삭제</button>
-                <button type="button" class="btn btn-secondary" onclick="location.href='/'">메인으로 돌아가기</button>
             </form>
-
+            <button type="button" class="btn btn-danger" onclick="location.href='/community/NORMAL/posts/${post.postId}/remove'">게시글 삭제</button>
+            <button type="button" class="btn btn-secondary" onclick="location.href='/'">메인으로 돌아가기</button>
         </div>
 
         <script>
@@ -126,13 +122,13 @@
                         const fileExtension = imageFile.name.split('.').pop().toLowerCase(); // 파일 확장자 추출
 
                         if (!allowedExtensions.includes(fileExtension)) {
-                            throw new Error(`허용되지 않는 파일 형식입니다 (jpg, jpeg, png) : ${imageFile.name}`);
+                            throw new Error(`허용되지 않는 파일 형식입니다 (jpg, jpeg, png) : ${'${imageFile.name}'}`);
                         }
 
                         totalSize += imageFile.size; // 총 파일 사이즈
 
                         if (imageFile.size > maxFileSize) {
-                            throw new Error(`최대 이미지 크기는 10MB 입니다. : ${imageFile.size}`);
+                            throw new Error(`최대 이미지 크기는 10MB 입니다. : ${'${imageFile.size}'}`);
                         }
                     }
 
@@ -188,7 +184,7 @@
             const removeImage = (imageId, element) => {
                 const csrfToken = $('input[name="_csrf"]').val();
                 $.ajax({
-                    url: `/images/post/remove?postId=${post.postId}&imageId=${imageId}`,
+                    url: `/images/post/remove?postId=${post.postId}&imageId=${'${imageId}'}`,
                     type: "GET",
                     beforeSend: (xhr) => {
                         xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);

@@ -19,6 +19,8 @@ public class PostVO {
 
 	private Long userId; // 사용자 고유 ID
 
+	private Long boardCategoryId; // 카테고리 고유 ID
+
 	private String name; // 작성자 이름
 
 	private String title; // 제목
@@ -41,6 +43,8 @@ public class PostVO {
 
 	private BoardType boardType; // 게시판 타입
 
+	private String category; // 게시판 카테고리
+
 	public static PostVO of(PostCreateReqDTO postCreateReqDTO) {
 		return PostVO.builder()
 			.userId(SecurityUtil.getLoginUserId())
@@ -61,5 +65,9 @@ public class PostVO {
 
 	public void updateThumbnailId(long thumbnailId) {
 		this.thumbnailId = thumbnailId;
+	}
+
+	public void updateBoardCategoryId(long boardCategoryId) {
+		this.boardCategoryId = boardCategoryId;
 	}
 }

@@ -29,4 +29,7 @@ public class PostCreateReqDTO {
 	@NotNull
 	private BoardType boardType; // 게시판 타입
 
+	@NotNull
+	private String category; // 게시판 카테고리
+
 }

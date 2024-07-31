@@ -66,6 +66,7 @@
                                         </form>
                                     </h5>
                                     <p class="card-text">${post.name}</p>
+                                    <p class="card-text">${post.category}</p>
                                     <p class="card-text"><fmt:formatDate value="${post.createdAt}" pattern="yyyy-MM-dd HH:mm:ss"/></p>
                                     <p class="card-text">조회수: ${post.views} 좋아요: ${post.likes}</p>
                                 </div>

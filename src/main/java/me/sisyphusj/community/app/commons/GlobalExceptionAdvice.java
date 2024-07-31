@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.sisyphusj.community.app.commons.exception.AlertException;
 import me.sisyphusj.community.app.commons.exception.AuthorizeException;
 import me.sisyphusj.community.app.commons.exception.BlankInputException;
+import me.sisyphusj.community.app.commons.exception.CategoryNotFoundException;
 import me.sisyphusj.community.app.commons.exception.CommentNotFoundException;
 import me.sisyphusj.community.app.commons.exception.ImageNotFoundException;
 import me.sisyphusj.community.app.commons.exception.KeywordTypeException;
@@ -123,6 +124,15 @@ public class GlobalExceptionAdvice {
 	public ModelAndView handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
 		log.error("[MaxUploadSizeExceededException 발생] : ", e);
 		return getModelAndView("최대 이미지 크기는 10MB 입니다.", LocationUrl.BACK);
+	}
+
+	/**
+	 * 카테고리 요청에서 잘못된 카테고리 값이 전달되어 발생한 예외를 처리하는 핸들러
+	 */
+	@ExceptionHandler(CategoryNotFoundException.class)
+	public ModelAndView handleCategoryNotFoundException(CategoryNotFoundException e) {
+		log.error("[CategoryNotFoundException 발생] : ", e);
+		return getModelAndView("잘못된 카테고리입니다.", LocationUrl.BACK);
 	}
 
 	/**

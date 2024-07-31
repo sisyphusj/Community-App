@@ -25,9 +25,9 @@
 
     <insert id="insertPost" parameterType="me.sisyphusj.community.app.post.domain.PostVO" useGeneratedKeys="true" keyProperty="postId">
         insert into posts
-            (user_id, title, content, type, thumbnail_image_id)
+            (user_id, title, content, type, thumbnail_image_id, board_category_id)
         values
-            (#{userId}, #{title}, #{content}, #{boardType}, #{thumbnailId})
+            (#{userId}, #{title}, #{content}, #{boardType}, #{thumbnailId}, #{boardCategoryId})
     </insert>
 
     <select id="selectPostSummaryList" parameterType="me.sisyphusj.community.app.post.domain.PageVO" resultMap="PostWithThumbnail">
@@ -37,6 +37,7 @@
                 p.views,
                 p.created_at,
                 p.updated_at,
+                b.category,
                 <if test="boardType.toString() == 'GALLERY'">
                     i.image_id as thumbnail_image_id,
                     i.origin_name as thumbnail_origin_name,
@@ -47,6 +48,7 @@
                 (select count(*) from post_likes pl where pl.post_id = p.post_id) as likes
         from posts p
         inner join user u on p.user_id = u.user_id
+        inner join board_category b on p.board_category_id = b.board_category_id
         <if test="boardType.toString() == 'GALLERY'">
             inner join image i on p.thumbnail_image_id = i.image_id
         </if>
@@ -54,6 +56,9 @@
             p.is_deleted = 'N'
             <if test="boardType.toString() != 'GALLERY'">
                 and p.thumbnail_image_id is null
+            </if>
+            <if test="category != null and category != 'ALL'">
+                and category = #{category}
             </if>
             <include refid="commonKeywordFilter"/>
         </where>
@@ -75,10 +80,14 @@
         select count(*)
         from posts p
         inner join user u on p.user_id = u.user_id
+        inner join board_category b on p.board_category_id = b.board_category_id
         <where>
             p.is_deleted = 'N'
             <if test="boardType.toString() == 'GALLERY'">
                 and p.type = 'GALLERY'
+            </if>
+            <if test="category != null and category != 'ALL'">
+                and category = #{category}
             </if>
             <include refid="commonKeywordFilter"/>
         </where>
@@ -93,6 +102,7 @@
                 p.views,
                 p.created_at,
                 p.updated_at,
+                b.category,
                 <if test="boardType.toString() == 'GALLERY'">
                     i.image_id as thumbnail_image_id,
                     i.origin_name as thumbnail_origin_name,
@@ -103,6 +113,7 @@
                 (select count(*) from post_likes pl where pl.post_id = p.post_id) as likes
         from posts p
                 inner join user u on p.user_id = u.user_id
+                inner join board_category b on p.board_category_id = b.board_category_id
                 <if test="boardType.toString() == 'GALLERY'">
                     inner join image i on p.thumbnail_image_id = i.image_id
                 </if>
@@ -119,6 +130,7 @@
                 p.views,
                 p.created_at,
                 p.updated_at,
+                b.category,
                 <if test="boardType.toString() == 'GALLERY'">
                     i.image_id as thumbnail_image_id,
                     i.origin_name as thumbnail_origin_name,
@@ -130,6 +142,7 @@
                 exists (select 1 from post_likes a where a.post_id = p.post_id and a.user_id = #{userId}) as has_like
         from posts p
                 inner join user u on p.user_id = u.user_id
+                inner join board_category b on p.board_category_id = b.board_category_id
                 <if test="boardType.toString() == 'GALLERY'">
                     inner join image i on p.thumbnail_image_id = i.image_id
                 </if>
@@ -139,7 +152,8 @@
 
     <update id="updateViewsAndGet" parameterType="long">
         update posts
-        set views = views + 1
+        set views = views + 1,
+            updated_at = updated_at
         where post_id = #{postId}
           and is_deleted = 'N'
     </update>
@@ -157,6 +171,13 @@
         from posts
         where post_id = #{postId}
           and is_deleted = 'N'
+    </select>
+
+    <select id="selectCategoryId" resultType="java.lang.Long">
+        select board_category_id
+        from board_category
+        where category = #{category}
+          and board_type = #{boardType}
     </select>
 
     <update id="updatePost" parameterType="me.sisyphusj.community.app.post.domain.PostVO">
@@ -190,6 +211,7 @@
         <result property="views" column="views"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
+        <result property="category" column="category"/>
         <result property="likes" column="likes"/>
         <result property="hasLike" column="has_like"/>
         <association property="thumbnail" javaType="me.sisyphusj.community.app.image.domain.ImageVO">

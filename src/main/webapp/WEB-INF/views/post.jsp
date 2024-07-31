@@ -32,6 +32,7 @@
         <c:set var="comments" value="${commentDetailResDTOList}"/>
 
         <h1>게시글 상세</h1>
+        <h2>카테고리 : ${post.category}</h2>
         <h2>제목 : ${post.title}</h2>
         <h4>작성자 : ${post.name}</h4>
         <h4>조회수 : ${post.views}</h4>

@@ -9,13 +9,15 @@ public class PageVO {
 
 	private int offset; // 마지막으로 조회된 레코드 row
 
-	PageSortType sortType; // 정렬 타입
+	private PageSortType sortType; // 정렬 타입
 
-	KeywordType keywordType; // 키워드 타입
+	private KeywordType keywordType; // 키워드 타입
 
-	String keyword; // 검색 키워드
+	private String keyword; // 검색 키워드
 
-	BoardType boardType; // 게시판 타입
+	private BoardType boardType; // 게시판 타입
+
+	private String category; // 게시판 카테고리
 
 	public static PageVO of(PageReqDTO pageReqDTO) {
 		return PageVO.builder()
@@ -24,6 +26,7 @@ public class PageVO {
 			.sortType(pageReqDTO.getSort())
 			.keywordType(pageReqDTO.getKeywordType())
 			.keyword(pageReqDTO.getKeyword())
+			.category(pageReqDTO.getCategory())
 			.build();
 	}
 
